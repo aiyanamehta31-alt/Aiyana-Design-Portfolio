@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aiyana Mehta · Design portfolio</title>
+  <!-- PLACEHOLDER: refine this one-line description of you -->
+  <meta name="description" content="Aiyana Mehta is a design student who designs journeys, not just screens. Portfolio of UX, service and visual design work." />
+  <meta name="theme-color" content="#E6E2D9" />
+
+  <!-- Fonts: Geist + Geist Mono (hero), Funnel Display + Funnel Sans (rest of the page) taste-skill-ignore -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Hide reveal-on-scroll elements only when motion is allowed.
+       js/main.js removes this class straight away if GSAP failed to load. -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        root.classList.add('motion-ok');
+        setTimeout(function () { if (!window.gsap) root.classList.remove('motion-ok'); }, 2500);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Custom cursor: bubble that tightens into a bullseye (decorative, hidden on touch) -->
+  <div class="cursor" aria-hidden="true">
+    <div class="cursor__body">
+      <div class="cursor__bubble"></div>
+      <div class="cursor__dot"></div>
+    </div>
+  </div>
+
+  <!-- ================= TOP BAR (below the hero) =================
+       Hidden while the hero is on screen (the hero has its own bar);
+       slides in once the visitor scrolls past it. -->
+  <header class="site-header is-tucked">
+    <a class="wordmark" href="#top">Aiyana<span class="wordmark__last"> Mehta</span></a>
+    <nav aria-label="Site">
+      <ul class="nav-links">
+        <li><a class="line-link" href="#work">Work</a></li>
+        <li><a class="line-link" href="#about">About</a></li>
+        <li><a class="line-link" href="#resume">Resume</a></li>
+        <li><a class="line-link" href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ========== HERO ==========
+         A black stage with a slow, constant wheel of work. The cards are built
+         by js/main.js from the WHEEL_IMAGES list at the top of that file. -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <header class="hero-bar">
+        <a class="hero-brand" href="#top">
+          <svg class="hero-brand__mark" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+            <circle cx="14" cy="14" r="14" fill="#FFFFFF" />
+            <path d="M8.5 19.5 L14 7.5 L19.5 19.5 M10.6 15.2 H17.4" fill="none" stroke="#000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span class="hero-brand__text">
+            <span class="hero-brand__name">Aiyana Mehta</span>
+            <span class="hero-brand__role">Design portfolio</span>
+          </span>
+        </a>
+
+        <nav class="hero-nav" aria-label="Main">
+          <a class="hero-nav__link hero-nav__work" href="#work">Work</a>
+          <ul class="hero-nav__right">
+            <li><a class="hero-nav__link" href="#about">About</a></li>
+            <li><a class="hero-nav__link" href="#resume">Resume</a></li>
+            <li><a class="hero-nav__link" href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+
+        <!-- Phones: one MENU button opens the same links -->
+        <button class="hero-menu" type="button" aria-expanded="false" aria-controls="hero-menu-panel">Menu</button>
+        <ul class="hero-menu__panel" id="hero-menu-panel" hidden>
+          <li><a class="hero-nav__link" href="#work">Work</a></li>
+          <li><a class="hero-nav__link" href="#about">About</a></li>
+          <li><a class="hero-nav__link" href="#resume">Resume</a></li>
+          <li><a class="hero-nav__link" href="#contact">Contact</a></li>
+        </ul>
+      </header>
+
+      <ul class="hero-wheel" aria-label="A showcase of my work"></ul>
+
+      <div class="hero-copy">
+        <h1 class="hero-copy__title" id="hero-title">Welcome to Aiyana's portfolio.</h1>
+        <p class="hero-copy__text">A design student who designs journeys, not just screens. Fun on the outside, focused underneath.</p>
+      </div>
+
+      <!-- PLACEHOLDER: your real email -->
+      <p class="hero-talk">
+        <span class="hero-talk__label">Let's talk</span>
+        <a class="hero-talk__email" href="mailto:hello@example.com">hello@example.com</a>
+      </p>
+
+      <a class="hero-explore" href="#work">
+        <svg class="hero-explore__icon" viewBox="0 0 14 14" aria-hidden="true" focusable="false">
+          <path d="M7 1 V13 M1 7 H13 M7 1 L5.2 2.8 M7 1 L8.8 2.8 M7 13 L5.2 11.2 M7 13 L8.8 11.2 M1 7 L2.8 5.2 M1 7 L2.8 8.8 M13 7 L11.2 5.2 M13 7 L11.2 8.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>Scroll to explore</span>
+      </a>
+    </section>
+
+    <!-- ========== PROJECTS ========== -->
+    <section class="section work" id="work" aria-labelledby="work-title" tabindex="-1">
+      <div class="section-head">
+        <h2 class="section-title" id="work-title" data-reveal>Selected work</h2>
+        <p class="section-text" data-reveal>Each project opens on the result, then goes back to the start and plays the journey forward. [Placeholder: tweak this intro.]</p>
+      </div>
+
+      <!--
+        REUSABLE PROJECT CARD
+        Copy one <article class="project-card"> per project and keep the class names.
+        PLACEHOLDER: point each href at its case study page when it exists.
+      -->
+      <div class="work-grid">
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/project-1-cover.svg" width="1600" height="1000" loading="lazy"
+                 alt="Placeholder cover: a phone screen with a checkout flow and a path drawn across it." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#">Project name one</a></h3>
+            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
+            <p class="project-card__meta"><span>UX case study</span><span>2026</span></p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/project-2-cover.svg" width="1600" height="1000" loading="lazy"
+                 alt="Placeholder cover: a journey map of four stops joined by a dotted path." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#">Project name two</a></h3>
+            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
+            <p class="project-card__meta"><span>Service design</span><span>2026</span></p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/project-3-cover.svg" width="1600" height="1000" loading="lazy"
+                 alt="Placeholder cover: large letterforms beside four colour swatches." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#">Project name three</a></h3>
+            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
+            <p class="project-card__meta"><span>Visual identity</span><span>2025</span></p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/project-4-cover.svg" width="1600" height="1000" loading="lazy"
+                 alt="Placeholder cover: three panels standing on a bright horizon line." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#">Project name four</a></h3>
+            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
+            <p class="project-card__meta"><span>Interaction design</span><span>2025</span></p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/project-5-cover.svg" width="1600" height="1000" loading="lazy"
+                 alt="Placeholder cover: three rings, one inside the other, with an amber centre." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#">Project name five</a></h3>
+            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
+            <p class="project-card__meta"><span>3D modelling</span><span>2025</span></p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/project-6-cover.svg" width="1600" height="1000" loading="lazy"
+                 alt="Placeholder cover: three light columns on a dark ground." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#">Project name six</a></h3>
+            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
+            <p class="project-card__meta"><span>Architecture</span><span>2024</span></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section class="section about" id="about" aria-labelledby="about-title" tabindex="-1">
+      <div class="about-side">
+        <h2 class="section-title" id="about-title" data-reveal>About me</h2>
+        <!-- PLACEHOLDER: three quick facts -->
+        <ul class="facts" data-reveal>
+          <li>Based in [City]</li>
+          <li>Studying [Program] at [School]</li>
+          <li>Graduating [Year]</li>
+        </ul>
+      </div>
+
+      <div class="about-text">
+        <!-- PLACEHOLDER: rewrite in your own voice (50–80 words) -->
+        <p class="bio" data-reveal>
+          <img class="bio__portrait" src="assets/images/portrait-placeholder.svg" width="800" height="800" loading="lazy"
+               alt="Placeholder for a portrait of Aiyana." />
+          <strong>Hi, I'm Aiyana.</strong> I'm the person who brings snacks to the critique and a twelve-tab spreadsheet to the kickoff. I love the messy start of a project, and I love the moment it clicks even more. [Placeholder: a line about what you're into outside the studio.]
+        </p>
+        <p class="bio" data-reveal>Right now I'm looking for a summer internship with a team that cares about the whole journey, not only the final frame. [Placeholder]</p>
+
+        <figure class="about-photo" data-reveal>
+          <!-- PLACEHOLDER: swap for your own photo (your wallpaper, or you at work) -->
+          <img src="assets/images/sea-1049.jpg" width="1200" height="750" loading="lazy"
+               alt="A lone figure on a wet beach facing a rock island and its reflection." />
+          <figcaption>[Placeholder photo: swap in your own wallpaper or a picture of you at work.]</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT ========== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title" tabindex="-1">
+      <div class="section-head">
+        <h2 class="section-title" id="contact-title" data-reveal>Let's make something.</h2>
+        <p class="section-text" data-reveal>Internships, collaborations, or just to say hi. I reply within two days.</p>
+      </div>
+
+      <div class="horizon horizon--divider" aria-hidden="true"></div>
+
+      <ul class="contact-rows">
+        <!-- PLACEHOLDER: your real email -->
+        <li data-reveal><a class="contact-row line-link" href="mailto:hello@example.com"><span class="contact-row__kind">Email</span><span class="contact-row__value">hello@example.com</span></a></li>
+        <!-- PLACEHOLDER: your LinkedIn URL -->
+        <li data-reveal><a class="contact-row line-link" href="https://www.linkedin.com/" rel="noopener"><span class="contact-row__kind">LinkedIn</span><span class="contact-row__value">in/aiyana</span></a></li>
+        <!-- PLACEHOLDER: add assets/Aiyana-Mehta-Resume.pdf -->
+        <li data-reveal id="resume" tabindex="-1"><a class="contact-row line-link" href="assets/Aiyana-Mehta-Resume.pdf"><span class="contact-row__kind">Resume</span><span class="contact-row__value">Download PDF</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__row">
+      <p>© 2026 Aiyana Mehta</p>
+      <p class="credits">About photo by Rosan Harmens, Unsplash licence (placeholder).</p>
+      <a class="line-link" href="#top">Back to the top</a>
+    </div>
+    <p class="footer-name" aria-hidden="true">Aiyana Mehta</p>
+  </footer>
+
+  <!-- Libraries: GSAP + ScrollTrigger (cdnjs), Lenis (jsDelivr) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

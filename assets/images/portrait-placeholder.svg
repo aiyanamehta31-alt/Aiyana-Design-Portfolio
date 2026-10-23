@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <rect width="800" height="800" fill="#B9B0A2"/>
+  <circle cx="400" cy="320" r="150" fill="#57514A"/>
+  <path d="M130 800 C 160 560, 640 560, 670 800 Z" fill="#57514A"/>
+  <text x="400" y="760" text-anchor="middle" font-family='Funnel Sans, system-ui, sans-serif' font-size="40" fill="#ECE8DF">Your portrait here</text>
+</svg>

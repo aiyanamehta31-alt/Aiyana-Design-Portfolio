@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <rect width="1600" height="1000" fill="#B9B0A2"/>
+  <path d="M200 760 C 420 760, 420 420, 640 420 S 900 640, 1100 520 S 1300 260, 1420 280" stroke="#1F1E1C" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="2 26"/>
+  <circle cx="200" cy="760" r="58" fill="#E6E2D9"/>
+  <circle cx="640" cy="420" r="72" fill="#57514A"/>
+  <circle cx="1100" cy="520" r="58" fill="#E6E2D9"/>
+  <circle cx="1420" cy="280" r="92" fill="#5B3D16"/>
+  <rect x="120" y="860" width="1360" height="56" fill="#E6E2D9"/>
+  <rect x="120" y="860" width="820" height="56" fill="#57514A"/>
+  <text x="80" y="140" font-family='Funnel Sans, system-ui, sans-serif' font-size="44" fill="#1F1E1C">Cover image placeholder</text>
+  <text x="80" y="196" font-family='Funnel Sans, system-ui, sans-serif' font-size="30" fill="#1F1E1C">Replace with project-2 cover (1600 × 1000)</text>
+</svg>

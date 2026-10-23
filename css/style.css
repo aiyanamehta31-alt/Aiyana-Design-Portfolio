@@ -1,0 +1,696 @@
+/* =====================================================================
+   AIYANA MEHTA · PORTFOLIO
+   Palette "Storm Light" · see DESIGN.md
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. TOKENS
+   Every colour, font, size, space and timing lives here.
+   --------------------------------------------------------------------- */
+:root {
+  /* Storm Light palette (from DESIGN.md, do not add colours) */
+  --c-silver-mist: #E6E2D9;   /* homepage start */
+  --c-storm-taupe: #B9B0A2;   /* homepage end (About, Contact) */
+  --c-deep-cloud:  #57514A;   /* reserved for case-study chapters */
+  --c-dark-sea:    #1C1C1B;   /* reserved for case-study chapters */
+  --c-ink-dark:    #1F1E1C;   /* all homepage text */
+  --c-ink-light:   #ECE8DF;   /* text on dark (case studies) */
+
+  /* The two in-between warm greys of the homepage journey
+     (one-third and two-thirds of the way from mist to taupe) */
+  --c-mist-shade:  #D7D1C7;
+  --c-pale-taupe:  #C8C1B4;
+
+  /* Amber glow. The brief's #8A5F24 and #6E4A1A fall just short of WCAG AA
+     (4.34 and 3.69), so these are nudged darker. The accent blends between
+     them with the background and never drops below 4.6:1 anywhere. */
+  --c-amber-light: #845B23;   /* on silver mist (4.64) */
+  --c-amber-deep:  #5B3D16;   /* on storm taupe (4.61) */
+  --c-amber-glow:  #E2B877;   /* soft amber, for drawn artwork only */
+
+  /* Line of light */
+  --c-light-edge:  #EDE8DA;
+  --c-light-core:  #FFFFFF;
+
+  /* Homepage colour journey: JS reads these four stops and blends
+     between them continuously as the page scrolls. */
+  --journey-1: var(--c-silver-mist);   /* hero */
+  --journey-2: var(--c-mist-shade);    /* top of the projects */
+  --journey-3: var(--c-pale-taupe);    /* end of the projects */
+  --journey-4: var(--c-storm-taupe);   /* About, Contact */
+
+  /* Live values (overwritten by JS while scrolling) */
+  --bg: var(--journey-1);
+  --ink: var(--c-ink-dark);
+  --accent: var(--c-amber-light);
+  --line-light: linear-gradient(90deg, rgba(132, 91, 35, 0), rgba(132, 91, 35, 0.5) 28%, var(--c-light-core) 50%, rgba(132, 91, 35, 0.5) 72%, rgba(132, 91, 35, 0)); /* taste-skill-ignore: line of light (DESIGN.md signature) */
+
+  /* Type */
+  --font-display: "Funnel Display", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Funnel Sans", "Avenir Next", system-ui, sans-serif;
+
+  --step-small: 0.875rem;                                        /* 14px */
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);       /* 17–19 */
+  --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);         /* 20–26 */
+  --step-head: clamp(2.125rem, 1.2rem + 4vw, 5.25rem);           /* 34–84 */
+  --step-mega: clamp(3.5rem, 14.5vw, 15rem);                     /* footer name */
+
+  --track-display: -0.035em;
+  --lead-display: 0.94;
+  --lead-body: 1.55;
+
+  /* Space */
+  --gutter: clamp(16px, 2.4vw, 32px);
+  --grid-gap: clamp(16px, 1.8vw, 28px);
+  --header-h: 64px;
+  --space-xs: 8px;
+  --space-s: 16px;
+  --space-m: 32px;
+  --space-l: clamp(48px, 6vw, 80px);
+  --space-xl: clamp(96px, 10vw, 160px);
+  --measure: 38rem;
+
+  /* Shape */
+  --radius-pill: 999px;
+  --line-thin: 2px;
+  --shadow-soft: 0 22px 44px -22px rgba(31, 30, 28, 0.38), 0 2px 8px rgba(31, 30, 28, 0.06);
+  --shadow-lift: 0 30px 56px -24px rgba(31, 30, 28, 0.42), 0 4px 12px rgba(31, 30, 28, 0.08);
+
+  /* Motion (JS reads the ones marked "js") */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 200ms;
+  --dur-base: 450ms;
+  --dur-slow: 900ms;
+  --dur-theme-fade: 600ms;      /* reduced-motion colour steps */
+  --reveal-rise: 28px;          /* js */
+  --reveal-duration: 0.9;       /* js, seconds */
+  --reveal-stagger: 0.1;        /* js, seconds between cards */
+  --cursor-lag: 0.18;           /* js, 0–1, lower = lazier bubble */
+  --cursor-squish: 0.45;        /* js, max stretch from speed */
+
+  /* Hero (black stage, its own type; the wheel's geometry lives in main.js) */
+  --hero-bg: #000000;
+  --hero-text: #FFFFFF;
+  --hero-muted: #8A8A8A;        /* 6.0:1 on black */
+  --hero-nav: #EDEDED;
+  --font-hero: "Geist", "Funnel Sans", system-ui, sans-serif;
+  --font-hero-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace; /* taste-skill-ignore: Geist Mono labels requested in DESIGN.md (hero) */
+  --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hero-zoom: 1.08;            /* picture zoom inside a hovered card */
+  --hero-zoom-ms: 600ms;
+  --hero-text-in-ms: 800ms;     /* headline + paragraph entrance */
+  --hero-text-delay: 300ms;
+  --hero-chrome-in-ms: 600ms;   /* nav + corner details entrance */
+}
+
+/* ---------------------------------------------------------------------
+   2. BASE
+   --------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 8px); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-body);
+  line-height: var(--lead-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+::selection { background: var(--accent); color: var(--c-silver-mist); }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+[tabindex="-1"]:focus { outline: none; }
+
+.skip-link {
+  position: fixed;
+  left: var(--gutter);
+  top: 12px;
+  z-index: 200;
+  padding: 12px 20px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus-visible { transform: none; }
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Reduced motion: the background changes in steps, with a short fade */
+html.theme-fade body,
+html.theme-fade .site-header {
+  transition: background-color var(--dur-theme-fade) ease;
+}
+
+/* Reveal-on-scroll start state (only when motion is allowed and JS runs) */
+html.motion-ok [data-reveal],
+html.motion-ok [data-card] { opacity: 0; }
+
+/* ---------------------------------------------------------------------
+   3. SHARED PIECES
+   --------------------------------------------------------------------- */
+
+/* The line of light: soft silver-amber, for horizons and dividers */
+.horizon {
+  height: var(--line-thin);
+  background: var(--line-light);
+  pointer-events: none;
+}
+
+.line-link {
+  position: relative;
+  text-decoration: none;
+  padding-bottom: 3px;
+  transition: color var(--dur-fast) ease;
+}
+.line-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--line-thin);
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.line-link:hover::after,
+.line-link:focus-visible::after,
+.line-link[aria-current="true"]::after { transform: scaleX(1); }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--step-head);
+  font-weight: 700;
+  letter-spacing: var(--track-display);
+  line-height: var(--lead-display);
+  max-width: 13ch;
+  text-wrap: balance;
+}
+.section-text { max-width: var(--measure); }
+
+/* ---------------------------------------------------------------------
+   4. TOP BAR
+   --------------------------------------------------------------------- */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  padding: 0 var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+}
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-body);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: clamp(14px, 2.4vw, 36px); }
+
+/* ---------------------------------------------------------------------
+   5. HERO
+   Layers, back to front: wheel cards (z-index 0-100 by depth), centre text
+   (200), bar and corner details (250-300). Card positions are set by JS.
+   --------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* taste-skill-ignore: fallback; 100svh follows */
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--hero-bg);
+  color: var(--hero-text);
+  font-family: var(--font-hero);
+}
+.hero :focus-visible { outline-color: var(--hero-text); }
+
+/* Top bar */
+.hero-bar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 300;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 34px 32px;
+}
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--hero-text);
+  text-decoration: none;
+}
+.hero-brand__mark { width: 28px; height: 28px; flex: none; }
+.hero-brand__text {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.hero-brand__role { color: var(--hero-muted); }
+
+.hero-nav { display: flex; line-height: 1; }
+.hero-nav__right { display: flex; gap: 36px; }
+.hero-nav__right li { display: flex; }
+.hero-nav__link {
+  position: relative;
+  display: inline-block;
+  padding: 3px 0 4px;
+  font-family: var(--font-hero-mono); /* taste-skill-ignore: Geist Mono labels requested in DESIGN.md (hero) */
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--hero-nav);
+  text-decoration: none;
+  transition: color var(--dur-fast) ease;
+}
+.hero-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px; /* taste-skill-ignore: hover underline requested in DESIGN.md (hero nav) */
+  background: var(--hero-text);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 400ms var(--hero-ease);
+}
+.hero-nav__link.hero-nav__work { position: absolute; left: 50%; top: 34px; transform: translateX(-50%); }
+.hero-nav__link:hover,
+.hero-nav__link:focus-visible { color: var(--hero-text); }
+.hero-nav__link:hover::after,
+.hero-nav__link:focus-visible::after { transform: scaleX(1); }
+
+.hero-menu { display: none; }
+.hero-menu__panel[hidden] { display: none; }
+
+/* The wheel */
+.hero-wheel {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.wheel-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  background: #111111;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  cursor: pointer;
+}
+.wheel-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--hero-zoom-ms) var(--hero-ease);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .wheel-card:hover img { transform: scale(var(--hero-zoom)); }
+}
+/* Darkens the card like filter: brightness(), but on the GPU (opacity only) */
+.wheel-card__shade {
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  pointer-events: none;
+}
+.wheel-card__label {
+  position: absolute;
+  left: 4%;
+  bottom: 6%;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-hero-mono); /* taste-skill-ignore: Geist Mono labels requested in DESIGN.md (hero) */
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* Centre text: vertical centre at 69% of the hero */
+.hero-copy {
+  position: absolute;
+  left: 50%;
+  top: 69%;
+  z-index: 200;
+  width: min(90%, 560px);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.hero-copy__title {
+  font-size: clamp(20px, 1.6vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--hero-text);
+}
+.hero-copy__text {
+  max-width: 380px;
+  margin: 14px auto 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--hero-muted);
+  text-wrap: balance;
+}
+
+/* Corner details */
+.hero-talk {
+  position: absolute;
+  left: 32px;
+  bottom: 32px;
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-hero-mono); /* taste-skill-ignore: Geist Mono labels requested in DESIGN.md (hero) */
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  color: var(--hero-muted);
+}
+.hero-talk__label { text-transform: uppercase; }
+.hero-talk__email { color: inherit; text-decoration: none; transition: color var(--dur-fast) ease; }
+.hero-talk__email:hover, .hero-talk__email:focus-visible { color: var(--hero-text); }
+.hero-explore {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--hero-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-fast) ease;
+}
+.hero-explore:hover, .hero-explore:focus-visible { color: var(--hero-text); }
+.hero-explore__icon { width: 14px; height: 14px; flex: none; }
+
+/* Entrance (motion allowed only; the cards' entrance is in main.js) */
+html.motion-ok .hero-copy__title,
+html.motion-ok .hero-copy__text {
+  animation: hero-rise var(--hero-text-in-ms) var(--hero-ease) var(--hero-text-delay) both;
+}
+html.motion-ok .hero-bar,
+html.motion-ok .hero-talk,
+html.motion-ok .hero-explore {
+  animation: hero-fade var(--hero-chrome-in-ms) var(--hero-ease) both;
+}
+@keyframes hero-rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes hero-fade { from { opacity: 0; } }
+
+/* The light top bar for the rest of the page stays out of the way over the hero */
+html.js .site-header.is-tucked {
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform var(--dur-base) var(--ease-out), visibility 0s linear var(--dur-base), background-color var(--dur-theme-fade) ease;
+}
+html.js .site-header {
+  transition: transform var(--dur-base) var(--ease-out), visibility 0s, background-color var(--dur-theme-fade) ease;
+}
+
+/* ---------------------------------------------------------------------
+   6. SECTIONS
+   --------------------------------------------------------------------- */
+.section { position: relative; padding: var(--space-xl) var(--gutter); }
+.section-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: end;
+  margin-bottom: var(--space-l);
+}
+.section-head .section-title { grid-column: 1 / 7; }
+.section-head .section-text { grid-column: 7 / 12; }
+
+/* --- Project card (reusable component) ----------------------------- */
+.work { padding-top: var(--space-l); }
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l) var(--grid-gap);
+}
+.project-card {
+  position: relative;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.project-card__media {
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--c-storm-taupe);
+  box-shadow: var(--shadow-soft); /* taste-skill-ignore: soft lift requested in DESIGN.md */
+  transition: box-shadow var(--dur-base) var(--ease-out);
+}
+.project-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.project-card:hover,
+.project-card:focus-within { transform: translateY(-6px); }
+.project-card:hover .project-card__media,
+.project-card:focus-within .project-card__media { box-shadow: var(--shadow-lift); } /* taste-skill-ignore: lift on hover */
+.project-card:hover .project-card__media img { transform: scale(1.05); }
+.project-card__body { padding-top: 18px; }
+.project-card__title {
+  font-family: var(--font-display);
+  font-size: var(--step-lead);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.project-card__title a { text-decoration: none; }
+.project-card__title a::after { content: ""; position: absolute; inset: 0; }
+.project-card__title a:focus-visible { outline: none; }
+.project-card:has(a:focus-visible) { outline: 3px solid var(--accent); outline-offset: 8px; }
+.project-card__desc { margin-top: 6px; max-width: 46ch; }
+.project-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-s);
+  margin-top: 10px;
+  font-size: var(--step-small);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* --- About --------------------------------------------------------- */
+.about {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: start;
+}
+.about-side { grid-column: 1 / 5; }
+.facts { margin-top: var(--space-m); display: grid; gap: 6px; font-weight: 600; }
+.about-text { grid-column: 5 / 13; }
+.bio { font-size: var(--step-lead); line-height: 1.35; max-width: 34em; }
+.bio + .bio { margin-top: 1.2em; }
+.bio__portrait {
+  float: left;
+  width: 5.2em;
+  height: 5.2em;
+  margin: 0.2em 0.6em 0.2em 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.about-photo { margin-top: var(--space-l); }
+.about-photo img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.about-photo figcaption { margin-top: 10px; font-size: var(--step-small); }
+
+/* --- Contact ------------------------------------------------------- */
+.contact { padding-top: var(--space-l); padding-bottom: var(--space-l); }
+.horizon--divider { margin-bottom: var(--space-m); }
+.contact-rows { display: grid; }
+.contact-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, 2fr) 10fr;
+  align-items: baseline;
+  column-gap: var(--grid-gap);
+  padding-block: clamp(14px, 2vw, 26px);
+}
+.contact-row__kind { font-weight: 600; }
+.contact-row__value {
+  font-family: var(--font-display);
+  font-size: var(--step-head);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+  line-height: 1;
+  overflow-wrap: anywhere;
+  transition: color var(--dur-fast) ease, transform var(--dur-base) var(--ease-out);
+}
+.contact-row:hover .contact-row__value,
+.contact-row:focus-visible .contact-row__value { color: var(--accent); transform: translateX(10px); }
+
+/* --- Footer -------------------------------------------------------- */
+.site-footer { overflow: hidden; padding: var(--space-l) var(--gutter) 0; }
+.site-footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-s) var(--space-m);
+  font-size: var(--step-small);
+}
+.footer-name {
+  margin-top: var(--space-m);
+  font-family: var(--font-display);
+  font-size: var(--step-mega);
+  font-weight: 800;
+  letter-spacing: var(--track-display);
+  line-height: 0.8;
+  white-space: nowrap;
+  transform: translateY(18%);
+  margin-left: -0.04em;
+}
+
+/* ---------------------------------------------------------------------
+   7. CUSTOM CURSOR: bubble → bullseye
+   --------------------------------------------------------------------- */
+.cursor { display: none; }
+html.has-cursor .cursor {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) ease;
+}
+html.has-cursor,
+html.has-cursor * { cursor: none !important; }
+.cursor.is-hidden { opacity: 0; }
+.cursor__body { position: absolute; width: 52px; height: 52px; margin: -26px 0 0 -26px; }
+.cursor__bubble {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: color-mix(in srgb, var(--accent) 40%, transparent);
+  transform: scale(0.654); /* 34px of 52px */
+  transition: transform var(--dur-base) var(--ease-out), background-color var(--dur-base) ease, border-color var(--dur-base) ease;
+}
+.cursor__dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transform: scale(0.2);
+  transition: opacity var(--dur-fast) ease, transform var(--dur-base) var(--ease-out);
+}
+.cursor.is-target .cursor__bubble { transform: scale(1); background: transparent; border-color: var(--accent); }
+.cursor.is-target .cursor__dot { opacity: 1; transform: scale(1); }
+.cursor.is-down .cursor__bubble { transform: scale(0.85); }
+
+/* ---------------------------------------------------------------------
+   8. RESPONSIVE
+   --------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 639px) {
+  .hero-bar { padding: 24px 20px; }
+  .hero-nav { display: none; }
+  .hero-menu {
+    display: block;
+    min-height: 44px;
+    padding: 0 2px;
+    border: 0;
+    background: none;
+    color: var(--hero-nav);
+    font-family: var(--font-hero-mono); /* taste-skill-ignore: Geist Mono labels requested in DESIGN.md (hero) */
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .hero-menu__panel {
+    position: absolute;
+    top: 72px;
+    right: 20px;
+    display: grid;
+    gap: 14px;
+    min-width: 160px;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: #111111;
+  }
+  .hero-copy__title { font-size: clamp(18px, 5vw, 22px); }
+  .hero-talk { left: 20px; bottom: 24px; }
+  .hero-explore { bottom: 88px; }
+}
+
+@media (max-width: 760px) {
+  :root { --header-h: 56px; }
+  .nav-links { gap: 14px; }
+  .wordmark__last { display: none; }
+
+  .section-head { display: block; }
+  .section-head .section-text { margin-top: var(--space-s); }
+  .work-grid { grid-template-columns: 1fr; }
+
+  .about { display: block; }
+  .about-text { margin-top: var(--space-m); }
+
+  .contact-row { display: flex; flex-direction: column-reverse; gap: 4px; }
+}
+
+/* ---------------------------------------------------------------------
+   9. REDUCED MOTION
+   No smoothing, rotation or scrubbing. The background changes in steps.
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .project-card,
+  .project-card:hover,
+  .project-card:focus-within { transform: none; }
+  .project-card__media img,
+  .project-card:hover .project-card__media img { transform: none; }
+  .contact-row:hover .contact-row__value { transform: none; }
+}

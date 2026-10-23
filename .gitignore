@@ -1,0 +1,11 @@
+# Design-check output (screenshots, reports), regenerated on demand
+.taste-skill/
+
+# Local backup of the very first draft
+_previous-version/
+
+# macOS
+.DS_Store
+
+# Reference screenshots of a third-party template (kept locally, not published)
+references/

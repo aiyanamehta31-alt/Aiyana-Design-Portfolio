@@ -9,3 +9,10 @@ _previous-version/
 
 # Reference screenshots of a third-party template (kept locally, not published)
 references/
+
+# Local design tooling (Impeccable skill)
+.claude/
+
+# Raw project source files (PDF exports, originals). The site uses the
+# optimised copies in assets/images/projects/ instead.
+content/

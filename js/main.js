@@ -58,6 +58,7 @@ var WHEEL_IMAGES = [
   var lenis = null;
   if (!reduceMotion && finePointer && window.Lenis) {
     lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
+    window.portfolio = { lenis: lenis };   // js/case-study.js pauses it while a project is open
     if (hasGsap) {
       lenis.on('scroll', window.ScrollTrigger.update);
       window.gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
@@ -75,6 +76,8 @@ var WHEEL_IMAGES = [
 
     // PLACEHOLDER links (case studies not built yet) do nothing for now.
     if (hash === '#') { event.preventDefault(); return; }
+    // Case studies (#project/<slug>) are opened by js/case-study.js.
+    if (hash.indexOf('#project/') === 0) return;
 
     var target = document.querySelector(hash);
     if (!target) return;

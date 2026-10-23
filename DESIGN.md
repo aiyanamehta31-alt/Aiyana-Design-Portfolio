@@ -1,7 +1,7 @@
 # DESIGN.md — Aiyana's portfolio brief
 
 > The source of truth for this portfolio. Refer back to this in future prompts.
-> Last updated 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames. The sections below the hero are unchanged.
+> Last updated 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
 
 I'm Aiyana, a design student building my portfolio for summer design internships at companies like Google, Microsoft, and design agencies. It must feel creative, personal, and professional, not like a generic AI-made template.
 
@@ -21,7 +21,7 @@ I'm Aiyana, a design student building my portfolio for summer design internships
 
 - Plain HTML, CSS, and JavaScript. No framework, no build step (it will go on GitHub Pages later).
 - GSAP with ScrollTrigger (CDN) for scroll animation, Lenis (CDN) for smooth scrolling.
-- Files: `index.html`, `css/style.css`, `js/main.js`, `assets/images/`, `references/`.
+- Files: `index.html`, `css/style.css`, `js/main.js`, `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `assets/images/`, `content/` (original project files), `references/`.
 - All colours, fonts, spacing, and animation timings are CSS variables at the top of `style.css`.
 - Animate with GPU-friendly properties only: translate, rotate, scale, opacity.
 
@@ -129,32 +129,39 @@ Built to match the reference frames. The code lives in `index.html` (section `.h
 ### Section 2: projects grid
 
 - A clean grid of 6 project cards (3 columns on desktop, 2 on tablets, 1 on phones). Each has a cover, project name, one-line description, category and year.
-- These cards **are** clickable; each will link to its case study (for now `#`).
+- These cards **are** clickable: Nexo opens its case study (`#project/nexo`); the other five are still placeholders (`#`).
 - Hover: the cover zooms slightly inside its frame, the card lifts a little, and the cursor becomes the focus ring.
 - Cards fade and rise in one after another as they scroll into view.
-- Keep it simple for now. A reference for the final grid design is coming, and a glassmorphism style will be added later.
+- Keep it simple for now. A reference for the final grid design is coming.
 
 ### Section 3: About and Contact
 
 - The About (portrait placeholder, bio, three facts, a photo) and Contact (email, LinkedIn, resume) sections, restyled for the light page, on storm taupe.
 - The footer closes with my name set very large, cropped by the bottom edge.
 
-## Case studies (later): the four chapters
+## Case studies: the glass sheet
 
-The chapter idea moves off the homepage and into **each project case study**. A case study opens on the outcome, then goes back and plays the journey forward, with the background shifting chapter by chapter:
+Built 2026-10-23. First project: **Nexo** (`projects/nexo.js`). Code: `css/case-study.css` (tokens at its top), `js/case-study.js` (one template for every project).
 
-1. **The final product** on silver mist `#E6E2D9`
-2. **Back to the start** on storm taupe `#B9B0A2` (messy research, sticky notes)
-3. **Figuring it out** on deep cloud `#57514A` (the process: Discover → Define → Iterate → Test)
-4. **Where I landed** on dark sea `#1C1C1B` (the light breaks through: the line of light at full brightness)
+**Adding a project:** write `projects/<slug>.js` (copy `nexo.js`), put WebP images (max 2400px wide) in `assets/images/projects/<slug>/`, and give a homepage card `href="#project/<slug>" data-project="<slug>"`. No layout code. Source files stay untouched in `content/<slug>/`.
 
-Text and accent switch to the dark-ground values in chapters 3 and 4.
+**Structure (Double Diamond, minimal):** cover → the challenge (with the "How might we" set large) → Discover (method chips, photos, an insight bento) → Define (journey map full width, problem statement whose words light up on scroll) → Develop (before → after comparisons) → Deliver (final renders, a full-bleed video) → Outcome ("from → to" shifts, learnings) → next project and "Back to all work". Each section: a small phase label, a heading of max 8 words, max 2 sentences, then visuals. Never invent findings, numbers or quotes; mark gaps `[PLACEHOLDER: …]` (shown with a dashed outline).
+
+**Opening:** the card grows into a frosted glass sheet (FLIP, 700ms, `cubic-bezier(0.22, 1, 0.36, 1)`) while the homepage blurs (14px) and dims (`rgba(28, 28, 27, 0.35)`). 20px margin on desktop, full screen on phones. URL `#project/<slug>`; back button, ×, Esc or clicking outside closes it back into the card.
+
+**Glass and colour journey:** the sheet's tint blends with scroll: cover and challenge on silver mist, Discover on storm taupe, Define and Develop on deep cloud, Deliver and Outcome on dark sea. To keep WCAG AA on glass over the dimmed homepage, the tint opacity rises on the darker tones (mist 0.72, taupe 0.82, cloud 0.90, sea 0.72), and the amber per tone is `#5B3D16` (mist), `#4A3112` (taupe), `#F0CF9C` (cloud; `#E2B877` is only 3.8:1 there) and `#E2B877` (sea). Film grain at 4%, 1px edge `rgba(255,255,255,0.18)`, top highlight. Text flips light/dark at the midpoint of each blend.
+
+**Cover:** the project name set huge as a stage, with the final render (a transparent cutout) standing on it, as in the Nexo deck. Its letters rise one by one and the render drifts slower than the scroll.
+
+**Inside:** a slim glass phase bar (name, Discover · Define · Develop · Deliver with the current one in amber, ×; a dropdown on phones) and a 3px amber progress line. Section heads rotate through three compositions (split, stack, offset) so neighbours never match. Images sit in a glass tray (6px shell, 12px inner radius) and open in a glass lightbox (arrows, keys, Esc).
+
+**Fallbacks:** no `backdrop-filter` or `prefers-reduced-transparency` → solid tones. `prefers-reduced-motion` → fades instead of the grow, tones change in steps, no scrubbing, parallax or reveals.
 
 ## Signature element: the line of light
 
 - A thin horizontal line, like light on water: soft silver-amber on the light homepage (the divider above Contact). The black hero does not use it for now.
 - Link underlines grow in amber from the left on hover and focus.
-- In case studies it grows into a bright silver line in the final chapter, as if the light breaks through.
+- In case studies it draws across the top of Deliver, as if the light breaks through.
 
 ## Cursor: bubble to bullseye (switched off for now)
 

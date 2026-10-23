@@ -13,7 +13,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/case-study.css?v=3" />
 
   <!-- Hide reveal-on-scroll elements only when motion is allowed.
        js/main.js removes this class straight away if GSAP failed to load. -->
@@ -122,18 +123,19 @@
       <!--
         REUSABLE PROJECT CARD
         Copy one <article class="project-card"> per project and keep the class names.
-        PLACEHOLDER: point each href at its case study page when it exists.
+        A finished case study links with href="#project/<slug>" data-project="<slug>"
+        and opens from projects/<slug>.js. PLACEHOLDER: the other five are still "#".
       -->
       <div class="work-grid">
         <article class="project-card" data-card>
           <figure class="project-card__media">
-            <img src="assets/images/project-1-cover.svg" width="1600" height="1000" loading="lazy"
-                 alt="Placeholder cover: a phone screen with a checkout flow and a path drawn across it." />
+            <img src="assets/images/projects/nexo/card-cover.webp" width="905" height="566" loading="lazy"
+                 alt="Three Nexo desk companions in orange, black and blue, each with a round face showing a blue blob." />
           </figure>
           <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#">Project name one</a></h3>
-            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
-            <p class="project-card__meta"><span>UX case study</span><span>2026</span></p>
+            <h3 class="project-card__title"><a href="#project/nexo" data-project="nexo">Nexo</a></h3>
+            <p class="project-card__desc">A desk companion, smart collar and app that make room for shared play between dogs and owners.</p>
+            <p class="project-card__meta"><span>Design thinking</span><span>2025</span></p>
           </div>
         </article>
 
@@ -262,6 +264,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=3" defer></script>
+  <!-- Case studies: the glass sheet; each project's data loads on demand from projects/<slug>.js -->
+  <script src="js/case-study.js?v=3" defer></script>
 </body>
 </html>

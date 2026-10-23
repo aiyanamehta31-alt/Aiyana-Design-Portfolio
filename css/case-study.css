@@ -1,0 +1,821 @@
+/* =====================================================================
+   CASE STUDY · glass sheet, phase bar, lightbox
+   Shared by every project. Content comes from projects/<slug>.js and is
+   rendered by js/case-study.js. Glass, the 1px glass edge and the phase
+   labels are requested in the case-study brief (see DESIGN.md).
+   taste-skill-ignore: glassmorphism requested by the owner
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. TOKENS
+   --------------------------------------------------------------------- */
+:root {
+  /* Glass tints, one per tone (RGB triplets so the alpha can vary).
+     The alpha is raised on the darker tones so text keeps WCAG AA over
+     the blurred, dimmed homepage (checked against a grey and a near-white
+     backdrop): mist 0.72, taupe 0.82, deep cloud 0.90, dark sea 0.72. */
+  --cs-mist:  230, 226, 217;   /* #E6E2D9 */
+  --cs-taupe: 185, 176, 162;   /* #B9B0A2 */
+  --cs-cloud: 87, 81, 74;      /* #57514A */
+  --cs-sea:   28, 28, 27;      /* #1C1C1B */
+  --cs-alpha-mist: 0.72;
+  --cs-alpha-taupe: 0.82;
+  --cs-alpha-cloud: 0.90;
+  --cs-alpha-sea: 0.72;
+
+  /* Ink and amber per tone (contrast on the glass, grey backdrop):
+     mist   ink 10.4, amber #5B3D16 6.2
+     taupe  ink 7.3,  amber #4A3112 5.3
+     cloud  ink 5.8,  amber #F0CF9C 4.8 (#E2B877 is only 3.8 here)
+     sea    ink 8.9,  amber #E2B877 5.9 */
+  --cs-ink-mist: #1F1E1C;  --cs-amber-mist: #5B3D16;
+  --cs-ink-taupe: #1F1E1C; --cs-amber-taupe: #4A3112;
+  --cs-ink-cloud: #ECE8DF; --cs-amber-cloud: #F0CF9C;
+  --cs-ink-sea: #ECE8DF;   --cs-amber-sea: #E2B877;
+
+  /* Behind the sheet: the homepage blurs and dims */
+  --cs-backdrop-blur: 14px;
+  --cs-backdrop-wash: rgba(28, 28, 27, 0.35);
+  /* The sheet */
+  --cs-sheet-blur: 28px;
+  --cs-sheet-saturate: 140%;
+  --cs-sheet-margin: 20px;
+  --cs-sheet-radius: 24px;
+  --cs-edge: rgba(255, 255, 255, 0.18);
+  --cs-highlight: rgba(255, 255, 255, 0.32);
+  --cs-grain-opacity: 0.04;
+  /* Small panels inside the sheet */
+  --cs-panel-blur: 12px;
+  --cs-bar-h: 60px;
+
+  /* Motion */
+  --cs-flip-ms: 700ms;
+  --cs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cs-fade-ms: 320ms;
+  --cs-tone-fade-ms: 600ms;   /* reduced motion: tones change in steps */
+
+  /* Layout inside the sheet */
+  --cs-gutter: clamp(20px, 4vw, 64px);
+  --cs-max: 1240px;
+  --cs-gap: clamp(12px, 1.6vw, 24px);
+  --cs-section-gap: clamp(112px, 12vw, 200px);
+  --cs-media-radius: 12px;
+
+  /* Live values, written by js/case-study.js as the visitor scrolls */
+  --cs-tint: var(--cs-mist);
+  --cs-alpha: var(--cs-alpha-mist);
+  --cs-ink: var(--cs-ink-mist);
+  --cs-amber: var(--cs-amber-mist);
+}
+
+/* Homepage behind an open sheet: no scrolling underneath */
+html.cs-open,
+html.cs-open body { overflow: hidden; }
+
+/* ---------------------------------------------------------------------
+   2. LAYER: backdrop + sheet
+   --------------------------------------------------------------------- */
+.cs-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+}
+.cs-layer[hidden] { display: none; }
+
+.cs-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--cs-backdrop-wash);
+  -webkit-backdrop-filter: blur(var(--cs-backdrop-blur));
+  backdrop-filter: blur(var(--cs-backdrop-blur));
+}
+
+.cs-sheet {
+  position: absolute;
+  inset: var(--cs-sheet-margin);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--cs-edge); /* taste-skill-ignore: glass edge requested */
+  border-radius: var(--cs-sheet-radius);
+  background: rgba(var(--cs-tint), var(--cs-alpha));
+  -webkit-backdrop-filter: blur(var(--cs-sheet-blur)) saturate(var(--cs-sheet-saturate));
+  backdrop-filter: blur(var(--cs-sheet-blur)) saturate(var(--cs-sheet-saturate));
+  box-shadow: inset 0 1px 0 var(--cs-highlight); /* taste-skill-ignore: inner highlight of the glass */
+  color: var(--cs-ink);
+  transform-origin: 0 0;
+  transition: color var(--cs-fade-ms) ease;
+  outline: none;
+}
+/* Film grain: an SVG noise tile, under the content */
+.cs-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--cs-grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.cs-scroll {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-top: var(--cs-bar-h);
+  scroll-padding-top: calc(var(--cs-bar-h) + 16px);
+}
+.cs-content { transition: opacity var(--cs-fade-ms) ease; }
+
+/* Scroll progress: a thin amber line along the top edge */
+.cs-progress {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 3;
+  height: 3px;
+  pointer-events: none;
+}
+.cs-progress span {
+  display: block;
+  height: 100%;
+  background: var(--cs-amber);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---------------------------------------------------------------------
+   3. PHASE BAR (glass, pinned to the top of the sheet)
+   --------------------------------------------------------------------- */
+.cs-bar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  height: var(--cs-bar-h);
+  padding: 0 12px 0 var(--cs-gutter);
+  background: rgba(var(--cs-tint), 0.8);
+  -webkit-backdrop-filter: blur(var(--cs-panel-blur));
+  backdrop-filter: blur(var(--cs-panel-blur));
+  box-shadow: inset 0 -1px 0 var(--cs-edge); /* taste-skill-ignore: glass edge requested */
+  color: var(--cs-ink);
+}
+.cs-bar__name {
+  justify-self: start;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.cs-phases { display: flex; align-items: center; gap: 4px; }
+.cs-phases a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+.cs-phases a:hover { background: rgba(255, 255, 255, 0.14); }
+.cs-phases a[aria-current="step"] { color: var(--cs-amber); }
+.cs-phases__dot { opacity: 0.6; user-select: none; }
+
+.cs-phase-select { display: none; }
+
+.cs-close {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) ease, transform var(--dur-fast) var(--cs-ease);
+}
+.cs-close:hover { background: rgba(255, 255, 255, 0.28); }
+.cs-close:active { transform: scale(0.92); }
+.cs-close svg { width: 18px; height: 18px; }
+
+.cs-sheet :focus-visible,
+.cs-lightbox :focus-visible { outline: 3px solid var(--cs-amber); outline-offset: 3px; }
+
+/* ---------------------------------------------------------------------
+   4. CONTENT
+   --------------------------------------------------------------------- */
+.cs-wrap {
+  width: min(100%, calc(var(--cs-max) + var(--cs-gutter) * 2));
+  margin: 0 auto;
+  padding: 0 var(--cs-gutter);
+}
+.cs-section { padding-top: var(--cs-section-gap); }
+.cs-section--cover { padding-top: 0; }
+.cs-section > .cs-wrap > * + * { margin-top: clamp(40px, 5vw, 72px); }
+.cs-section > * + .cs-wrap > :first-child,
+.cs-section > .cs-wrap + .cs-bleed { margin-top: clamp(40px, 5vw, 72px); }
+
+/* Browser surfaces inside the sheet carry the palette too */
+.cs-scroll { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--cs-ink) 35%, transparent) transparent; }
+.cs-scroll::-webkit-scrollbar { width: 10px; }
+.cs-scroll::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 10px; background: color-mix(in srgb, var(--cs-ink) 35%, transparent) padding-box; }
+.cs-sheet ::selection, .cs-lightbox ::selection { background: var(--cs-amber); color: rgb(var(--cs-tint)); }
+
+/* The card a sheet grew out of hides while the sheet is open */
+.project-card .project-card__media { transition: box-shadow var(--dur-base) var(--ease-out), opacity 500ms ease; }
+.project-card.is-cs-source .project-card__media { opacity: 0; transition-duration: 0ms; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Placeholder text: clearly marked */
+.cs-ph {
+  background: transparent;
+  color: inherit;
+  outline: 2px dashed currentColor;
+  outline-offset: 1px;
+  border-radius: 4px;
+  padding: 0 0.25em;
+  font-style: normal;
+}
+
+/* --- Cover: the name is the stage, the result stands on it ----------
+   (taken from the project's own deck, where the renders sit on the
+   NEXO wordmark) */
+.cs-cover {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--cs-gap);
+  padding-top: clamp(20px, 3vw, 40px);
+}
+.cs-title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 25vw, 23rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 0.8;
+  margin-left: -0.05em;
+  white-space: nowrap;
+}
+.cs-char { display: inline-block; }
+.cs-cover__media {
+  grid-column: 6 / 13;
+  grid-row: 1 / 3;
+  align-self: start;
+  margin-top: clamp(90px, 13vw, 210px);
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+.cs-cover__media img { width: 100%; height: auto; will-change: transform; }
+.cs-cover:not(.is-cutout) .cs-cover__media img { border-radius: var(--cs-media-radius); }
+.cs-cover__meta {
+  grid-column: 1 / 6;
+  grid-row: 2;
+  align-self: start;
+  padding: clamp(24px, 3vw, 44px) 0 clamp(8px, 2vw, 32px);
+}
+.cs-tagline {
+  max-width: 18ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 1.1rem + 1.6vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+.cs-outcome { margin-top: 18px; max-width: 34ch; font-size: var(--step-body); font-weight: 500; text-wrap: pretty; }
+.cs-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin-top: clamp(24px, 3vw, 40px);
+  padding: 20px 22px;
+}
+.cs-facts dt { font-size: var(--step-small); font-weight: 600; color: var(--cs-amber); }
+.cs-facts dd { margin: 2px 0 0; font-weight: 500; line-height: 1.35; }
+
+/* Small glass panels (facts, insight cards): a tray with a lit edge */
+.cs-glass {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(var(--cs-panel-blur));
+  backdrop-filter: blur(var(--cs-panel-blur));
+  box-shadow: inset 0 0 0 1px var(--cs-edge), inset 0 1px 0 var(--cs-highlight), 0 18px 40px -28px rgba(28, 28, 27, 0.45); /* taste-skill-ignore: glass edge + soft tinted lift */
+}
+.is-dark-tone .cs-glass { background: rgba(255, 255, 255, 0.07); }
+
+/* --- Section heads: three compositions, rotated ----------------------- */
+.cs-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px var(--cs-gap);
+  align-items: end;
+}
+.cs-label {
+  grid-column: 1 / -1;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--cs-amber);
+}
+.cs-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.3rem + 3.4vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.038em;
+  line-height: 0.96;
+  text-wrap: balance;
+  outline: none;
+}
+.cs-text { font-size: var(--step-body); line-height: 1.55; max-width: 36em; text-wrap: pretty; }
+/* split: heading left, text right on its baseline */
+.cs-head--split .cs-heading { grid-column: 1 / 8; }
+.cs-head--split .cs-text { grid-column: 8 / 13; }
+/* stack: a wide heading, the text tucked under its first half */
+.cs-head--stack .cs-heading { grid-column: 1 / 11; font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.5rem); }
+.cs-head--stack .cs-text { grid-column: 1 / 6; }
+/* offset: the whole head pulled to the right half of the grid */
+.cs-head--offset .cs-label,
+.cs-head--offset .cs-heading { grid-column: 5 / 13; }
+.cs-head--offset .cs-text { grid-column: 5 / 10; }
+
+/* How might we: set large, answering the heading from the right */
+.cs-hmw {
+  max-width: 22ch;
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 1.1rem + 2.6vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+.cs-hmw__lead { color: var(--cs-amber); }
+
+/* Method chips */
+.cs-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.cs-chips li {
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.26);
+  box-shadow: inset 0 0 0 1px var(--cs-edge); /* taste-skill-ignore: glass edge requested */
+  font-size: var(--step-small);
+  font-weight: 600;
+}
+.is-dark-tone .cs-chips li { background: rgba(255, 255, 255, 0.1); }
+
+/* Insights: a gapless bento, the first one leads */
+.cs-insights {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: var(--cs-gap);
+}
+.cs-insight { grid-column: 8 / 13; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: clamp(22px, 2.4vw, 34px); }
+.cs-insight--lead { grid-column: 1 / 8; grid-row: span 2; justify-content: flex-end; }
+.cs-insight p {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1rem + 1vw, 1.875rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.cs-insight--lead p { font-size: clamp(2rem, 1.2rem + 2.6vw, 3.5rem); line-height: 1; letter-spacing: -0.035em; max-width: 15ch; }
+.cs-insight span { font-size: var(--step-small); font-weight: 600; color: var(--cs-amber); }
+
+/* Problem statement: the words light up as it scrolls through */
+.cs-statement { max-width: 980px; }
+.cs-statement__label { font-size: 0.9375rem; font-weight: 700; color: var(--cs-amber); }
+.cs-statement__text {
+  margin-top: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.75rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+.cs-word { display: inline; }
+.cs-scrub.is-scrubbing .cs-word { opacity: 0.18; transition: opacity 120ms linear; }
+
+/* --- Images: a glass tray holding the picture ------------------------ */
+.cs-grid { display: grid; gap: var(--cs-gap); align-items: stretch; }
+.cs-grid--full { grid-template-columns: 1fr; }
+.cs-grid--pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cs-grid--trio { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+.cs-grid--trio .cs-fig:nth-child(2) { margin-top: clamp(28px, 5vw, 80px); }   /* staggered, like a contact sheet */
+.cs-grid--asym { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+
+.cs-fig { display: flex; flex-direction: column; min-width: 0; }
+.cs-zoom {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  border-radius: calc(var(--cs-media-radius) + 6px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 0 1px var(--cs-edge), inset 0 1px 0 var(--cs-highlight); /* taste-skill-ignore: glass tray edge */
+  color: #1F1E1C;
+  cursor: zoom-in;
+  transition: transform 500ms var(--cs-ease), background-color var(--dur-base) ease;
+}
+.is-dark-tone .cs-zoom { background: rgba(255, 255, 255, 0.08); }
+.cs-zoom:active { transform: scale(0.985); }
+.cs-zoom__core {
+  position: relative;
+  display: block;
+  flex: 1;
+  overflow: hidden;
+  border-radius: var(--cs-media-radius);
+  background: #FFFFFF;
+  aspect-ratio: var(--ratio, auto);
+}
+.cs-zoom__core.is-mist { background: rgb(var(--cs-mist)); }
+.cs-zoom__core img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 900ms var(--cs-ease);
+}
+.cs-zoom__core.is-contain img { object-fit: contain; }
+.cs-grid--full .cs-zoom__core { aspect-ratio: auto; }
+.cs-grid--full .cs-zoom__core img { height: auto; }
+/* The small half of an asymmetric pair fills the height of the large one */
+.cs-grid--asym .cs-fig:last-child .cs-zoom { flex: 1; }
+.cs-grid--asym .cs-fig:last-child .cs-zoom__core { min-height: 0; }
+.cs-grid--asym .cs-fig:last-child .cs-zoom__core img { position: absolute; inset: 0; }
+/* An "open larger" hint in the corner */
+.cs-zoom__hint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(28, 28, 27, 0.55);
+  color: #FFFFFF;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--dur-base) var(--cs-ease), transform var(--dur-base) var(--cs-ease);
+}
+.cs-zoom__hint svg { width: 16px; height: 16px; }
+.cs-zoom:hover .cs-zoom__hint,
+.cs-zoom:focus-visible .cs-zoom__hint { opacity: 1; transform: none; }
+@media (hover: none) { .cs-zoom__hint { opacity: 0.9; transform: none; } }
+@media (hover: hover) and (pointer: fine) {
+  .cs-zoom:hover .cs-zoom__core img { transform: scale(1.03); }
+  .cs-zoom:hover { background: rgba(255, 255, 255, 0.3); }
+  .is-dark-tone .cs-zoom:hover { background: rgba(255, 255, 255, 0.14); }
+}
+.cs-fig figcaption,
+.cs-caption { margin-top: 12px; padding-left: 6px; font-size: var(--step-small); font-weight: 500; line-height: 1.35; }
+
+/* Before / after */
+.cs-compare__pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--cs-gap);
+}
+.cs-compare__tag { display: block; margin: 0 0 10px 6px; font-size: var(--step-small); font-weight: 700; color: var(--cs-amber); }
+.cs-compare__arrow {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px var(--cs-edge); /* taste-skill-ignore: glass edge */
+  color: var(--cs-amber);
+}
+.cs-compare__arrow svg { width: 24px; height: 24px; }
+.cs-compare__note { margin-top: 20px; max-width: 46em; font-weight: 500; }
+
+/* Line of light: breaks through as the project lands */
+.cs-horizon {
+  height: 2px;
+  background: linear-gradient(90deg, rgba(226, 184, 119, 0), rgba(226, 184, 119, 0.7) 26%, #FFFFFF 50%, rgba(226, 184, 119, 0.7) 74%, rgba(226, 184, 119, 0)); /* taste-skill-ignore: line of light (DESIGN.md signature) */
+  transform-origin: 50% 50%;
+}
+
+/* Video: the one full-bleed moment */
+.cs-bleed { margin-left: 0; margin-right: 0; }
+.cs-video {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  color: #ECE8DF;
+  text-decoration: none;
+}
+.cs-video img { width: 100%; height: min(78vh, 820px); object-fit: cover; transition: transform 1200ms var(--cs-ease); }
+.cs-video__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(28, 28, 27, 0) 40%, rgba(28, 28, 27, 0.78)); } /* taste-skill-ignore: neutral scrim under text on a photo */
+.cs-video__body {
+  position: absolute;
+  left: var(--cs-gutter);
+  bottom: clamp(24px, 4vw, 56px);
+  display: grid;
+  gap: 8px;
+  max-width: 60%;
+}
+.cs-video__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.2rem + 3vw, 4.25rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+.cs-video__caption { font-size: var(--step-small); font-weight: 500; }
+.cs-video__play {
+  position: absolute;
+  right: var(--cs-gutter);
+  bottom: clamp(24px, 4vw, 56px);
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 8vw, 104px);
+  height: clamp(72px, 8vw, 104px);
+  border-radius: 50%;
+  background: rgba(28, 28, 27, 0.45);
+  -webkit-backdrop-filter: blur(var(--cs-panel-blur));
+  backdrop-filter: blur(var(--cs-panel-blur));
+  box-shadow: inset 0 0 0 1px var(--cs-edge); /* taste-skill-ignore: glass edge requested */
+  transition: transform 600ms var(--cs-ease);
+}
+.cs-video__play svg { width: 46%; height: 46%; color: var(--cs-amber-sea); }
+.cs-video:hover img { transform: scale(1.03); }
+.cs-video:hover .cs-video__play { transform: scale(1.08); }
+.cs-video:active .cs-video__play { transform: scale(0.96); }
+
+/* Shifts: from → to, set large */
+.cs-shifts__label { font-size: 0.9375rem; font-weight: 700; color: var(--cs-amber); }
+.cs-shifts ul { margin-top: 14px; display: grid; gap: clamp(10px, 1.4vw, 18px); }
+.cs-shifts li {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) auto minmax(0, 6fr);
+  align-items: baseline;
+  gap: clamp(14px, 2vw, 28px);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1rem + 2.8vw, 3.75rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.cs-shifts__from { opacity: 0.62; text-align: right; }   /* 0.62 of #ECE8DF on dark sea glass stays above 4.5:1 */
+.cs-shifts__arrow { display: inline-grid; color: var(--cs-amber); }
+.cs-shifts__arrow svg { width: 0.8em; height: 0.8em; }
+
+/* Outcome points */
+.cs-points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); max-width: 980px; }
+.cs-points h4 { font-family: var(--font-display); font-size: var(--step-lead); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.cs-points p { margin-top: 12px; font-size: var(--step-body); }
+
+/* Next project */
+.cs-section--next { padding-top: clamp(80px, 9vw, 140px); }
+.cs-next { padding-bottom: clamp(48px, 6vw, 88px); }
+.cs-next__link { display: block; color: inherit; text-decoration: none; }
+.cs-next__kicker { display: block; font-size: 0.9375rem; font-weight: 700; color: var(--cs-amber); }
+.cs-next__title {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 9vw, 8.5rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  transition: transform var(--dur-base) var(--cs-ease);
+}
+.cs-next__title--ph { font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem); }
+.cs-next__link:hover .cs-next__title,
+.cs-next__link:focus-visible .cs-next__title { transform: translateX(14px); }
+.cs-next__back { display: inline-block; margin-top: clamp(28px, 3vw, 44px); font-weight: 600; color: inherit; }
+.cs-next__back::after { background: var(--cs-amber); }
+
+/* Toast: a project that failed to load */
+.cs-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 700;
+  max-width: min(92vw, 440px);
+  padding: 14px 20px;
+  border-radius: 14px;
+  background: rgba(28, 28, 27, 0.92);
+  color: #ECE8DF;
+  font-weight: 500;
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--cs-ease), transform var(--dur-base) var(--cs-ease);
+}
+.cs-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* --- Entrances inside the sheet (motion only) ------------------------ */
+html.cs-motion .cs-reveal { opacity: 0; transform: translateY(28px); }
+html.cs-motion .cs-reveal.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--cs-ease), transform 900ms var(--cs-ease);
+  transition-delay: var(--d, 0ms);
+}
+/* Pictures open from a slightly smaller window and settle */
+html.cs-motion .cs-fig.cs-reveal .cs-zoom__core { clip-path: inset(6% 6% 6% 6% round var(--cs-media-radius)); }
+html.cs-motion .cs-fig.cs-reveal .cs-zoom__core img { transform: scale(1.1); }
+html.cs-motion .cs-fig.cs-reveal.is-in .cs-zoom__core {
+  clip-path: inset(0 0 0 0 round var(--cs-media-radius));
+  transition: clip-path 1100ms var(--cs-ease) var(--d, 0ms);
+}
+html.cs-motion .cs-fig.cs-reveal.is-in .cs-zoom__core img { transform: none; transition: transform 1400ms var(--cs-ease) var(--d, 0ms); }
+/* The cover: letters rise one by one, the product settles onto them */
+html.cs-motion .cs-title.cs-reveal { opacity: 1; transform: none; }
+html.cs-motion .cs-title .cs-char { opacity: 0; transform: translateY(0.32em); }
+html.cs-motion .cs-title.is-in .cs-char {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--cs-ease), transform 1100ms var(--cs-ease);
+  transition-delay: calc(380ms + var(--i) * 70ms);
+}
+html.cs-motion .cs-cover__media.cs-reveal { transform: translateY(64px) scale(0.96); }
+html.cs-motion .cs-cover__media.cs-reveal.is-in { transform: none; transition: opacity 1000ms var(--cs-ease) 520ms, transform 1400ms var(--cs-ease) 520ms; }
+html.cs-motion .cs-horizon.cs-reveal { transform: scaleX(0); }
+html.cs-motion .cs-horizon.cs-reveal.is-in { transform: scaleX(1); transition-duration: 1600ms; }
+
+
+/* ---------------------------------------------------------------------
+   5. LIGHTBOX
+   --------------------------------------------------------------------- */
+.cs-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 40px);
+}
+.cs-lightbox[hidden] { display: none; }
+.cs-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 28, 27, 0.4);
+  -webkit-backdrop-filter: blur(var(--cs-backdrop-blur));
+  backdrop-filter: blur(var(--cs-backdrop-blur));
+}
+.cs-lightbox__panel {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 14px;
+  width: min(100%, 1500px);
+  max-height: 100%;
+  padding: clamp(12px, 1.6vw, 20px);
+  border: 1px solid var(--cs-edge); /* taste-skill-ignore: glass edge requested */
+  border-radius: 20px;
+  background: rgba(var(--cs-sea), 0.78);
+  -webkit-backdrop-filter: blur(var(--cs-sheet-blur)) saturate(var(--cs-sheet-saturate));
+  backdrop-filter: blur(var(--cs-sheet-blur)) saturate(var(--cs-sheet-saturate));
+  box-shadow: inset 0 1px 0 var(--cs-highlight); /* taste-skill-ignore: glass highlight */
+  color: var(--cs-ink-sea);
+  --cs-amber: var(--cs-amber-sea);
+}
+.cs-lightbox__stage { min-height: 0; display: grid; place-items: center; }
+.cs-lightbox__img {
+  max-width: 100%;
+  max-height: calc(100vh - 170px); /* taste-skill-ignore: fallback; svh follows */
+  max-height: calc(100svh - 170px);
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  background: #FFFFFF;
+}
+.cs-lightbox__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.cs-lightbox__caption { font-weight: 500; }
+.cs-lightbox__count { font-size: var(--step-small); font-variant-numeric: tabular-nums; }
+.cs-lightbox__controls { display: flex; gap: 8px; flex: none; }
+.cs-lightbox__controls button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) ease, transform var(--dur-fast) var(--cs-ease);
+}
+.cs-lightbox__controls button:hover { background: rgba(255, 255, 255, 0.24); }
+.cs-lightbox__controls button:active { transform: scale(0.92); }
+.cs-lightbox__controls button[disabled] { opacity: 0.35; cursor: default; }
+.cs-lightbox__controls svg { width: 18px; height: 18px; }
+
+/* ---------------------------------------------------------------------
+   6. RESPONSIVE
+   --------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .cs-cover__media { grid-column: 4 / 13; margin-top: clamp(80px, 16vw, 160px); }
+  .cs-cover__meta { grid-column: 1 / 13; grid-row: 3; padding-top: 8px; }
+  .cs-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cs-head--split .cs-heading, .cs-head--split .cs-text,
+  .cs-head--stack .cs-heading, .cs-head--stack .cs-text { grid-column: 1 / -1; }
+  .cs-head--offset .cs-label, .cs-head--offset .cs-heading, .cs-head--offset .cs-text { grid-column: 3 / -1; }
+  .cs-insight, .cs-insight--lead { grid-column: 1 / -1; grid-row: auto; }
+}
+
+@media (max-width: 760px) {
+  :root { --cs-sheet-margin: 0px; --cs-bar-h: 56px; }
+  .cs-sheet { border: 0; border-radius: 0; }
+  .cs-bar { grid-template-columns: minmax(0, 1fr) auto auto; padding-left: var(--cs-gutter); }
+  .cs-phases { display: none; }
+  .cs-phase-select {
+    display: block;
+    min-height: 40px;
+    max-width: 9.5rem;
+    padding: 0 30px 0 14px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center / 12px;
+    color: inherit;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .cs-phase-select option { color: #1F1E1C; background: #FFFFFF; }
+  .cs-title { font-size: clamp(5rem, 33vw, 9rem); }
+  .cs-cover__media { grid-column: 1 / 13; margin-top: clamp(56px, 18vw, 96px); }
+  .cs-facts { grid-template-columns: 1fr 1fr; }
+  .cs-head--offset .cs-label, .cs-head--offset .cs-heading, .cs-head--offset .cs-text { grid-column: 1 / -1; }
+  .cs-hmw { margin-left: 0; }
+  .cs-grid--pair,
+  .cs-grid--trio,
+  .cs-grid--asym { grid-template-columns: 1fr; }
+  .cs-grid--trio .cs-fig:nth-child(2) { margin-top: 0; }
+  .cs-grid--asym .cs-fig:last-child .cs-zoom__core { flex: none; aspect-ratio: 4 / 3; }
+  .cs-compare__pair { grid-template-columns: 1fr; }
+  .cs-compare__arrow { justify-self: center; transform: rotate(90deg); }
+  .cs-video img { height: 64vh; }
+  .cs-video__body { max-width: calc(100% - var(--cs-gutter) * 2 - 84px); }
+  .cs-shifts li { grid-template-columns: auto 1fr; row-gap: 2px; }
+  .cs-shifts__from { grid-column: 1 / -1; text-align: left; }
+  .cs-points { grid-template-columns: 1fr; }
+  .cs-lightbox__foot { flex-wrap: wrap; }
+}
+
+
+/* ---------------------------------------------------------------------
+   7. FALLBACKS
+   No backdrop-filter, or the visitor asks for less transparency:
+   solid chapter colours instead of glass.
+   --------------------------------------------------------------------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cs-backdrop, .cs-lightbox__backdrop { background: rgba(28, 28, 27, 0.78); }
+  .cs-sheet, .cs-bar { background: rgb(var(--cs-tint)); }
+  .cs-lightbox__panel { background: rgb(var(--cs-sea)); }
+  .cs-glass { background: rgba(255, 255, 255, 0.18); }
+  .is-dark-tone .cs-glass { background: rgba(255, 255, 255, 0.06); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .cs-backdrop, .cs-lightbox__backdrop { background: rgba(28, 28, 27, 0.82); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .cs-sheet, .cs-bar { background: rgb(var(--cs-tint)); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .cs-lightbox__panel { background: rgb(var(--cs-sea)); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .cs-glass, .cs-video__play { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .cs-glass { background: rgba(255, 255, 255, 0.3); }
+  .is-dark-tone .cs-glass { background: rgba(255, 255, 255, 0.08); }
+  .cs-sheet::before { display: none; }
+}
+
+/* Reduced motion: no grow, no scrubbed blend (tones step with a fade) */
+@media (prefers-reduced-motion: reduce) {
+  .cs-sheet { transition: background-color var(--cs-tone-fade-ms) ease, color var(--cs-tone-fade-ms) ease; }
+  .cs-bar { transition: background-color var(--cs-tone-fade-ms) ease; }
+  .cs-zoom, .cs-zoom__core img, .cs-video img, .cs-next__title, .cs-video__play, .cs-zoom__hint { transition: none; }
+  .cs-zoom:hover .cs-zoom__core img, .cs-video:hover img, .cs-video:hover .cs-video__play { transform: none; }
+  .cs-next__link:hover .cs-next__title { transform: none; }
+}

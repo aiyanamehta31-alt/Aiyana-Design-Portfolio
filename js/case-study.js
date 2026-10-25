@@ -25,7 +25,7 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '4';
+  var DATA_VERSION = '5';
   var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
   var HASH = /^#project\/([a-z0-9-]+)$/;
@@ -266,6 +266,7 @@
     barName.textContent = p.title;
     var world = p.world && window.CASE_WORLDS && window.CASE_WORLDS[p.world];
     sheet.classList.toggle('has-world', !!world);
+    if (world) sheet.setAttribute('data-world', p.world); else sheet.removeAttribute('data-world');
     if (world) {
       content.innerHTML = world.render(p);
       // Images marked data-zoom open in the lightbox, one list per data-group.
@@ -450,7 +451,7 @@
     return (have ? Promise.resolve() : addScript(WORLD_DIR + name + '.js?v=' + DATA_VERSION)).then(function () {
       var w = window.CASE_WORLDS && window.CASE_WORLDS[name];
       if (!w) throw new Error('No world in ' + name);
-      return Promise.all([w.css ? addStyle(w.css + '?v=' + DATA_VERSION) : null, w.fonts ? addStyle(w.fonts) : null]);
+      return Promise.all([w.css ? addStyle(w.css + '?v=' + DATA_VERSION) : null, w.fonts ? addStyle(w.fonts) : null, w.ready ? w.ready() : null]);
     }).then(function () { return p; });
   }
   function loadProject(slug) {

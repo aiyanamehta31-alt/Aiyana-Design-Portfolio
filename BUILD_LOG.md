@@ -4,6 +4,65 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-10-25 · New project: Codes (live creative-coding sketches)
+
+**Why:** to show my creative coding work as something visitors can play with, not as videos or screenshots.
+
+**What changed**
+- **A new "Codes" project with its own world inside the glass sheet:**
+  - Dark glass so the sketches glow, Geist for text, Geist Mono for labels and code, and amber `#E2B877` for controls.
+  - The cover shows a small live Wave spelling CODES behind the title.
+  - The four sketches run in order: Orbit, Bloom, Wave, then Galaxy to Sun, the final group project.
+- **Each sketch section:**
+  - A live canvas in a glass frame, with Play / View code tabs. The code view is syntax-highlighted and has a Copy button.
+  - A "Try it" hint and controls built from real parameters in the code.
+  - Full screen in a glass panel that stays interactive; Esc closes it.
+  - A "How it works" line and the reflection from the file.
+  - Galaxy to Sun's credits, with my part labelled.
+- **Converted from canvas-sketch to plain browser modules** in `js/codes/` (no build step), run by one small shared runner, `js/codes/runner.js`:
+  - Each sketch draws in its original coordinates (2048×2048, 1080×1080, 2560×1440), scaled to fit its container, with devicePixelRatio capped at 2.
+  - Colours, shapes, timing, easing and maths are unchanged.
+  - Orbit's glow (shadowBlur) is scaled with the canvas so it looks the same at any size.
+- **Interaction fixes:**
+  - Wave: typing now goes into a text input instead of the whole page. It's limited to 12 characters, Enter clears it, and the default is "WAVE". A word too wide for the 200px font is shrunk just enough to fit.
+  - Bloom: the pointer (or a touch drag) now drives the petal count with the original formula, 4–11 petals.
+  - Galaxy to Sun: clicks are scoped to the canvas, and "Back to the galaxy" replays the warp.
+  - Orbit: new pointer interaction. Distance from the centre sets the tempo, from 0.5× at the centre to 1.8× at the edge.
+- **Controls:**
+  - Orbit: play/pause and speed.
+  - Bloom: play/pause, grid size (`gridSize`) and a petal readout.
+  - Wave: the word input, cycle time (`cycleTime`) and play/pause.
+  - Galaxy to Sun: enter/back, orbit lines on/off, and play/pause.
+- **Galaxy to Sun performance:**
+  - The still galaxy layers (black, fog, 40,000 blue dots) are drawn once to an off-screen canvas.
+  - The purple dust's per-frame random alpha (the shimmer) is pre-drawn as three versions and cycled, so each frame is two image draws instead of 100,000 dots.
+  - Planet textures are made while the galaxy shows, and Saturn's ring pattern is made once.
+  - The shared runner's clock replaces `performance.now()`, so pausing really pauses.
+- **Loading and playback:**
+  - Each sketch's code loads when it's about a screen away.
+  - Only the most visible sketch plays; it pauses when scrolled away or when the tab is hidden.
+- **Quality:**
+  - With reduced motion, nothing autoplays: each sketch shows a real still frame with a Play button.
+  - If JavaScript fails, the still frames show instead of empty boxes.
+  - Canvases have `role="img"` and descriptions.
+  - Every control is a real, labelled button, input or slider.
+- **Homepage:** Codes replaces the "Project name two" placeholder card, with a Galaxy still as the cover.
+- **Shared shell (`js/case-study.js`):**
+  - Worlds can prepare before opening (`ready`).
+  - The sheet gets a `data-world` attribute so each world's styles stay separate.
+  - Generic world rules moved into `css/case-study.css`.
+
+**Files used:** `content/codes/` (copied from the programming folder; the originals are untouched): `programminggeometric.js`, `movingelements.js`, `aiyanaAssignment3.js`, `assignment4.js`. The recording `assignment_3_video.mov` was only used to check the converted Wave matches. Reflections come from each file's top comment, tidied (approved). Stills in `assets/images/projects/codes/` are real frames rendered from the converted code.
+
+**Checked**
+- Headless Chrome at 1440×900, at 390×844, and with reduced motion: no console errors.
+- About 60fps in the galaxy, the solar system and the other three sketches.
+- Working: enter/back, the word input and Enter, the pointer driving petals (11 at the right edge), full screen with Esc (the case study stays open), and View code highlighting.
+
+**Note:** the sketches load as ES modules, so view the site through a local server or GitHub Pages. Opened straight from the file system, the page shows the still frames.
+
+---
+
 ## 2026-10-25 · Nexo case study rebuilt as its own world
 
 **Why:** the first version read like a template. The brief asked for a case study with its own look, where scroll animation explains the research and design decisions instead of decorating them.

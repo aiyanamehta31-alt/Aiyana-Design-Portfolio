@@ -173,6 +173,10 @@ Rebuilt 2026-10-25. A project can have its own world: `world: 'nexo'` in `projec
 
 **Motion rules:** GSAP ScrollTrigger on the sheet's scroller; Lenis smooths the sheet's own scroll (desktop, fine pointer). Pinned scenes are CSS `position: sticky` stages, at most 1.5 screens of extra scroll. Reveals are `fromTo` with `cubic-bezier(0.22, 1, 0.36, 1)`. Positions are measured from layout offsets, not transformed rects, so re-measuring mid-scroll is safe. Everything is written in its finished state first; `prefers-reduced-motion` shows that state with no pins, scrubbing or thread animation (the thread is drawn in full).
 
+## Project worlds: Codes
+
+Added 2026-10-25. `projects/codes.js` (words), `js/worlds/codes.js` + `css/worlds/codes.css` (the world), `js/codes/*.js` (the four sketches as browser modules) and `js/codes/runner.js` (the canvas-sketch stand-in). Dark "night" glass (`12, 14, 20` at 0.94; ink `#ECE8DF`, amber `#E2B877`), Geist and Geist Mono. Each sketch runs live in its original coordinate space, scaled to its frame. Only the most visible sketch plays, and code loads when a sketch is about a screen away. With reduced motion, each sketch shows a still frame with a Play button. A new sketch needs a module exporting `dimensions` and `create()`, an entry in `projects/codes.js`, and a still in `assets/images/projects/codes/`.
+
 ## Signature element: the line of light
 
 - A thin horizontal line, like light on water: soft silver-amber on the light homepage (the divider above Contact). The black hero does not use it for now.

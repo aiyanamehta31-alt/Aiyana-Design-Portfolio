@@ -48,12 +48,8 @@
 /* ---------------------------------------------------------------------
    2. THE SHEET, WHEN A PROJECT HAS ITS OWN WORLD
    --------------------------------------------------------------------- */
-.cs-sheet.has-world { font-family: var(--nx-font); }
-.cs-sheet.has-world .cs-phases,
-.cs-sheet.has-world .cs-phase-select,
-.cs-sheet.has-world .cs-progress { display: none; }
-.cs-sheet.has-world .cs-bar { grid-template-columns: 1fr auto; }
-.cs-sheet.has-world .cs-bar__name { font-family: var(--nx-display); font-weight: 400; font-size: 1.5rem; letter-spacing: 0.01em; }
+.cs-sheet[data-world="nexo"] { font-family: var(--nx-font); }
+.cs-sheet[data-world="nexo"] .cs-bar__name { font-family: var(--nx-display); font-weight: 400; font-size: 1.5rem; letter-spacing: 0.01em; }
 
 .nx-world { position: relative; padding-bottom: 96px; }
 .nx-world > section { position: relative; z-index: 1; }

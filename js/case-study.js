@@ -5,9 +5,13 @@
    frosted glass sheet that grows out of the card, and handles the phase
    bar, the colour journey, the lightbox, focus and the back button.
 
-   To add a project: write projects/<slug>.js (copy projects/nexo.js), put
-   its images in assets/images/projects/<slug>/, and point a project card's
-   link at #project/<slug> with data-project="<slug>". No layout code.
+   To add a project: write projects/<slug>.js, put its images in
+   assets/images/projects/<slug>/, and point a project card's link at
+   #project/<slug> with data-project="<slug>". No layout code.
+
+   A project can also have its own world (Nexo does): world: '<name>' in
+   its data loads js/worlds/<name>.js, which renders the scenes and adds
+   their motion; this file still runs the sheet, lightbox, URL and focus.
 
    1. Setup          5. Open, close, switch
    2. Rendering      6. Lightbox
@@ -21,7 +25,8 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '3';
+  var DATA_VERSION = '4';
+  var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
   var HASH = /^#project\/([a-z0-9-]+)$/;
   var PHASES = [['discover', 'Discover'], ['define', 'Define'], ['develop', 'Develop'], ['deliver', 'Deliver']];
@@ -29,24 +34,29 @@
   var root = document.documentElement;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var canAnimate = !!Element.prototype.animate;
-  var styles = getComputedStyle(root);
-  function token(name) { return styles.getPropertyValue(name).trim(); }
+  // Read live, so tokens from a project world's stylesheet count once it loads.
+  function token(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
   function ms(name, fallback) { var n = parseFloat(token(name)); return isNaN(n) ? fallback : n; }
 
   var FLIP_MS = ms('--cs-flip-ms', 700);
   var FADE_MS = ms('--cs-fade-ms', 320);
   var EASE = token('--cs-ease') || 'cubic-bezier(0.22, 1, 0.36, 1)';
 
-  // The four glass tones, read from the CSS tokens.
+  // Glass tones, read from the CSS tokens (--cs-<tone>, --cs-alpha-<tone>,
+  // --cs-ink-<tone>, --cs-amber-<tone>) the first time each one is used.
   var TONES = {};
-  ['mist', 'taupe', 'cloud', 'sea'].forEach(function (name) {
+  function tone(name) {
+    if (TONES[name]) return TONES[name];
+    var rgb = token('--cs-' + name);
+    if (!rgb) return name === 'mist' ? null : tone('mist');
     TONES[name] = {
-      rgb: token('--cs-' + name).split(',').map(Number),
+      rgb: rgb.split(',').map(Number),
       alpha: parseFloat(token('--cs-alpha-' + name)),
       ink: token('--cs-ink-' + name),
       amber: token('--cs-amber-' + name)
     };
-  });
+    return TONES[name];
+  }
 
   if (!reduceMotion && 'IntersectionObserver' in window) root.classList.add('cs-motion');
 
@@ -55,9 +65,10 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  // Text with any [PLACEHOLDER ...] marked up so it can't be missed.
+  // Text with any [PLACEHOLDER ...] or [NEEDS FROM AIYANA ...] marked up so it can't be missed.
+  var GAP = /\[(?:PLACEHOLDER|NEEDS FROM AIYANA)[^\]]*\]/g;
   function rich(value) {
-    return esc(value).replace(/\[PLACEHOLDER[^\]]*\]/g, function (m) { return '<mark class="cs-ph">' + m + '</mark>'; });
+    return esc(value).replace(GAP, function (m) { return '<mark class="cs-ph">' + m + '</mark>'; });
   }
   function portfolioLenis() { return window.portfolio && window.portfolio.lenis; }
 
@@ -243,7 +254,7 @@
   var content = layer.querySelector('.cs-content');
   var progress = layer.querySelector('.cs-progress span');
 
-  var state = { open: false, busy: false, slug: null, project: null, card: null, pushed: false, returnFocus: null, inerted: [] };
+  var state = { open: false, busy: false, slug: null, project: null, card: null, pushed: false, returnFocus: null, inerted: [], world: null, lenis: null };
   var stops = [];
   var revealer = null;
   var scrubs = [];      // statements whose words light up with scroll
@@ -253,6 +264,28 @@
     groups = {};
     state.project = p;
     barName.textContent = p.title;
+    var world = p.world && window.CASE_WORLDS && window.CASE_WORLDS[p.world];
+    sheet.classList.toggle('has-world', !!world);
+    if (world) {
+      content.innerHTML = world.render(p);
+      // Images marked data-zoom open in the lightbox, one list per data-group.
+      Array.prototype.forEach.call(content.querySelectorAll('[data-zoom]'), function (btn) {
+        var im = btn.querySelector('img');
+        var g = btn.getAttribute('data-group');
+        var list = groups[g] || (groups[g] = []);
+        btn.setAttribute('data-index', list.push({ src: im.getAttribute('src'), width: im.width, height: im.height, alt: im.alt, caption: btn.getAttribute('data-caption') || '' }) - 1);
+      });
+      phaseNav.innerHTML = '';
+      phaseSelect.innerHTML = '';
+      if (revealer) revealer.disconnect();
+      scrubs = [];
+      coverImg = null;
+      scroller.scrollTop = 0;
+      measure();
+      lastKey = '';
+      onSheetScroll();
+      return;
+    }
     content.innerHTML = coverHTML(p) + p.sections.map(function (s, i) { return sectionHTML(p, s, i); }).join('') + nextHTML(p);
 
     var present = PHASES.filter(function (ph) { return content.querySelector('[data-phase="' + ph[0] + '"]'); });
@@ -289,9 +322,18 @@
   }
 
   /* ---------- 4. Scroll: colour journey, phase bar, progress ---------- */
+  // Layout offsets (not screen rects), so a sheet still growing under its
+  // open animation measures the same as a settled one.
+  function topIn(el) {
+    var y = 0;
+    while (el && el !== scroller) { y += el.offsetTop; el = el.offsetParent; }
+    return y;
+  }
+  var measuredHeight = 0;
   function measure() {
+    measuredHeight = content.offsetHeight;
     stops = Array.prototype.map.call(content.querySelectorAll('section[data-tone]'), function (el) {
-      return { el: el, id: el.id, top: el.offsetTop, tone: TONES[el.getAttribute('data-tone')] || TONES.mist, phase: el.getAttribute('data-phase') };
+      return { el: el, id: el.id, top: topIn(el), tone: tone(el.getAttribute('data-tone')) || tone('mist'), phase: el.getAttribute('data-phase') };
     });
   }
 
@@ -300,6 +342,7 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
 
   function onSheetScroll() {
+    if (content.offsetHeight !== measuredHeight) measure();
     var top = scroller.scrollTop;
     var view = scroller.clientHeight;
     var max = scroller.scrollHeight - view;
@@ -369,8 +412,9 @@
     var section = document.getElementById(id);
     if (!section) return;
     var head = section.querySelector('.cs-head') || section;
-    var y = id === 'cs-cover' ? 0 : head.offsetTop - bar.offsetHeight - 24;
-    scroller.scrollTo({ top: Math.max(0, y), behavior: reduceMotion ? 'auto' : 'smooth' });
+    var y = id === 'cs-cover' ? 0 : scroller.scrollTop + head.getBoundingClientRect().top - scroller.getBoundingClientRect().top - bar.offsetHeight - 24;
+    if (state.lenis) state.lenis.scrollTo(Math.max(0, y), { duration: 1.2 });
+    else scroller.scrollTo({ top: Math.max(0, y), behavior: reduceMotion ? 'auto' : 'smooth' });
     var heading = section.querySelector('h2, h3');
     if (heading) heading.focus({ preventScroll: true });
   }
@@ -378,22 +422,80 @@
 
   /* ---------- 5. Open, close, switch ---------- */
   var loading = {};
-  function loadProject(slug) {
-    var known = window.CASE_STUDIES && window.CASE_STUDIES[slug];
-    if (known) return Promise.resolve(known);
-    if (loading[slug]) return loading[slug];
-    loading[slug] = new Promise(function (resolve, reject) {
+  function addScript(src) {
+    return new Promise(function (resolve, reject) {
       var script = document.createElement('script');
-      script.src = PROJECT_DIR + slug + '.js?v=' + DATA_VERSION;
+      script.src = src;
       script.async = true;
-      script.onload = function () {
-        var p = window.CASE_STUDIES && window.CASE_STUDIES[slug];
-        if (p) resolve(p); else reject(new Error('No data in ' + script.src));
-      };
-      script.onerror = function () { delete loading[slug]; reject(new Error('Could not load ' + script.src)); };
+      script.onload = resolve;
+      script.onerror = function () { reject(new Error('Could not load ' + src)); };
       document.head.appendChild(script);
     });
+  }
+  function addStyle(href) {
+    if (document.querySelector('link[href="' + href + '"]')) return Promise.resolve();
+    return new Promise(function (resolve) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.onload = link.onerror = function () { resolve(); };   // a missing font never blocks the project
+      document.head.appendChild(link);
+    });
+  }
+  // A project's own world: its script, its stylesheet and its fonts.
+  function loadWorld(p) {
+    var name = p.world;
+    if (!name || !SLUG.test(name)) return Promise.resolve(p);
+    var have = window.CASE_WORLDS && window.CASE_WORLDS[name];
+    return (have ? Promise.resolve() : addScript(WORLD_DIR + name + '.js?v=' + DATA_VERSION)).then(function () {
+      var w = window.CASE_WORLDS && window.CASE_WORLDS[name];
+      if (!w) throw new Error('No world in ' + name);
+      return Promise.all([w.css ? addStyle(w.css + '?v=' + DATA_VERSION) : null, w.fonts ? addStyle(w.fonts) : null]);
+    }).then(function () { return p; });
+  }
+  function loadProject(slug) {
+    var known = window.CASE_STUDIES && window.CASE_STUDIES[slug];
+    if (known) return loadWorld(known);
+    if (loading[slug]) return loading[slug];
+    loading[slug] = addScript(PROJECT_DIR + slug + '.js?v=' + DATA_VERSION).then(function () {
+      var p = window.CASE_STUDIES && window.CASE_STUDIES[slug];
+      if (!p) throw new Error('No data for ' + slug);
+      return loadWorld(p);
+    }).catch(function (err) { delete loading[slug]; throw err; });
     return loading[slug];
+  }
+
+  // Smooth scrolling inside the sheet (Lenis on the sheet's own scroller),
+  // and the project's world, once the sheet is on screen.
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function startInside() {
+    if (!state.lenis && !reduceMotion && finePointer && window.Lenis) {
+      state.lenis = new window.Lenis({ wrapper: scroller, content: content, lerp: 0.1, smoothWheel: true });
+      state.lenisRaf = function (time) { if (state.lenis) state.lenis.raf(time * 1000); };
+      if (window.gsap) {
+        if (window.ScrollTrigger) state.lenis.on('scroll', window.ScrollTrigger.update);
+        window.gsap.ticker.add(state.lenisRaf);
+      } else {
+        (function loop(t) { if (!state.lenis) return; state.lenis.raf(t); requestAnimationFrame(loop); })(0);
+      }
+    }
+    var p = state.project;
+    var world = p && p.world && window.CASE_WORLDS && window.CASE_WORLDS[p.world];
+    if (world && !state.world) {
+      try {
+        state.world = world.mount({ project: p, sheet: sheet, scroller: scroller, content: content, reduceMotion: reduceMotion, lenis: state.lenis });
+      } catch (err) {
+        if (window.console) console.warn('[case-study] world', err);   // the scenes stay readable in their finished state
+      }
+    }
+  }
+  function stopInside() {
+    if (state.world) { try { state.world.destroy(); } catch (err) {} state.world = null; }
+    if (state.lenis) {
+      if (window.gsap && state.lenisRaf) window.gsap.ticker.remove(state.lenisRaf);
+      state.lenis.destroy();
+      state.lenis = null;
+    }
   }
 
   function findCard(slug) {
@@ -462,6 +564,7 @@
       measure();
       onSheetScroll();
       sheet.focus({ preventScroll: true });
+      requestAnimationFrame(startInside);
 
       var from = !reduceMotion && cardRect(state.card);
       var done;
@@ -479,6 +582,8 @@
       return done;
     }).then(function () {
       state.busy = false;
+      // The world measured itself while the sheet was still growing: measure again.
+      if (state.world && state.world.refresh) state.world.refresh();
     }, function (err) {
       state.busy = false;
       if (window.console) console.warn('[case-study]', err && err.message);
@@ -510,6 +615,7 @@
       : run(layer, [{ opacity: 1 }, { opacity: 0 }], FADE_MS);
 
     done.then(function () {
+      stopInside();
       layer.hidden = true;
       if (card) card.classList.remove('is-cs-source');
       setInert(false);
@@ -529,11 +635,13 @@
     loadProject(slug).then(function (p) {
       return run(content, [{ opacity: 1 }, { opacity: 0 }], 200).then(function () {
         if (state.card) state.card.classList.remove('is-cs-source');
+        stopInside();
         state.slug = slug;
         state.card = findCard(slug);
         if (state.card && !reduceMotion) state.card.classList.add('is-cs-source');
         fill(p);
         sheet.focus({ preventScroll: true });
+        requestAnimationFrame(startInside);
         return run(content, [{ opacity: 0 }, { opacity: 1 }], 300);
       });
     }).then(function () { state.busy = false; }, function () { state.busy = false; });
@@ -597,7 +705,7 @@
     lbImg.width = item.width;
     lbImg.height = item.height;
     lbImg.alt = item.alt;
-    lbCaption.textContent = item.caption.replace(/\[PLACEHOLDER[^\]]*\]/g, '').trim();
+    lbCaption.textContent = item.caption.replace(GAP, '').trim();
     lbCount.textContent = (i + 1) + ' of ' + lb.items.length;
     lbPrev.disabled = i === 0;
     lbNext.disabled = i === lb.items.length - 1;
@@ -641,7 +749,7 @@
   /* ---------- 7. Keyboard, routing, card clicks ---------- */
   // Clicks inside the sheet never reach the homepage's anchor handler.
   layer.addEventListener('click', function (e) {
-    var zoom = e.target.closest('.cs-zoom');
+    var zoom = e.target.closest('.cs-zoom, [data-zoom]');
     if (zoom) { openLightbox(zoom.getAttribute('data-group'), Number(zoom.getAttribute('data-index')), zoom); return; }
     if (e.target.closest('[data-cs-close]')) { closeProject(false); return; }
 

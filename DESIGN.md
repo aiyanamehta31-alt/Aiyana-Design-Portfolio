@@ -1,7 +1,7 @@
 # DESIGN.md — Aiyana's portfolio brief
 
 > The source of truth for this portfolio. Refer back to this in future prompts.
-> Last updated 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
+> Last updated 2026-10-25: Nexo rebuilt as its own world inside the glass sheet (see "Project worlds: Nexo"). 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
 
 I'm Aiyana, a design student building my portfolio for summer design internships at companies like Google, Microsoft, and design agencies. It must feel creative, personal, and professional, not like a generic AI-made template.
 
@@ -21,7 +21,7 @@ I'm Aiyana, a design student building my portfolio for summer design internships
 
 - Plain HTML, CSS, and JavaScript. No framework, no build step (it will go on GitHub Pages later).
 - GSAP with ScrollTrigger (CDN) for scroll animation, Lenis (CDN) for smooth scrolling.
-- Files: `index.html`, `css/style.css`, `js/main.js`, `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `assets/images/`, `content/` (original project files), `references/`.
+- Files: `index.html`, `css/style.css`, `js/main.js`, `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `js/worlds/<world>.js` + `css/worlds/<world>.css` (a project's own world, loaded on demand), `assets/images/`, `content/` (original project files), `references/`, `BUILD_LOG.md` (a dated entry for every change).
 - All colours, fonts, spacing, and animation timings are CSS variables at the top of `style.css`.
 - Animate with GPU-friendly properties only: translate, rotate, scale, opacity.
 
@@ -141,11 +141,11 @@ Built to match the reference frames. The code lives in `index.html` (section `.h
 
 ## Case studies: the glass sheet
 
-Built 2026-10-23. First project: **Nexo** (`projects/nexo.js`). Code: `css/case-study.css` (tokens at its top), `js/case-study.js` (one template for every project).
+Built 2026-10-23. Code: `css/case-study.css` (tokens at its top), `js/case-study.js` (the sheet, lightbox, URL and focus for every project, plus the default template). Nexo now has its own world (below); the template is there for the next projects.
 
-**Adding a project:** write `projects/<slug>.js` (copy `nexo.js`), put WebP images (max 2400px wide) in `assets/images/projects/<slug>/`, and give a homepage card `href="#project/<slug>" data-project="<slug>"`. No layout code. Source files stay untouched in `content/<slug>/`.
+**Adding a project:** write `projects/<slug>.js` (the data shape is documented at the top of `js/case-study.js`'s rendering section), put WebP images (max 2400px wide) in `assets/images/projects/<slug>/`, and give a homepage card `href="#project/<slug>" data-project="<slug>"`. No layout code. Source files stay untouched in `content/<slug>/`.
 
-**Structure (Double Diamond, minimal):** cover → the challenge (with the "How might we" set large) → Discover (method chips, photos, an insight bento) → Define (journey map full width, problem statement whose words light up on scroll) → Develop (before → after comparisons) → Deliver (final renders, a full-bleed video) → Outcome ("from → to" shifts, learnings) → next project and "Back to all work". Each section: a small phase label, a heading of max 8 words, max 2 sentences, then visuals. Never invent findings, numbers or quotes; mark gaps `[PLACEHOLDER: …]` (shown with a dashed outline).
+**Structure (Double Diamond, minimal):** cover → the challenge (with the "How might we" set large) → Discover (method chips, photos, an insight bento) → Define (journey map full width, problem statement whose words light up on scroll) → Develop (before → after comparisons) → Deliver (final renders, a full-bleed video) → Outcome ("from → to" shifts, learnings) → next project and "Back to all work". Each section: a small phase label, a heading of max 8 words, max 2 sentences, then visuals. Never invent findings, numbers or quotes; mark gaps `[PLACEHOLDER: …]` or `[NEEDS FROM AIYANA: …]` (both shown with a dashed outline).
 
 **Opening:** the card grows into a frosted glass sheet (FLIP, 700ms, `cubic-bezier(0.22, 1, 0.36, 1)`) while the homepage blurs (14px) and dims (`rgba(28, 28, 27, 0.35)`). 20px margin on desktop, full screen on phones. URL `#project/<slug>`; back button, ×, Esc or clicking outside closes it back into the card.
 
@@ -156,6 +156,22 @@ Built 2026-10-23. First project: **Nexo** (`projects/nexo.js`). Code: `css/case-
 **Inside:** a slim glass phase bar (name, Discover · Define · Develop · Deliver with the current one in amber, ×; a dropdown on phones) and a 3px amber progress line. Section heads rotate through three compositions (split, stack, offset) so neighbours never match. Images sit in a glass tray (6px shell, 12px inner radius) and open in a glass lightbox (arrows, keys, Esc).
 
 **Fallbacks:** no `backdrop-filter` or `prefers-reduced-transparency` → solid tones. `prefers-reduced-motion` → fades instead of the grow, tones change in steps, no scrubbing, parallax or reveals.
+
+## Project worlds: Nexo
+
+Rebuilt 2026-10-25. A project can have its own world: `world: 'nexo'` in `projects/nexo.js` loads `js/worlds/nexo.js` (renders the scenes, adds the motion) and `css/worlds/nexo.css`. The shared sheet, lightbox (any `data-zoom` image), `#project/nexo` URL, focus trap and Esc/back behaviour are unchanged. `projects/nexo.js` holds only words and pictures, each traced to `content/nexo/` (deck page numbers in comments).
+
+**Look (from the Nexo deck):** indigo `#2E3091`, orange `#F36E23`, paper `#FBF9F5`. Inter Tight stands in for the deck's Switzer; Chewy for its HollyBerryPop (dog-day phase names only). The storm palette stays outside; inside, three glass tones: paper (ink indigo 9.4:1), indigo (ink paper 10:1, small accent `#FFB98A` 6.3:1) and orange (ink `#1C1D5E` 5.2:1). Orange text on paper is `#C9510F` and only for large display type (3.9:1). Orange itself is for the thread, the beats and big words on indigo.
+
+**Structure: a dog's day over the Double Diamond.** The whine (the problem) → Sniffing around (Discover) → Picking up the scent (Define) → Fetch (Develop) → Walkies (Deliver) → Treat (outcome and reflection). Each phase name is set large in Chewy with the real phase name small underneath.
+
+**The 12 scenes:** cover (logo, render, facts, the face that starts the thread) · the whine (pinned 1.3 screens: owner and dog drift apart as MODERN LIFE wedges in; three beats from the journey map) · field research (five sites, eight photos, dog-type tags, AEIOU tabs) · quotes (speech bubbles, the "nudge me" quote is the key) · affinity board (pinned 1.5 screens on desktop: every note falls in a mess, then sorts into five clusters; two themes ringed in orange; phones show six notes per cluster with "Show all") · personas + journey (the thread hands off into Luna's emotion curve; pain points light up; 3 PM is the low point) · problem + HMW (words light up; key words orange) · ideation (DVF totals count up, two concepts crossed out, two merge) · form (pinned 1.5: one frame steps from sketch to the coded face; step buttons jump) · device (callout lines on the render; five collars) · app (pinned 1.5: four screens slide sideways) + prototype slot + concept video · Treat (three shifts, then owner and dog come back together, where the thread ends).
+
+**The thread:** an SVG heartbeat line drawn behind the content, down the margins, crossing sides in the gaps between scenes. It is drawn up to a reading line 62% down the sheet; its tip glows there. At each `data-beat` element it has an ECG spike and the tip pulses as it passes. It turns deep indigo over the orange scenes. Rebuilt on resize, image loads and font load.
+
+**The dock:** a glass pill at the bottom of the sheet with six dots; it opens to show the phase names while a phase heading is on screen (or on hover/focus), then folds back. The current phase's dot is orange. Clicking a dot jumps to that phase and focuses its heading.
+
+**Motion rules:** GSAP ScrollTrigger on the sheet's scroller; Lenis smooths the sheet's own scroll (desktop, fine pointer). Pinned scenes are CSS `position: sticky` stages, at most 1.5 screens of extra scroll. Reveals are `fromTo` with `cubic-bezier(0.22, 1, 0.36, 1)`. Positions are measured from layout offsets, not transformed rects, so re-measuring mid-scroll is safe. Everything is written in its finished state first; `prefers-reduced-motion` shows that state with no pins, scrubbing or thread animation (the thread is drawn in full).
 
 ## Signature element: the line of light
 

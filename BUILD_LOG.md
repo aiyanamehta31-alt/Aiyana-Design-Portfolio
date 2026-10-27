@@ -4,6 +4,36 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-10-27 · Wiglet demo: calendar events, time ranges and clean titles
+
+**Why:** a reported bug. "5-6 pm i have a meeting add that to my shedule" became a flexible block at 10:40–11:40 called "5-6 pm meeting that shedule". The demo parser was missing two things the real agent (`wiglet/agent.py`) does: reading time ranges, and telling calendar events from tasks.
+
+**What changed**
+- **`js/wiglet/demo-parser.js`, rewritten to the agent's rules:**
+  - **Time ranges:** "5-6 pm", "5–6pm", "5pm-6pm", "5 to 6", "from 5 to 6", "between 5 and 6", "17:00-18:00", "5:30-6:15", "8–9pm".
+  - **am/pm and day reading:** an am/pm written once applies to both ends. With none, the reading inside the 08:00–23:00 day wins, the earlier one if both fit ("5-6" is 17:00–18:00, "9-10" is 09:00–10:00). Also single times with am/pm, and "noon".
+  - **Events vs tasks:** a clear calendar request ("add … to my calendar/schedule", "put … on my calendar", "book …", "schedule … for …", "create an event") is an event, written at the stated time and locked. As a demo addition, a stated time range for a meeting, call, appointment, class or anything "with" someone is also an event. "gym at 6" stays a flexible task, as in the agent's prompt.
+  - **Clean titles:** times, filler and instruction words are stripped, typos are tolerated (shedule, schedual, scedule, calender, calandar), and the first letter is capitalised.
+  - **Never guess a time:** if a time is there but unreadable, or a calendar request has no time, nothing is placed and the widget says "I couldn’t catch the time. Try something like “5–6pm meeting”."
+- **The demo widget:**
+  - Events show with the lock and "Fixed · added", never move, and the day is re-solved around them.
+  - An event that overlaps something gets "Heads up: this overlaps DESG319 Lecture."
+  - Under the quoted sentence, an "Understood: …" line shows what the parser read.
+  - The deck's sentence, "book 8–9pm for meeting my friends today", is now the first chip.
+- **Tests:** new `js/wiglet/demo-parser.test.js`.
+
+**Checked**
+- Tests: **29 of 29** parser tests and **65 of 65** scheduler checks pass (`node js/wiglet/demo-parser.test.js`, `node js/wiglet/scheduler.test.js`).
+- In headless Chrome:
+  - The reported sentence places "Meeting" at 5:00–6:00, locked, as "Fixed · added".
+  - The deck sentence places "Meeting my friends" at 8:00–9:00, locked.
+  - "meeting 9-10" shows the overlap note with DESG319 Lecture.
+  - "meeting at half past five" places nothing and shows the time message.
+  - "gym at 6" stays flexible at 6:00.
+- No console errors over http:// and file://.
+
+---
+
 ## 2026-10-27 · New project: Wiglet, with a live demo of its real scheduler
 
 **Why:** to add my Agentic AI capstone as the first project, with proof you can use: the real scheduling logic running in the page.

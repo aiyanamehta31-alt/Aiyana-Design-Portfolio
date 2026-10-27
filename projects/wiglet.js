@@ -171,6 +171,7 @@ window.CASE_STUDIES['wiglet'] = {
       { id: 'ugsem5', title: 'UGSEM5 Seminar', start: 900, end: 990 }
     ],
     chips: [
+      'book 8–9pm for meeting my friends today',
       'gym for an hour, priority one',
       'study for 2 hours after 4',
       'coffee with Sam at 11',

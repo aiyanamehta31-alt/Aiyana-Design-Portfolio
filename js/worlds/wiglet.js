@@ -250,6 +250,8 @@
               '<div class="footrow"><p class="summary" data-summary>&nbsp;</p>' +
                 '<div class="actions"><button type="button" class="icon" data-mic aria-pressed="false" aria-label="Talk to Wiglet" hidden>' + ICON.mic + '</button></div></div>' +
               '<p class="heard" data-heard hidden></p>' +
+              '<p class="wg-understood" data-understood hidden></p>' +
+              '<p class="notice" data-overlap hidden></p>' +
               '<form class="composer" data-composer autocomplete="off">' +
                 '<label class="sr-only" for="wg-input">Tell Wiglet what you want to do today</label>' +
                 '<input id="wg-input" type="text" placeholder="' + esc(d.placeholder) + '" maxlength="120" />' +
@@ -456,8 +458,13 @@
     var DAY_START = 8 * 60, DAY_END = 23 * 60;
     var COURSE_CODE = /\b[A-Z]{3,6}\d{1,4}/;   // server.py's rule for the "class" note
 
-    var state = { items: [], rubric: {}, nextId: 1 };
-    var fixedEvents = d.fixed.map(function (f) { return S.fixedEvent(f.id, f.title, f.start, f.end, false); });
+    // Tasks Wiglet places, and events the visitor asked to put on the calendar.
+    // Events are fixed like classes: written at the stated time, never moved.
+    var state = { items: [], events: [], rubric: {}, nextId: 1 };
+    var classes = d.fixed.map(function (f) { return S.fixedEvent(f.id, f.title, f.start, f.end, false); });
+    function fixedNow() { return classes.concat(state.events); }
+    var understoodEl = app.querySelector('[data-understood]');
+    var overlapEl = app.querySelector('[data-overlap]');
 
     // app.js: "09:00" -> "9:00", "13:30" -> "1:30" (12-hour, no am/pm).
     function clock(minute) {
@@ -489,13 +496,14 @@
     // server.py serialize(): one timeline with fixed, flexible and open rows.
     function solve() {
       var r = S.rubric(state.rubric);
-      var plan = S.planDay({ fixedEvents: fixedEvents, flexibleItems: state.items, rubric: r, dayStart: DAY_START, dayEnd: DAY_END });
+      var plan = S.planDay({ fixedEvents: fixedNow(), flexibleItems: state.items, rubric: r, dayStart: DAY_START, dayEnd: DAY_END });
       var open = S.findOpenTime(plan);
       var byId = {};
       state.items.forEach(function (it) { byId[it.id] = it; });
       var rows = plan.blocks.map(function (b) {
         var note = '';
-        if (b.kind === 'fixed') note = COURSE_CODE.test(b.name) ? 'class' : 'synced';
+        // "added" for an event written from the demo; otherwise server.py's rule.
+        if (b.kind === 'fixed') note = b.sourceId.indexOf('event-') === 0 ? 'added' : COURSE_CODE.test(b.name) ? 'class' : 'synced';
         else {
           var it = byId[b.sourceId], rank = it ? S.priorityOf(r, it) : r.defaultPriority;
           note = rank === r.defaultPriority ? '' : 'priority #' + rank;
@@ -584,8 +592,11 @@
         var misses = result.unplaced.length;
         react(misses > lastUnplaced ? 'tilt' : 'bounce');
         lastUnplaced = misses;
-        announce.textContent = 'Plan updated. ' + placedNow + ' flexible ' + (placedNow === 1 ? 'task' : 'tasks') + ' placed' +
-          (misses ? ', ' + misses + ' didn’t fit' : '') + '. ' + openPhrase(result.openMinutes) + '.';
+        announce.textContent = (understoodEl.hidden ? '' : understoodEl.textContent + '. ') +
+          'Plan updated. ' + placedNow + ' flexible ' + (placedNow === 1 ? 'task' : 'tasks') + ' placed' +
+          (state.events.length ? ', ' + state.events.length + ' added to the calendar' : '') +
+          (misses ? ', ' + misses + ' didn’t fit' : '') + '. ' + openPhrase(result.openMinutes) + '.' +
+          (overlapEl.hidden ? '' : ' ' + overlapEl.textContent);
       } else {
         lastUnplaced = result.unplaced.length;
       }
@@ -614,17 +625,36 @@
       text = String(text || '').trim();
       if (!text) return;
       var parsed = Parser.parse(text, state.items);
-      if (parsed.empty) {
-        heard.textContent = 'The demo parser didn’t catch a task in “' + text + '”. Try one of the examples.';
+      overlapEl.hidden = true;
+      if (parsed.error || parsed.empty) {
+        // Never guess: nothing is placed.
+        heard.textContent = '“' + text + '”';
         heard.hidden = false;
-        announce.textContent = heard.textContent;
+        understoodEl.textContent = parsed.error || 'The demo parser didn’t catch a task in that. Try one of the examples.';
+        understoodEl.hidden = false;
+        announce.textContent = understoodEl.textContent;
         react('tilt');
         return;
       }
       parsed.items.forEach(function (it) {
         state.items.push(S.flexibleItem('t' + (state.nextId++), it.name, it.duration, it));
       });
+      // Events go on the calendar as asked, even over something else (the real
+      // app would write them), with a gentle note when they overlap.
+      var overlaps = [];
+      parsed.events.forEach(function (ev) {
+        fixedNow().forEach(function (f) {
+          if (ev.start < f.end && ev.end > f.start) overlaps.push(f.title);
+        });
+        state.events.push(S.fixedEvent('event-' + (state.nextId++), ev.title, ev.start, ev.end, false));
+      });
       Object.keys(parsed.rubric).forEach(function (k) { state.rubric[k] = parsed.rubric[k]; });
+      understoodEl.textContent = 'Understood: ' + parsed.understood.join('; ');
+      understoodEl.hidden = !parsed.understood.length;
+      if (overlaps.length) {
+        overlapEl.textContent = 'Heads up: this overlaps ' + overlaps.join(' and ') + '.';
+        overlapEl.hidden = false;
+      }
       runLoop(function () { draw(true, text); });
     }
 
@@ -639,8 +669,11 @@
     });
     on(app.querySelector('[data-reset]'), 'click', function () {
       state.items = [];
+      state.events = [];
       state.rubric = {};
       heard.hidden = true;
+      understoodEl.hidden = true;
+      overlapEl.hidden = true;
       draw(true, null);
       announce.textContent = 'Day reset to its three fixed blocks. ' + summary.textContent + '.';
     });

@@ -25,7 +25,7 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '6';
+  var DATA_VERSION = '7';
   var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
   var HASH = /^#project\/([a-z0-9-]+)$/;

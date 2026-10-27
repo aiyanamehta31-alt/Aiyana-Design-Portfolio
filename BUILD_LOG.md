@@ -4,6 +4,61 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-10-27 · New project: Wiglet, with a live demo of its real scheduler
+
+**Why:** to add my Agentic AI capstone as the first project, with proof you can use: the real scheduling logic running in the page.
+
+**What changed**
+- **A new "Wiglet" project with its own world inside the glass sheet:**
+  - The look comes from the deck and the real widget: deep navy, the blue-to-teal gradient, Space Grotesk with JetBrains Mono labels, fixed blocks blue and flexible blocks teal.
+  - A redrawn blob mascot floats in the sheet's corner. It blinks, bounces when something is placed, and tilts when something doesn't fit.
+  - A floating glass dock shows the five phases.
+- **Phases as a day:** Wake up (the problem), Make a plan, Get to work, Ship it, Tomorrow.
+- **Scenes:**
+  - Three places that never talk.
+  - The question, revealed line by line.
+  - Meet Wiglet and the four rules.
+  - The AI-vs-code pipeline, with AI steps teal and code steps blue.
+  - The agent loop.
+  - Calls I made, not the AI.
+  - What broke, as flip cards.
+  - The process trail in numbers (≈30.5 h, ≈785k tokens, 143 tests, 25 commits) with the Sep 11 to Sep 23 timeline.
+  - From mockup to menu bar.
+  - Your key, your calendar (my email blurred on the Google sign-in screenshot).
+  - The live demo.
+  - Tomorrow.
+- **The live demo:**
+  - **Scheduler port:** `wiglet/scheduler.py` and the parts of `models.py` it needs, ported to `js/wiglet/scheduler.js`.
+  - **Demo parser:** a rule-based stand-in for Whisper and the LLM, labelled as such in the widget, using the agent prompt's own rules and default durations (`js/wiglet/demo-parser.js`).
+  - **Sample day:** DESG319 Lecture, Lunch and UGSEM5 Seminar, locked.
+  - **Inputs:** a text box, six example chips, and voice where the browser supports speech recognition.
+  - **On submit:** Perceive → Reason → Act → Observe light up, blocks slide into place, and updates are announced politely to screen readers.
+  - **Also:** Reset day, and a "View the real scheduler" tab with the original `scheduler.py` next to the port.
+  - **No network:** the demo makes no network calls. Everything is a classic script, so it also works from `file://`.
+- **Tests:** 51 of the 53 tests in `tests/test_scheduler.py` were ported to `js/wiglet/scheduler.test.js`, 65 checks with the parametrised cases. Run `node js/wiglet/scheduler.test.js`: **65 of 65 pass**. The two timezone-only tests are not ported, since the port works in minutes.
+- **Homepage:** Wiglet is now the first card (cover: the demo widget mid-plan and the mascot), followed by Nexo and Codes. The "Project name three" placeholder card is gone.
+- **"Next project" links:** Wiglet → Nexo → Codes → Wiglet.
+- **Shared shell:** worlds can list their own classic scripts (`scripts`), loaded in order before the sheet opens.
+- **Generator:** `tools/embed-wiglet-source.mjs` regenerates `js/wiglet/scheduler-source.js` from the Wiglet repo. It reads only `scheduler.py` and refuses anything key-shaped.
+
+**Security:** none of the Wiglet project's secret files (`.env`, `.env.example`, `credentials.json`, `token.json`) were opened, and nothing from `~/Library/Application Support/Wiglet` was read. Before committing, the portfolio was searched for `gsk_`, `sk-`, `sk-ant-`, `AIza`, `client_secret` and `refresh_token`. The only match is the guard pattern in `tools/embed-wiglet-source.mjs`.
+
+**Files used:**
+- `content/wiglet/Wiglet___Capstone_Presentation.pdf`: all 15 slides read. Slides 4, 12 and 13 exported as WebP.
+- From the Wiglet repo, read only: `wiglet/` (scheduler, models, agent prompt, server serialisation, config), `static/` (`index.html`, `styles.css`, `app.js`, `wiglet.png`), `wiglet_mac/`, `tests/test_scheduler.py`, `BUILD_LOG.md`, `plan.md`, `README.md`, `retro.md`, `MACAPP.md`.
+
+**Checked**
+- Headless Chrome at 1440×900 and 390×844, over http:// and file://, plus reduced motion: no console errors.
+- Every chip works, and Reset works.
+- No network requests while using the demo.
+- The code tab loads both sources.
+- Nexo and Codes still open cleanly.
+
+**Still needed from Aiyana**
+- **The deployed Wiglet URL.** The "Try the real Wiglet" section is written but hidden until `real.liveUrl` in `projects/wiglet.js` is filled in (marked TODO there).
+
+---
+
 ## 2026-10-25 · New project: Codes (live creative-coding sketches)
 
 **Why:** to show my creative coding work as something visitors can play with, not as videos or screenshots.

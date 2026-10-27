@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
   <link rel="stylesheet" href="css/style.css?v=3" />
-  <link rel="stylesheet" href="css/case-study.css?v=5" />
+  <link rel="stylesheet" href="css/case-study.css?v=6" />
 
   <!-- Hide reveal-on-scroll elements only when motion is allowed.
        js/main.js removes this class straight away if GSAP failed to load. -->
@@ -124,9 +124,21 @@
         REUSABLE PROJECT CARD
         Copy one <article class="project-card"> per project and keep the class names.
         A finished case study links with href="#project/<slug>" data-project="<slug>"
-        and opens from projects/<slug>.js. PLACEHOLDER: the other five are still "#".
+        and opens from projects/<slug>.js. Order: Wiglet, Nexo, Codes. PLACEHOLDER: the other three are still "#".
       -->
       <div class="work-grid">
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
+            <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
+                 alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#project/wiglet" data-project="wiglet">Wiglet</a></h3>
+            <p class="project-card__desc">An ambient daily planner that already knows your day. My Agentic AI capstone, with a live demo of its real scheduler.</p>
+            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
+          </div>
+        </article>
+
         <article class="project-card" data-card>
           <figure class="project-card__media">
             <img src="assets/images/projects/nexo/card-cover.webp" width="905" height="566" loading="lazy"
@@ -148,18 +160,6 @@
             <h3 class="project-card__title"><a href="#project/codes" data-project="codes">Codes</a></h3>
             <p class="project-card__desc">Creative coding experiments in JavaScript: shapes, motion, type and space.</p>
             <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
-          </div>
-        </article>
-
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/project-3-cover.svg" width="1600" height="1000" loading="lazy"
-                 alt="Placeholder cover: large letterforms beside four colour swatches." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#">Project name three</a></h3>
-            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
-            <p class="project-card__meta"><span>Visual identity</span><span>2025</span></p>
           </div>
         </article>
 
@@ -266,6 +266,6 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
   <script src="js/main.js?v=3" defer></script>
   <!-- Case studies: the glass sheet; each project's data loads on demand from projects/<slug>.js -->
-  <script src="js/case-study.js?v=5" defer></script>
+  <script src="js/case-study.js?v=6" defer></script>
 </body>
 </html>

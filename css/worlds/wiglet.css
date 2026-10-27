@@ -1,0 +1,486 @@
+/* =====================================================================
+   WIGLET · its own world inside the glass sheet
+   The look comes from the Wiglet deck and the real widget (static/ in the
+   Wiglet repo): deep navy, the blue-to-teal gradient, the blob mascot,
+   mono labels, fixed = blue and flexible = teal. The demo reuses the
+   widget's own CSS (scoped under .wg-app) so it looks like the real app.
+   taste-skill-ignore: glass, gradient wordmark, mono labels and glows are
+   the product's own identity and requested by the owner (DESIGN.md).
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. TOKENS
+   --------------------------------------------------------------------- */
+:root {
+  /* From the widget's styles.css */
+  --wg-bg: #0a0e1a;
+  --wg-card: rgba(15, 23, 42, 0.7);
+  --wg-card-line: rgba(147, 197, 253, 0.15);
+  --wg-ink: #e8f0ff;
+  --wg-ink-dim: #8fa3c0;          /* 7.6:1 on the navy glass */
+  --wg-ink-faint: #6b809f;        /* decoration only */
+  --wg-fixed: #3b82f6;
+  --wg-flexible: #2dd4bf;
+  --wg-open-ring: rgba(143, 163, 192, 0.55);
+  --wg-accent: #cfe4ff;
+  --wg-warn: #ffb27a;
+  /* From the deck */
+  --wg-blue: #5b8cff;
+  --wg-teal: #5eead4;
+  --wg-gradient: linear-gradient(100deg, #5b8cff 0%, #5fb8f0 45%, #5eead4 100%);
+
+  /* Glass tone read by js/case-study.js: ink 15:1, accent teal 12:1 */
+  --cs-navy: 10, 14, 26;  --cs-alpha-navy: 0.95;  --cs-ink-navy: #e8f0ff;  --cs-amber-navy: #5eead4;
+
+  --wg-sans: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --wg-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --wg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --wg-max: 1240px;
+  --wg-radius: 16px;
+}
+
+/* ---------------------------------------------------------------------
+   2. SHEET, TYPE, CARDS
+   --------------------------------------------------------------------- */
+.cs-sheet[data-world="wiglet"] { font-family: var(--wg-sans); }
+.cs-sheet[data-world="wiglet"] .cs-bar__name { font-family: var(--wg-sans); font-weight: 700; font-size: 1.125rem; }
+
+.wg-world { position: relative; padding-bottom: 120px; color: var(--wg-ink); }
+.wg-world [hidden] { display: none !important; }
+.wg-wrap { width: min(100%, calc(var(--wg-max) + var(--cs-gutter) * 2)); margin: 0 auto; padding: 0 var(--cs-gutter); }
+.wg-world img { display: block; max-width: 100%; height: auto; }
+
+.wg-mono { font-family: var(--wg-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--wg-teal); }
+
+.wg-phase { margin-bottom: clamp(28px, 4vw, 56px); }
+.wg-phase__name {
+  font-size: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  background: var(--wg-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  outline: none;
+  width: fit-content;
+}
+.wg-phase__real { margin-top: 10px; font-family: var(--wg-mono); font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wg-ink-dim); }
+
+.wg-h { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.75rem); font-weight: 600; letter-spacing: -0.035em; line-height: 1.02; max-width: 22ch; text-wrap: balance; }
+.wg-h--sub { margin-top: clamp(72px, 9vw, 128px); }
+.wg-text { font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); line-height: 1.55; color: var(--wg-ink); max-width: 38em; }
+.wg-close { margin-top: 28px; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; max-width: 40em; }
+.wg-source { margin-top: 18px; font-family: var(--wg-mono); font-size: 0.75rem; color: var(--wg-ink-dim); }
+
+.wg-card {
+  border-radius: var(--wg-radius);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px var(--wg-card-line); /* taste-skill-ignore: the deck's card edge */
+  padding: 22px 24px;
+}
+.wg-card h5 { font-size: 1.1875rem; font-weight: 600; letter-spacing: -0.015em; }
+.wg-card p { margin-top: 8px; font-size: 1rem; line-height: 1.5; color: var(--wg-ink-dim); }
+
+.wg-zoom { display: block; width: 100%; padding: 0; border: 0; border-radius: 14px; overflow: hidden; background: transparent; cursor: zoom-in; }
+.wg-zoom img { width: 100%; transition: transform 800ms var(--wg-ease); }
+@media (hover: hover) and (pointer: fine) { .wg-zoom:hover img { transform: scale(1.025); } }
+
+.wg-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--wg-gradient);
+  color: #06101f;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 300ms var(--wg-ease);
+}
+.wg-cta:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .wg-cta:hover { transform: translateY(-2px); } }
+.wg-btn {
+  min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px;
+  background: rgba(45, 212, 191, 0.16); box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.45);
+  color: #d6fff7; font-family: var(--wg-mono); font-size: 0.75rem; cursor: pointer;
+}
+.cs-sheet[data-world="wiglet"] :focus-visible { outline: 2px solid var(--wg-teal); outline-offset: 3px; }
+
+/* ---------------------------------------------------------------------
+   3. COVER
+   --------------------------------------------------------------------- */
+.wg-cover { padding-top: clamp(28px, 5vw, 72px); }
+.wg-cover__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px var(--cs-gap); align-items: center; }
+.wg-cover__text { grid-column: 1 / 8; }
+.wg-cover__kicker { margin-bottom: 18px; }
+.wg-wordmark {
+  font-size: clamp(5rem, 2rem + 12vw, 13rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.85;
+  background: var(--wg-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+  padding-bottom: 0.08em;
+}
+.wg-cover__tagline { margin-top: 22px; font-size: clamp(1.375rem, 1rem + 1.4vw, 2.125rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; max-width: 22ch; }
+.wg-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 28px; }
+.wg-tags li { padding: 6px 14px; border-radius: 999px; background: rgba(59, 130, 246, 0.14); box-shadow: inset 0 0 0 1px rgba(91, 140, 255, 0.35); font-size: 0.875rem; }
+.wg-cover__mascot { grid-column: 8 / 13; justify-self: center; width: min(100%, 380px); aspect-ratio: 1; }
+.wg-cover__mascot .wg-blob { width: 100%; height: 100%; filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.55)) drop-shadow(0 0 90px rgba(45, 212, 191, 0.3)); }
+.wg-facts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px var(--cs-gap); margin-top: clamp(36px, 5vw, 64px); }
+.wg-facts > div:nth-child(4) { grid-column: span 2; }
+.wg-facts > div:nth-child(5) { grid-column: 1 / -1; }
+.wg-facts dd { margin: 6px 0 0; font-size: 1rem; line-height: 1.45; }
+
+/* The mascot: blinks, floats, and reacts in the demo */
+.wg-blob { display: block; overflow: visible; }
+.wg-blob__eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: wg-blink 5.2s infinite; }
+@keyframes wg-blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+.wg-cover__mascot .wg-blob { animation: wg-float 6s ease-in-out infinite; }
+@keyframes wg-float { 50% { transform: translateY(-14px); } }
+
+/* ---------------------------------------------------------------------
+   4. SCENES
+   --------------------------------------------------------------------- */
+/* Wake up: three places that never talk */
+.wg-three { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 5vw, 72px); margin-top: 40px; }
+.wg-three__links { position: absolute; left: 10%; right: 10%; top: 50%; width: 80%; height: 20px; overflow: visible; pointer-events: none; }
+.wg-three__link { fill: none; stroke: var(--wg-ink-dim); stroke-width: 2; stroke-dasharray: 4 6; opacity: 0.5; }
+.wg-statement { margin-top: clamp(40px, 5vw, 64px); font-size: clamp(1.375rem, 1rem + 1.2vw, 2rem); line-height: 1.3; max-width: 30ch; }
+.wg-statement strong { display: block; font-weight: 600; color: var(--wg-teal); }
+
+/* Make a plan: the question on the deck's gradient field */
+.wg-field {
+  border-radius: 28px;
+  padding: clamp(36px, 6vw, 96px) clamp(24px, 5vw, 80px);
+  background: linear-gradient(130deg, #2f5ce0 0%, #3c7fd8 55%, #3aa18d 100%);
+  color: #ffffff;
+}
+.wg-field__label { color: rgba(255, 255, 255, 0.85); }
+.wg-question { margin-top: 18px; font-size: clamp(2.25rem, 1.2rem + 4vw, 5rem); font-weight: 600; letter-spacing: -0.04em; line-height: 1.02; max-width: 16ch; }
+.wg-question__line { display: inline; }
+.wg-field__sub { margin-top: 26px; font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.5; max-width: 36em; }
+
+.wg-meet { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
+.wg-traits { display: grid; gap: 20px; margin-top: 28px; }
+.wg-traits h5 { font-size: 1.25rem; font-weight: 600; }
+.wg-traits h5::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 10px; border-radius: 50%; background: var(--wg-gradient); vertical-align: 2px; }
+.wg-traits p { margin-top: 4px; color: var(--wg-ink-dim); font-size: 1.0625rem; line-height: 1.5; }
+
+.wg-rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.wg-rule__icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 14px; border-radius: 12px; background: rgba(59, 130, 246, 0.14); color: var(--wg-teal); }
+.wg-rule__icon svg { width: 22px; height: 22px; }
+.wg-lock__shackle { transform-origin: 16px 10px; transition: transform 600ms var(--wg-ease) 300ms; }
+.is-motion .wg-rule--lock:not(.is-in) .wg-lock__shackle { transform: translateY(-3px) rotate(18deg); }
+.wg-flow__block { transition: transform 900ms var(--wg-ease) 300ms; }
+.is-motion .wg-rule--flow:not(.is-in) .wg-flow__block { transform: translateX(9px); }
+
+/* Get to work: the pipeline */
+.wg-key { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 22px; font-size: 0.9375rem; color: var(--wg-ink-dim); }
+.wg-key__ai, .wg-key__code { padding: 3px 10px; border-radius: 999px; font-family: var(--wg-mono); font-size: 0.75rem; font-weight: 600; }
+.wg-key__ai { background: rgba(45, 212, 191, 0.16); color: var(--wg-teal); }
+.wg-key__code { background: rgba(59, 130, 246, 0.18); color: #9cc0ff; }
+.wg-pipe { --at: -1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 28px; position: relative; }
+.wg-pipe__step {
+  position: relative;
+  padding: 18px;
+  border-radius: var(--wg-radius);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px var(--wg-card-line);
+  transition: background-color 400ms ease, box-shadow 400ms ease, transform 400ms var(--wg-ease);
+}
+.wg-pipe__step.is-ai { --tone: 45, 212, 191; }
+.wg-pipe__step.is-code { --tone: 59, 130, 246; }
+.wg-pipe__step::before { content: ""; position: absolute; left: 18px; right: 18px; top: 0; height: 3px; border-radius: 0 0 3px 3px; background: rgb(var(--tone)); }
+.wg-pipe__step.is-active { background: rgba(var(--tone), 0.14); box-shadow: inset 0 0 0 1px rgba(var(--tone), 0.6), 0 0 32px -8px rgba(var(--tone), 0.6); transform: translateY(-4px); }
+.wg-pipe__n { color: var(--wg-ink-dim); }
+.wg-pipe__by { margin-top: 10px; font-size: 1.0625rem; font-weight: 600; }
+.wg-pipe__by span { margin-right: 6px; padding: 2px 8px; border-radius: 999px; background: rgba(var(--tone), 0.18); color: rgb(var(--tone)); font-family: var(--wg-mono); font-size: 0.6875rem; vertical-align: 2px; }
+.wg-pipe__step.is-code .wg-pipe__by span { color: #9cc0ff; }
+.wg-pipe__what { margin-top: 8px; font-size: 0.9375rem; line-height: 1.45; color: var(--wg-ink-dim); }
+.wg-pipe__out { margin-top: 12px; padding: 8px 10px; border-radius: 10px; background: rgba(0, 0, 0, 0.3); font-family: var(--wg-mono); font-size: 0.75rem; line-height: 1.45; color: var(--wg-ink); }
+
+/* The agent loop */
+.wg-loop { position: relative; width: min(100%, 680px); aspect-ratio: 1; margin: 32px auto 0; }
+.wg-loop__ring { position: absolute; inset: 8%; width: 84%; height: 84%; overflow: visible; }
+.wg-loop__ring circle:first-child { fill: none; stroke: rgba(147, 197, 253, 0.25); stroke-width: 2; stroke-dasharray: 3 8; }
+.wg-loop__spark { fill: var(--wg-teal); filter: drop-shadow(0 0 8px rgba(94, 234, 212, 0.9)); transform-origin: 200px 200px; animation: wg-orbit 6s linear infinite; }
+@keyframes wg-orbit { to { transform: rotate(360deg); } }
+.wg-loop__nodes { position: absolute; inset: 0; }
+.wg-loop__node {
+  position: absolute;
+  width: min(46%, 250px);
+  padding: 16px 18px;
+  border-radius: var(--wg-radius);
+  background: rgba(10, 14, 26, 0.92);
+  box-shadow: inset 0 0 0 1px var(--wg-card-line);
+  transform: translate(-50%, -50%);
+  transition: box-shadow 400ms ease, background-color 400ms ease;
+}
+.wg-loop__node--0 { left: 50%; top: 9%; }
+.wg-loop__node--1 { left: 88%; top: 50%; }
+.wg-loop__node--2 { left: 50%; top: 91%; }
+.wg-loop__node--3 { left: 12%; top: 50%; }
+.wg-loop__node h5 { margin-top: 4px; font-size: 1.0625rem; font-weight: 600; }
+.wg-loop__node p:last-child { margin-top: 4px; font-size: 0.875rem; line-height: 1.4; color: var(--wg-ink-dim); }
+.wg-loop__node.is-active { background: rgba(20, 40, 70, 0.96); box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.7), 0 0 36px -10px rgba(94, 234, 212, 0.7); }
+
+/* Calls I made */
+.wg-calls { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
+.wg-calls .wg-text { margin-top: 20px; }
+.wg-calls__list ul { display: grid; gap: 12px; margin-top: 16px; }
+.wg-tick { display: flex; align-items: flex-start; gap: 12px; font-size: 1.0625rem; line-height: 1.4; }
+.wg-tick svg { flex: none; width: 20px; height: 20px; margin-top: 2px; fill: none; stroke: var(--wg-teal); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 20; stroke-dashoffset: 0; transition: stroke-dashoffset 500ms var(--wg-ease); transition-delay: calc(var(--i, 0) * 140ms + 200ms); }
+.is-motion .wg-tick:not(.is-in) svg { stroke-dashoffset: 20; }
+
+/* What broke: flip cards */
+.wg-flips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.wg-flip { display: block; width: 100%; min-height: 200px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; perspective: 1200px; }
+.wg-flip__inner { position: relative; display: grid; min-height: 200px; transform-style: preserve-3d; transition: transform 700ms var(--wg-ease); }
+.wg-flip__face { grid-area: 1 / 1; display: grid; align-content: start; gap: 10px; padding: 22px 24px; border-radius: var(--wg-radius); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.wg-flip__front { background: rgba(255, 178, 122, 0.06); box-shadow: inset 0 0 0 1px rgba(255, 178, 122, 0.3); }
+.wg-flip__back { background: rgba(45, 212, 191, 0.08); box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.4); transform: rotateY(180deg); }
+.wg-flip[aria-pressed="true"] .wg-flip__inner { transform: rotateY(180deg); }
+@media (hover: hover) and (pointer: fine) { .wg-flip:hover .wg-flip__inner { transform: rotateY(180deg); } .wg-flip[aria-pressed="true"]:hover .wg-flip__inner { transform: none; } }
+.wg-flip__title { font-size: 1.1875rem; font-weight: 600; }
+.wg-flip__tag { width: fit-content; padding: 2px 10px; border-radius: 999px; font-family: var(--wg-mono); font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+.wg-flip__tag.is-broke { background: rgba(255, 178, 122, 0.16); color: var(--wg-warn); }
+.wg-flip__tag.is-fix { background: rgba(45, 212, 191, 0.16); color: var(--wg-teal); }
+.wg-flip__text { font-size: 1rem; line-height: 1.5; color: var(--wg-ink); }
+
+/* The process trail */
+.wg-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 28px; }
+.wg-stat { display: block; font-size: clamp(2.5rem, 1.6rem + 3vw, 4.25rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; background: var(--wg-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.wg-stat__label { display: block; margin-top: 10px; color: var(--wg-ink-dim); }
+.wg-ship { position: relative; display: grid; gap: 0; margin-top: 36px; padding-left: 28px; }
+.wg-ship::before { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: linear-gradient(var(--wg-blue), var(--wg-teal)); transform-origin: 0 0; transition: transform 1600ms var(--wg-ease); }
+.is-motion .wg-ship:not(.is-in)::before { transform: scaleY(0); }
+.wg-ship li { position: relative; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding: 12px 0; }
+.wg-ship li::before { content: ""; position: absolute; left: -27px; top: 18px; width: 12px; height: 12px; border-radius: 50%; background: var(--wg-bg); box-shadow: inset 0 0 0 2px var(--wg-teal); }
+.wg-ship__when { padding-top: 3px; }
+.wg-ship__what { font-size: 1.0625rem; line-height: 1.45; }
+
+/* Ship it */
+.wg-mm { display: grid; grid-template-columns: minmax(0, 3fr) auto minmax(0, 8fr); gap: clamp(16px, 3vw, 40px); align-items: center; margin-top: 28px; }
+.wg-mm figcaption { margin-top: 12px; }
+.wg-mm .wg-text { margin-top: 8px; }
+.wg-mm__arrow { font-size: 2.5rem; color: var(--wg-teal); }
+.wg-keys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 28px; align-items: start; }
+.wg-keys li > .wg-mono { margin-top: 14px; }
+.wg-keys li > p:last-child { margin-top: 6px; font-size: 1rem; line-height: 1.5; color: var(--wg-ink-dim); }
+
+/* Tomorrow */
+.wg-next3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.wg-nextlink { display: grid; gap: 8px; margin-top: clamp(64px, 8vw, 120px); color: inherit; text-decoration: none; width: fit-content; }
+.wg-nextlink strong { font-size: clamp(3rem, 1.6rem + 6vw, 7rem); font-weight: 700; letter-spacing: -0.05em; line-height: 0.95; background: var(--wg-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; transition: transform 500ms var(--wg-ease); }
+@media (hover: hover) and (pointer: fine) { .wg-nextlink:hover strong { transform: translateX(12px); } }
+.wg-back { display: inline-block; margin-top: 32px; color: var(--wg-ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--wg-teal); text-underline-offset: 6px; text-decoration-thickness: 2px; }
+.wg-real { display: grid; gap: 18px; justify-items: start; }
+
+/* ---------------------------------------------------------------------
+   5. THE LIVE DEMO
+   --------------------------------------------------------------------- */
+.wg-demo__head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 24px var(--cs-gap); align-items: end; }
+.wg-demo__tabs { display: inline-flex; gap: 4px; padding: 4px; margin-top: 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); }
+.wg-demo__tabs [role="tab"] { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--wg-ink); font-family: var(--wg-mono); font-size: 0.8125rem; cursor: pointer; }
+.wg-demo__tabs [aria-selected="true"] { background: var(--wg-gradient); color: #06101f; font-weight: 600; }
+.wg-demo { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 20px clamp(24px, 4vw, 56px); margin-top: 24px; align-items: start; }
+.wg-steps { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.wg-steps li { position: relative; padding: 6px 14px 6px 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.04); box-shadow: inset 0 0 0 1px var(--wg-card-line); font-family: var(--wg-mono); font-size: 0.75rem; color: var(--wg-ink-dim); transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease; }
+.wg-steps li::before { content: ""; position: absolute; left: 12px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--wg-ink-faint); }
+.wg-steps li.is-on { background: rgba(45, 212, 191, 0.16); box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.6); color: var(--wg-ink); }
+.wg-steps li.is-on::before { background: var(--wg-teal); box-shadow: 0 0 8px var(--wg-teal); }
+.wg-steps li.is-done::before { background: var(--wg-teal); }
+
+.wg-chips { grid-column: 2; grid-row: 2; }
+.wg-chips ul { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.wg-chip {
+  min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(45, 212, 191, 0.20));
+  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.32);
+  color: #e6f6ff; font-family: var(--wg-sans); font-size: 0.9375rem; cursor: pointer;
+  transition: transform 200ms var(--wg-ease), box-shadow 200ms ease;
+}
+.wg-chip:active { transform: scale(0.96); }
+@media (hover: hover) and (pointer: fine) { .wg-chip:hover { box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.8); } }
+.wg-demo__note { grid-column: 2; font-size: 0.9375rem; line-height: 1.5; color: var(--wg-ink-dim); max-width: 36em; }
+.wg-demo .wg-app { grid-column: 1; grid-row: 2 / span 4; }
+
+/* The real widget's card, rows and footer (static/styles.css), scoped */
+.wg-app { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: var(--wg-ink); -webkit-font-smoothing: antialiased; }
+.wg-app .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border-radius: 28px;
+  background: var(--wg-card);
+  border: 1px solid var(--wg-card-line); /* taste-skill-ignore: the widget's own edge */
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+.wg-app .head { display: flex; align-items: center; gap: 12px; }
+.wg-app .wiglet-mini { width: 40px; height: 40px; flex: none; }
+.wg-app .wiglet-mini .wg-blob { width: 100%; height: 100%; }
+.wg-app .titles { flex: 1; min-width: 0; }
+.wg-app__title { margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; }
+.wg-app .icon { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--wg-ink-dim); cursor: pointer; font-size: 15px; transition: background 140ms ease, color 140ms ease; }
+.wg-app .icon svg { width: 17px; height: 17px; }
+.wg-app .icon:hover { background: rgba(255, 255, 255, 0.07); color: var(--wg-accent); }
+.wg-app .icon.ghost { display: inline-flex; gap: 6px; width: auto; height: 32px; padding: 0 10px; font-size: 12px; color: var(--wg-ink-dim); }
+.wg-app .banner { margin: 12px 0 0; padding: 8px 11px; border-radius: 11px; font-size: 12px; line-height: 1.45; background: rgba(59, 130, 246, 0.12); color: #b9d3ff; border: 1px solid rgba(59, 130, 246, 0.24); }
+.wg-app .timeline { margin-top: 14px; }
+.wg-app .row { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px; margin: 0 -8px; border-radius: 10px; }
+.wg-app .row:hover { background: rgba(255, 255, 255, 0.035); }
+.wg-app .row.is-new { animation: wg-glow 1.6s ease-out; }
+@keyframes wg-glow { from { background: rgba(45, 212, 191, 0.16); } to { background: transparent; } }
+.wg-app .when { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--wg-ink-dim); white-space: nowrap; }
+.wg-app .label { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 13.5px; color: var(--wg-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wg-app .row.open .label { color: var(--wg-ink-dim); }
+.wg-lockmark { flex: none; display: inline-grid; color: #9cc0ff; }
+.wg-lockmark svg { width: 13px; height: 13px; }
+.wg-app .kind { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--wg-ink-dim); white-space: nowrap; }
+.wg-app .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; }
+.wg-app .dot.fixed { background: var(--wg-fixed); box-shadow: 0 0 9px rgba(59, 130, 246, 0.6); }
+.wg-app .dot.flexible { background: var(--wg-flexible); box-shadow: 0 0 9px rgba(45, 212, 191, 0.55); }
+.wg-app .dot.open { background: transparent; border: 1.5px solid var(--wg-open-ring); }
+.wg-app .unplaced { margin-top: 10px; font-size: 12px; color: var(--wg-warn); }
+.wg-app .unplaced ul { margin: 5px 0 0; padding-left: 17px; list-style: disc; }
+.wg-app .unplaced li { margin-bottom: 2px; }
+.wg-app .foot { margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--wg-card-line); } /* taste-skill-ignore: the widget's own divider */
+.wg-app .footrow { display: flex; align-items: center; gap: 10px; }
+.wg-app .summary { flex: 1; min-width: 0; margin: 0; font-size: 12.5px; color: var(--wg-ink-dim); }
+.wg-app .actions { display: flex; gap: 2px; flex: none; }
+.wg-app .actions .icon { color: var(--wg-accent); opacity: 0.8; }
+.wg-app .actions .icon.recording { color: #ff7a7a; opacity: 1; background: rgba(255, 86, 86, 0.14); }
+.wg-app .heard { margin: 9px 0 0; font-size: 12px; font-style: italic; color: var(--wg-flexible); }
+.wg-app .composer { display: flex; gap: 7px; align-items: center; margin-top: 10px; }
+.wg-app .composer input { flex: 1; min-width: 0; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--wg-card-line); background: rgba(0, 0, 0, 0.26); color: var(--wg-ink); font-size: 13px; }
+.wg-app .composer input::placeholder { color: var(--wg-ink-dim); }
+.wg-app .composer input:focus { outline: none; border-color: rgba(45, 212, 191, 0.55); }
+.wg-app .send { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--wg-card-line); background: rgba(255, 255, 255, 0.05); color: var(--wg-accent); cursor: pointer; font-size: 15px; }
+.wg-app .send:hover { border-color: rgba(45, 212, 191, 0.55); }
+
+/* The code tab: the original next to the port */
+.wg-code { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.wg-code__pane { min-width: 0; border-radius: var(--wg-radius); background: rgba(0, 0, 0, 0.38); box-shadow: inset 0 0 0 1px var(--wg-card-line); overflow: hidden; }
+.wg-code__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 10px 10px 16px; background: rgba(255, 255, 255, 0.04); }
+.wg-code__bar .wg-mono { letter-spacing: 0.04em; text-transform: none; color: var(--wg-ink-dim); }
+.wg-code pre { max-height: min(72vh, 760px); overflow: auto; padding: 16px 18px 22px; font-family: var(--wg-mono); font-size: 0.75rem; line-height: 1.6; color: var(--wg-ink); overscroll-behavior: contain; }
+.tok-c { color: #8193b2; font-style: italic; }
+.tok-s { color: #8ef0d8; }
+.tok-n { color: #ffb27a; }
+.tok-k { color: #93bbff; }
+.tok-f { color: #ffffff; font-weight: 600; }
+
+/* ---------------------------------------------------------------------
+   6. THE GUIDE AND THE DOCK
+   --------------------------------------------------------------------- */
+.wg-guide {
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
+  z-index: 5;
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 16px rgba(59, 130, 246, 0.55)) drop-shadow(0 0 38px rgba(45, 212, 191, 0.32));
+  animation: wg-breathe 3.6s ease-in-out infinite;
+}
+.wg-guide .wg-blob { width: 100%; height: 100%; }
+@keyframes wg-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+.wg-guide.is-bounce { animation: wg-bounce 700ms var(--wg-ease); }
+.wg-guide.is-tilt { animation: wg-tilt 900ms var(--wg-ease); }
+@keyframes wg-bounce { 0% { transform: none; } 30% { transform: translateY(-18px) scale(1.06, 0.94); } 55% { transform: translateY(0) scale(0.94, 1.06); } 75% { transform: translateY(-6px); } 100% { transform: none; } }
+@keyframes wg-tilt { 0% { transform: none; } 30% { transform: rotate(-16deg); } 60% { transform: rotate(10deg); } 100% { transform: none; } }
+
+.wg-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 4;
+  transform: translateX(-50%);
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.78);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: inset 0 0 0 1px var(--wg-card-line), 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+}
+.wg-dock ul { display: flex; }
+.wg-dock button { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--wg-ink); font-family: var(--wg-mono); font-size: 0.75rem; cursor: pointer; transition: background-color 200ms ease, padding 500ms var(--wg-ease); }
+.wg-dock__dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--wg-ink-dim); transition: transform 400ms var(--wg-ease), background-color 300ms ease; }
+.wg-dock button[aria-current="step"] .wg-dock__dot { background: var(--wg-teal); transform: scale(1.5); box-shadow: 0 0 8px var(--wg-teal); }
+.wg-dock__name { max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width 600ms var(--wg-ease), opacity 300ms ease, margin 600ms var(--wg-ease); }
+.wg-dock.is-open .wg-dock__name, .wg-dock:focus-within .wg-dock__name { max-width: 12em; margin-left: 8px; opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .wg-dock:hover .wg-dock__name { max-width: 12em; margin-left: 8px; opacity: 1; } .wg-dock button:hover { background: rgba(255, 255, 255, 0.08); } }
+
+/* ---------------------------------------------------------------------
+   7. REVEALS (only with motion; content is visible without them)
+   --------------------------------------------------------------------- */
+.is-motion .wg-in { opacity: 0; transform: translateY(24px); transition: opacity 800ms var(--wg-ease), transform 800ms var(--wg-ease); transition-delay: calc(var(--i, 0) * 90ms); }
+.is-motion .wg-in.is-in { opacity: 1; transform: none; }
+.is-motion .wg-tick.wg-in { transition-delay: calc(var(--i, 0) * 140ms); }
+.is-motion [data-lines] .wg-question__line { display: inline-block; opacity: 0; transform: translateY(0.4em); transition: opacity 700ms var(--wg-ease), transform 700ms var(--wg-ease); transition-delay: calc(var(--i) * 260ms); }
+.is-motion [data-lines].is-in .wg-question__line { opacity: 1; transform: none; }
+/* Wake up: the cards drift apart and the links between them fall short */
+.is-motion .wg-three__card { transition-property: opacity, transform; }
+.is-motion [data-three] .wg-three__link { stroke-dashoffset: 0; transition: opacity 900ms ease 900ms, transform 900ms var(--wg-ease) 900ms; }
+.is-motion [data-three].is-in .wg-three__link--a { opacity: 0.18; transform: translateY(18px) rotate(4deg); }
+.is-motion [data-three].is-in .wg-three__link--b { opacity: 0.18; transform: translateY(-14px) rotate(-3deg); }
+.is-motion [data-three].is-in .wg-three__card:nth-child(1) { transform: translateX(-8px) rotate(-1.5deg); }
+.is-motion [data-three].is-in .wg-three__card:nth-child(3) { transform: translateX(8px) rotate(1.5deg); }
+
+/* ---------------------------------------------------------------------
+   8. RESPONSIVE
+   --------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .wg-cover__text { grid-column: 1 / -1; }
+  .wg-cover__mascot { grid-column: 1 / -1; grid-row: 1; width: min(60%, 260px); }
+  .wg-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wg-facts > div:nth-child(4) { grid-column: 1 / -1; }
+  .wg-pipe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wg-pipe__step:last-child { grid-column: 1 / -1; }
+  .wg-meet, .wg-calls { grid-template-columns: 1fr; }
+  .wg-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wg-demo { grid-template-columns: 1fr; }
+  .wg-demo .wg-app, .wg-chips, .wg-demo__note { grid-column: 1; grid-row: auto; }
+  .wg-code { grid-template-columns: 1fr; }
+  .wg-demo__head { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .wg-three, .wg-rules, .wg-flips, .wg-keys, .wg-next3 { grid-template-columns: 1fr; }
+  .wg-three__links { display: none; }
+  .wg-pipe { grid-template-columns: 1fr; }
+  .wg-mm { grid-template-columns: 1fr; }
+  .wg-mm__arrow { transform: rotate(90deg); justify-self: center; }
+  .wg-mm__mock { width: min(70%, 260px); justify-self: center; }
+  .wg-loop { aspect-ratio: auto; }
+  .wg-loop__ring { display: none; }
+  .wg-loop__nodes { position: static; display: grid; gap: 10px; }
+  .wg-loop__node { position: static; width: auto; transform: none; }
+  .wg-ship li { grid-template-columns: 1fr; gap: 4px; }
+  .wg-app .card { padding: 20px; border-radius: 22px; }
+  .wg-app .row { grid-template-columns: 78px minmax(0, 1fr); row-gap: 2px; }
+  .wg-app .kind { grid-column: 2; }
+  .wg-guide { width: 48px; height: 48px; right: 12px; bottom: 74px; }
+  .wg-dock { bottom: 12px; max-width: calc(100% - 24px); }
+  .wg-dock button { min-width: 40px; padding: 0 10px; }
+  .wg-dock.is-open button:not([aria-current="step"]) .wg-dock__name { max-width: 0; margin-left: 0; opacity: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   9. FALLBACKS
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce) {
+  .wg-dock, .wg-app .card { -webkit-backdrop-filter: none; backdrop-filter: none; background: #0f172a; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wg-blob__eyes, .wg-cover__mascot .wg-blob, .wg-loop__spark, .wg-guide, .wg-app .row.is-new { animation: none !important; }
+  .wg-flip__inner, .wg-zoom img, .wg-cta, .wg-chip, .wg-dock *, .wg-pipe__step, .wg-loop__node { transition: none !important; }
+}

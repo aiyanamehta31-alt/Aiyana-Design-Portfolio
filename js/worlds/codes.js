@@ -122,14 +122,17 @@
       '</div></section>';
   }
 
-  function closeHTML() {
+  function closeHTML(p) {
+    var n = p.next;
+    var link = n && /^[a-z0-9-]+$/.test(n.slug)
+      ? '<a class="cd-next" href="#project/' + esc(n.slug) + '"><span>Next project</span><strong>' + esc(n.title) + ' →</strong></a>' : '';
     return '<section class="cs-section cd-s cd-close" id="cs-next" data-tone="night" aria-label="Next project">' +
-      '<div class="cd-wrap"><a class="cd-back" href="#work" data-cs-back>Back to all work</a></div></section>';
+      '<div class="cd-wrap">' + link + '<a class="cd-back" href="#work" data-cs-back>Back to all work</a></div></section>';
   }
 
   function render(p) {
     P = p;
-    var html = '<div class="cd-world">' + coverHTML(p) + p.sketches.map(sketchHTML).join('') + closeHTML() + '</div>';
+    var html = '<div class="cd-world">' + coverHTML(p) + p.sketches.map(sketchHTML).join('') + closeHTML(p) + '</div>';
     P = null;
     return html;
   }

@@ -25,7 +25,7 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '5';
+  var DATA_VERSION = '6';
   var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
   var HASH = /^#project\/([a-z0-9-]+)$/;
@@ -451,6 +451,17 @@
     return (have ? Promise.resolve() : addScript(WORLD_DIR + name + '.js?v=' + DATA_VERSION)).then(function () {
       var w = window.CASE_WORLDS && window.CASE_WORLDS[name];
       if (!w) throw new Error('No world in ' + name);
+      // A world's own classic scripts, in order (each may need the one before).
+      return (w.scripts || []).reduce(function (chain, path) {
+        return chain.then(function () {
+          if (document.querySelector('script[data-world-script="' + path + '"]')) return null;
+          return addScript(path + '?v=' + DATA_VERSION).then(function () {
+            var tag = document.querySelector('script[src^="' + path + '?"]');
+            if (tag) tag.setAttribute('data-world-script', path);
+          });
+        });
+      }, Promise.resolve()).then(function () { return w; });
+    }).then(function (w) {
       return Promise.all([w.css ? addStyle(w.css + '?v=' + DATA_VERSION) : null, w.fonts ? addStyle(w.fonts) : null, w.ready ? w.ready() : null]);
     }).then(function () { return p; });
   }

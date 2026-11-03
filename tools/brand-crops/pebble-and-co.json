@@ -1,0 +1,7 @@
+[
+  { "name": "logo-primary", "from": "pebble_flat_lay.png", "x": 400, "y": 490, "w": 830, "h": 990 },
+  { "name": "logo-mascot", "from": "pebble_icon_texture.png", "x": 330, "y": 610, "w": 1040, "h": 840 },
+  { "name": "logo-bubble", "from": "pebble_logo_tile.png", "x": 150, "y": 600, "w": 1400, "h": 900 },
+  { "name": "logo-script", "from": "pebble_product_shot.png", "x": 380, "y": 1240, "w": 310, "h": 225 },
+  { "name": "logo-bag", "from": "pebble_lifestyle_detail.png", "x": 1160, "y": 260, "w": 430, "h": 380 }
+]

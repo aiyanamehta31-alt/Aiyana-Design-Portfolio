@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
-  <link rel="stylesheet" href="css/style.css?v=3" />
-  <link rel="stylesheet" href="css/case-study.css?v=7" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
+  <link rel="stylesheet" href="css/case-study.css?v=8" />
 
   <!-- Hide reveal-on-scroll elements only when motion is allowed.
        js/main.js removes this class straight away if GSAP failed to load. -->
@@ -124,21 +124,10 @@
         REUSABLE PROJECT CARD
         Copy one <article class="project-card"> per project and keep the class names.
         A finished case study links with href="#project/<slug>" data-project="<slug>"
-        and opens from projects/<slug>.js. Order: Wiglet, Nexo, Codes. PLACEHOLDER: the other three are still "#".
+        and opens from projects/<slug>.js. Selected work shows three (Nexo, Wiglet, Codes);
+        every project, Branding included, is in the All projects view below the footer.
       -->
       <div class="work-grid">
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
-                 alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#project/wiglet" data-project="wiglet">Wiglet</a></h3>
-            <p class="project-card__desc">An ambient daily planner that already knows your day. My Agentic AI capstone, with a live demo of its real scheduler.</p>
-            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
-          </div>
-        </article>
-
         <article class="project-card" data-card>
           <figure class="project-card__media">
             <img src="assets/images/projects/nexo/card-cover.webp" width="905" height="566" loading="lazy"
@@ -153,6 +142,18 @@
 
         <article class="project-card" data-card>
           <figure class="project-card__media">
+            <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
+                 alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#project/wiglet" data-project="wiglet">Wiglet</a></h3>
+            <p class="project-card__desc">An ambient daily planner that already knows your day. My Agentic AI capstone, with a live demo of its real scheduler.</p>
+            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card>
+          <figure class="project-card__media">
             <img src="assets/images/projects/codes/card-cover.webp" width="1280" height="800" loading="lazy"
                  alt="A spiral galaxy of blue and violet dust on black, a still from the Galaxy to Sun sketch." />
           </figure>
@@ -162,43 +163,9 @@
             <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
           </div>
         </article>
-
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/project-4-cover.svg" width="1600" height="1000" loading="lazy"
-                 alt="Placeholder cover: three panels standing on a bright horizon line." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#">Project name four</a></h3>
-            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
-            <p class="project-card__meta"><span>Interaction design</span><span>2025</span></p>
-          </div>
-        </article>
-
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/project-5-cover.svg" width="1600" height="1000" loading="lazy"
-                 alt="Placeholder cover: three rings, one inside the other, with an amber centre." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#">Project name five</a></h3>
-            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
-            <p class="project-card__meta"><span>3D modelling</span><span>2025</span></p>
-          </div>
-        </article>
-
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/project-6-cover.svg" width="1600" height="1000" loading="lazy"
-                 alt="Placeholder cover: three light columns on a dark ground." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#">Project name six</a></h3>
-            <p class="project-card__desc">[Placeholder: one line on the problem and the result.]</p>
-            <p class="project-card__meta"><span>Architecture</span><span>2024</span></p>
-          </div>
-        </article>
       </div>
+
+      <p class="work-more"><a class="work-more__btn" href="#work/all">Explore more projects <span aria-hidden="true">→</span></a></p>
     </section>
 
     <!-- ========== ABOUT ========== -->
@@ -260,12 +227,74 @@
     <p class="footer-name" aria-hidden="true">Aiyana Mehta</p>
   </footer>
 
+
+  <!-- ========== ALL PROJECTS (#work/all) ==========
+       Opened by "Explore more projects". It sits over the homepage, so
+       "Back" returns to exactly where the visitor was. js/main.js runs it. -->
+  <section class="all-view" id="all-projects" aria-labelledby="all-title" hidden data-lenis-prevent>
+    <div class="all-view__inner">
+      <header class="all-view__head">
+        <a class="all-view__back line-link" href="#work" data-all-back><span aria-hidden="true">←</span> Back</a>
+        <h2 class="section-title" id="all-title" tabindex="-1">All projects</h2>
+      </header>
+      <div class="work-grid">
+        <article class="project-card">
+          <figure class="project-card__media">
+            <img src="assets/images/projects/nexo/card-cover.webp" width="905" height="566" loading="lazy"
+                 alt="Three Nexo desk companions in orange, black and blue, each with a round face showing a blue blob." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#project/nexo" data-project="nexo">Nexo</a></h3>
+            <p class="project-card__desc">A desk companion, smart collar and app that make room for shared play between dogs and owners.</p>
+            <p class="project-card__meta"><span>Design thinking</span><span>2025</span></p>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <figure class="project-card__media">
+            <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
+                 alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#project/wiglet" data-project="wiglet">Wiglet</a></h3>
+            <p class="project-card__desc">An ambient daily planner that already knows your day. My Agentic AI capstone, with a live demo of its real scheduler.</p>
+            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <figure class="project-card__media">
+            <img src="assets/images/projects/codes/card-cover.webp" width="1280" height="800" loading="lazy"
+                 alt="A spiral galaxy of blue and violet dust on black, a still from the Galaxy to Sun sketch." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#project/codes" data-project="codes">Codes</a></h3>
+            <p class="project-card__desc">Creative coding experiments in JavaScript: shapes, motion, type and space.</p>
+            <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <figure class="project-card__media">
+            <img src="assets/images/projects/branding/card-cover.webp" width="1280" height="800" loading="lazy"
+                 alt="The front cover of the Branding book: “Branding” in large type on charcoal, with a thin amber rule." />
+          </figure>
+          <div class="project-card__body">
+            <h3 class="project-card__title"><a href="#project/branding" data-project="branding">Branding</a></h3>
+            <p class="project-card__desc">Five brand identities in one book to flip through: Velvet Vine, STATIC., KOMA, Meridian and Pebble &amp; Co.</p>
+            <p class="project-card__meta"><span>Brand identity</span><span>[NEEDS FROM AIYANA: year]</span></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- Libraries: GSAP + ScrollTrigger (cdnjs), Lenis (jsDelivr) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-  <script src="js/main.js?v=3" defer></script>
+  <script src="js/main.js?v=4" defer></script>
   <!-- Case studies: the glass sheet; each project's data loads on demand from projects/<slug>.js -->
-  <script src="js/case-study.js?v=7" defer></script>
+  <script src="js/case-study.js?v=9" defer></script>
 </body>
 </html>

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "logo-primary",
+    "from": "static_flat_lay.png",
+    "x": 985,
+    "y": 290,
+    "w": 665,
+    "h": 240
+  },
+  {
+    "name": "logo-monogram",
+    "from": "static_product_shot.png",
+    "x": 590,
+    "y": 550,
+    "w": 390,
+    "h": 350
+  },
+  {
+    "name": "logo-chrome",
+    "from": "static_logo_tile.png",
+    "x": 90,
+    "y": 790,
+    "w": 1510,
+    "h": 460
+  },
+  {
+    "name": "logo-bolt",
+    "from": "static_icon_texture.png",
+    "x": 230,
+    "y": 330,
+    "w": 1210,
+    "h": 1250
+  },
+  {
+    "name": "logo-graffiti",
+    "from": "static_flat_lay.png",
+    "x": 1125,
+    "y": 1250,
+    "w": 400,
+    "h": 165
+  },
+  {
+    "name": "logo-globe",
+    "from": "static_flat_lay.png",
+    "x": 800,
+    "y": 1225,
+    "w": 370,
+    "h": 200
+  }
+]

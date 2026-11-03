@@ -86,5 +86,5 @@ window.CASE_STUDIES['codes'] = {
     }
   ],
 
-  next: { slug: 'wiglet', title: 'Wiglet' }
+  next: { slug: 'branding', title: 'Branding' }
 };

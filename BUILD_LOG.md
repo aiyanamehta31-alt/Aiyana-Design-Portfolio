@@ -4,6 +4,110 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-03 · New project: Branding, five brand identities as one book
+
+**Why:** to show my brand identity work as one book to flip through, each brand opening into its own short story in its own colours and fonts.
+
+**What changed**
+- **The book** (`js/worlds/branding.js`, `css/worlds/branding.css`):
+  - **Pages:** a front cover ("Branding", "Five identities, five worlds.", the five names, an amber rule on textured charcoal), one page per brand, and a back cover ("Thank you for flipping through", with a button back to the start). It sits on the site's black.
+  - **Each brand page** is in that brand's colours and fonts: its name, a category tag, four images (one large, three small), one line, and "Open brand →".
+  - **The motion** follows the four journal frames (`references/branding-carousel-1…4.webp`, copied from the previews you attached):
+    - The current page lies flat with a slight bend at its crease.
+    - The other pages are thin slices stacked on each side: turned 76°, smaller and darker towards the outside, with paper edges.
+    - A turn takes 700 ms on cubic-bezier(0.22, 1, 0.36, 1). Each page is two halves hinged at the crease, so the outgoing page folds as it swings away and the incoming one shows as a two-page spread before it settles flat.
+  - **Ways to turn the pages:**
+    - auto-flip every 5 s (paused on hover and for 12 s after any interaction; after the back cover it returns to the start);
+    - the round glass buttons, the arrow keys, the horizontal wheel or trackpad, and drag or swipe;
+    - clicking a side page;
+    - five brand dots;
+    - a grid view of all brands as cards.
+  - **Above and below the book:** a page counter ("Page 2 of 7") sits above, and an aria-live line announces each page.
+  - **Signature touches as a page lands:**
+    - Velvet Vine: a sparkle.
+    - STATIC.: a 150 ms RGB-split glitch.
+    - KOMA: wisps of steam.
+    - Meridian: contour lines rippling out.
+    - Pebble & Co.: a bounce and tiny stars.
+- **Opening a brand:**
+  - **The grow:** the page grows into the brand's story (FLIP, 700 ms) and "Back to the book" shrinks it back to the same page.
+  - **Its own address:** each brand has its own URL (`#project/branding/<brand>`) and history entry, so the browser's back button returns to the book. The × closes everything in one go.
+- **Each story:**
+  1. Hero (strongest image, name, line, Category / Context / Tools and credits).
+  2. The idea.
+  3. The logo, with a labelled "Other explorations" row.
+  4. Colour (big swatches; click to copy the hex).
+  5. One signature interaction:
+     - Velvet Vine: the vine grows and a type tester.
+     - STATIC.: the wordmark tunes in from TV static ("Lose the signal" replays it).
+     - KOMA: the bun draws in line by line under looping steam.
+     - Meridian: contour lines spread from the summit, the trail climbs to the peak, and the lines bend away from the pointer.
+     - Pebble & Co.: the mascot blinks, watches the pointer, and bounces and waves when clicked.
+  6. Applications: every image, in a varied grid, in the glass lightbox with arrows.
+  7. Reflection, then "Next brand" and "Back to the book".
+- **Brand worlds:**
+
+  | Brand | Fonts | Colours (hex sampled from the images) |
+  |---|---|---|
+  | Velvet Vine | Gilda Display + Montserrat | #4B254B / #8A967A / #F3EFE6 |
+  | STATIC. | Archivo Expanded Black + Archivo, Space Mono labels | #020202 / #95E50F / #F90D8C / #C4C4C4 |
+  | KOMA | Rubik ExtraBold | #0E0E0E / #B6E530 / #FFFFFF |
+  | Meridian | Jost Light, wide spacing | #233228 / #DBB56B / #F6ECE1 |
+  | Pebble & Co. | Baloo 2 ExtraBold + Nunito | #FDF1DA / #7FB8DE / #F8716C / #FCD33B |
+
+  - **Contrast:**
+    - Sage is used only large.
+    - Gold on forest green measures 6.9:1.
+    - Pebble's small text is navy #1F3550 (added for contrast, not sampled).
+- **Logos as you set them:**
+  - STATIC.: the primary is the upright blocky wordmark (cropped from the zine) with the S. monogram (from the hat). The chrome wordmark, lightning-bolt emblem, graffiti script and globe badge are under "Other explorations". The chrome poster stays the book's large image and the story's hero.
+  - Meridian: the peaks mark and wordmark.
+  - KOMA: the chunky logo with steam, plus the bun icon.
+  - Pebble & Co.: the hang-tag logo, plus the mascot.
+- **Left out, as asked:**
+  - Velvet Vine: the philosophy and photographic direction pages (skincare, body wash).
+  - STATIC.: no close-ups of "OVERRDDE" or "STANDSIC".
+  - Meridian: no notebook close-up.
+  - Pebble & Co.: the child photo is only in the gallery, with a caption marker.
+- **Data, one file per brand:**
+  - `projects/branding/<brand>.js` holds the images, text, colours, fonts and effect.
+  - `projects/branding.js` sets the book order.
+  - The one-line descriptions, "The idea" and the signature texts are marked `// DRAFT` for you to edit.
+- **Images:**
+  - `tools/brand-images.mjs` now also writes small copies (720 px) for the book's pages, and reads logo crops from `tools/brand-crops/<brand>.json`.
+  - The 37 originals are copied, unchanged, into `content/branding/<brand>/`. The web copies are WebP (max 2400 px) and lazy-loaded, with written alt text.
+  - Last round's unused crops are removed.
+- **Homepage:**
+  - "Selected work" shows Nexo, Wiglet, Codes; the three placeholder cards are gone.
+  - A new "Explore more projects" button opens the **All projects** view (`#work/all`): every project, including Branding with a front-cover card. "Back", Esc or the browser's back button returns to the same scroll position.
+- **Shell (`js/case-study.js`):**
+  - Brand addresses: `#project/<slug>/<page>` links, a world's own history entries (closing steps back over them), and `ctx.page`, `ctx.measure` and `ctx.rescanZoom`.
+  - Matching cards: when a project has two cards, the visible one is used.
+  - `DATA_VERSION` 9.
+- **Branches:** the first carousel draft is kept on `branding-v1`.
+
+**Checked** (headless Chrome, 1440×900 and 390×844, over http:// and file://)
+- **Book and stories:** every page and every brand story renders in its own colours and fonts. A turn shows the crease and two-page spread mid-way.
+- **Controls:** all of these work:
+  - the buttons, keys, wheel, swipe, dots, grid, side-page clicks and back-cover button;
+  - auto-flip and its pause after an interaction;
+  - the FLIP open and back;
+  - copy ("#0E0E0E copied");
+  - the type tester, tune-in, mascot wave and map bend;
+  - the lightbox, its arrows, and Esc closing only the lightbox.
+- **History:** browser back and forward between book and brand, and × from inside a brand back to All projects; Back from All projects returns to the same scroll position (1400 px).
+- **Reduced motion:** no auto-flip, bends or touches. Pages crossfade and drawings show their final state.
+- **Phone:** two side slices per stack, stories in one column, no horizontal scroll.
+- **Nothing broken:** no console errors. Nexo, Wiglet and Codes still open, and Codes → Branding → Wiglet links. The Wiglet tests pass (65/65, 29/29).
+
+**Still needed from Aiyana**
+- For every brand: Context (course or self-initiated, year, solo or team and role), Tools and credits (including whether the photos are AI-generated), what I learned, and what I'd do next.
+- The year on the Branding card.
+- Pebble & Co.: whether the child photo is AI-generated or real with parents' permission.
+- An edit of the drafted lines (one line, the idea, signature texts) in each brand file.
+
+---
+
 ## 2026-10-27 · Wiglet demo: calendar events, time ranges and clean titles
 
 **Why:** a reported bug. "5-6 pm i have a meeting add that to my shedule" became a flexible block at 10:40–11:40 called "5-6 pm meeting that shedule". The demo parser was missing two things the real agent (`wiglet/agent.py`) does: reading time ranges, and telling calendar events from tasks.

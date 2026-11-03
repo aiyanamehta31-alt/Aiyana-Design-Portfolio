@@ -25,10 +25,12 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '7';
+  var DATA_VERSION = '9';
   var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
-  var HASH = /^#project\/([a-z0-9-]+)$/;
+  // #project/<slug>, or #project/<slug>/<page> for a world with pages of its
+  // own (Branding: #project/branding/velvet-vine).
+  var HASH = /^#project\/([a-z0-9-]+)(?:\/([a-z0-9-]+))?$/;
   var PHASES = [['discover', 'Discover'], ['define', 'Define'], ['develop', 'Develop'], ['deliver', 'Deliver']];
 
   var root = document.documentElement;
@@ -260,6 +262,19 @@
   var scrubs = [];      // statements whose words light up with scroll
   var coverImg = null;  // the cover picture drifts a little slower than the page
 
+  // Images marked data-zoom open in the lightbox, one list per data-group.
+  // Worlds that add content later (Branding opening a brand) call this again.
+  function scanZoom() {
+    groups = {};
+    Array.prototype.forEach.call(content.querySelectorAll('[data-zoom]'), function (btn) {
+      var im = btn.querySelector('img');
+      if (!im) return;
+      var g = btn.getAttribute('data-group');
+      var list = groups[g] || (groups[g] = []);
+      btn.setAttribute('data-index', list.push({ src: im.getAttribute('src'), width: im.width, height: im.height, alt: im.alt, caption: btn.getAttribute('data-caption') || '' }) - 1);
+    });
+  }
+
   function fill(p) {
     groups = {};
     state.project = p;
@@ -269,13 +284,7 @@
     if (world) sheet.setAttribute('data-world', p.world); else sheet.removeAttribute('data-world');
     if (world) {
       content.innerHTML = world.render(p);
-      // Images marked data-zoom open in the lightbox, one list per data-group.
-      Array.prototype.forEach.call(content.querySelectorAll('[data-zoom]'), function (btn) {
-        var im = btn.querySelector('img');
-        var g = btn.getAttribute('data-group');
-        var list = groups[g] || (groups[g] = []);
-        btn.setAttribute('data-index', list.push({ src: im.getAttribute('src'), width: im.width, height: im.height, alt: im.alt, caption: btn.getAttribute('data-caption') || '' }) - 1);
-      });
+      scanZoom();
       phaseNav.innerHTML = '';
       phaseSelect.innerHTML = '';
       if (revealer) revealer.disconnect();
@@ -333,7 +342,10 @@
   var measuredHeight = 0;
   function measure() {
     measuredHeight = content.offsetHeight;
-    stops = Array.prototype.map.call(content.querySelectorAll('section[data-tone]'), function (el) {
+    // Sections inside a hidden view (display: none) have no place on the page.
+    stops = Array.prototype.filter.call(content.querySelectorAll('section[data-tone]'), function (el) {
+      return el.offsetParent !== null;
+    }).map(function (el) {
       return { el: el, id: el.id, top: topIn(el), tone: tone(el.getAttribute('data-tone')) || tone('mist'), phase: el.getAttribute('data-phase') };
     });
   }
@@ -452,7 +464,9 @@
       var w = window.CASE_WORLDS && window.CASE_WORLDS[name];
       if (!w) throw new Error('No world in ' + name);
       // A world's own classic scripts, in order (each may need the one before).
-      return (w.scripts || []).reduce(function (chain, path) {
+      // A world's scripts can depend on the project (Branding loads one file per brand).
+      var scripts = typeof w.scripts === 'function' ? w.scripts(p) : (w.scripts || []);
+      return scripts.reduce(function (chain, path) {
         return chain.then(function () {
           if (document.querySelector('script[data-world-script="' + path + '"]')) return null;
           return addScript(path + '?v=' + DATA_VERSION).then(function () {
@@ -495,7 +509,8 @@
     var world = p && p.world && window.CASE_WORLDS && window.CASE_WORLDS[p.world];
     if (world && !state.world) {
       try {
-        state.world = world.mount({ project: p, sheet: sheet, scroller: scroller, content: content, reduceMotion: reduceMotion, lenis: state.lenis });
+        state.world = world.mount({ project: p, sheet: sheet, scroller: scroller, content: content, reduceMotion: reduceMotion, lenis: state.lenis,
+          page: state.page || null, measure: function () { measure(); lastKey = ''; onSheetScroll(); }, rescanZoom: scanZoom });
       } catch (err) {
         if (window.console) console.warn('[case-study] world', err);   // the scenes stay readable in their finished state
       }
@@ -510,8 +525,12 @@
     }
   }
 
+  // A project can have a card on the homepage and in the All projects view:
+  // the one the visitor can see wins (the homepage is inert under that view).
   function findCard(slug) {
-    var link = document.querySelector('.project-card a[data-project="' + slug + '"]');
+    var links = Array.prototype.slice.call(document.querySelectorAll('.project-card a[data-project="' + slug + '"]'));
+    var shown = links.filter(function (a) { return a.getClientRects().length > 0; });
+    var link = shown.filter(function (a) { return !a.closest('[inert]'); })[0] || shown[0] || links[0];
     return link ? link.closest('.project-card') : null;
   }
   function cardRect(card) {
@@ -561,6 +580,7 @@
   function openProject(slug, opts) {
     if (state.open || state.busy || !SLUG.test(slug)) return;
     state.busy = true;
+    state.page = opts.page || null;
     loadProject(slug).then(function (p) {
       if (opts.push) history.pushState({ csProject: slug }, '', '#project/' + slug);
       state.pushed = opts.push || opts.fromHistory;
@@ -608,7 +628,8 @@
     if (!state.open || state.busy) return;
     // Opened from a card or the back/forward buttons: let history close it,
     // so the back button and the × always agree.
-    if (!fromHistory && state.pushed) { history.back(); return; }
+    // A world may have added entries of its own (Branding: an open brand).
+    if (!fromHistory && state.pushed) { history.go(-1 - (state.world && state.world.depth ? state.world.depth() : 0)); return; }
     if (!fromHistory && HASH.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
 
     state.busy = true;
@@ -773,7 +794,8 @@
     var m = href.match(HASH);
     if (m) {
       history.replaceState({ csProject: m[1] }, '', href);
-      switchProject(m[1]);
+      if (m[1] === state.slug && state.world && state.world.route) state.world.route(m[2] || null);
+      else switchProject(m[1]);
     } else if (link.hasAttribute('data-cs-back')) {
       state.afterClose = function () {
         var work = document.querySelector(href);
@@ -845,9 +867,11 @@
           var y = card.getBoundingClientRect().top + window.scrollY - Math.max(0, (window.innerHeight - card.offsetHeight) / 2);
           if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else window.scrollTo(0, y);
         }
-        openProject(m[1], { card: card, push: false, fromHistory: !initial });
+        openProject(m[1], { card: card, push: false, fromHistory: !initial, page: m[2] || null });
       } else if (state.slug !== m[1]) {
         switchProject(m[1]);
+      } else if (state.world && state.world.route) {
+        state.world.route(m[2] || null);
       }
     } else if (state.open) {
       closeProject(true);

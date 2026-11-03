@@ -3,8 +3,8 @@
    0. Settings + wheel images (edit me)   5. Nav state
    1. Setup                               6. Hero: wheel, menu, top bar
    2. Smooth scroll                       7. Cursor (off by default)
-   3. Anchor jumps                        8. Scroll animation
-   4. Colour journey
+   3. Anchor jumps                        8. Scroll animation (runs last)
+   4. Colour journey                      9. All projects view (#work/all)
    Timings and colours for the rest of the page are tokens in style.css.
    ===================================================================== */
 
@@ -76,8 +76,9 @@ var WHEEL_IMAGES = [
 
     // PLACEHOLDER links (case studies not built yet) do nothing for now.
     if (hash === '#') { event.preventDefault(); return; }
-    // Case studies (#project/<slug>) are opened by js/case-study.js.
-    if (hash.indexOf('#project/') === 0) return;
+    // Case studies (#project/<slug>) are opened by js/case-study.js;
+    // the All projects view (#work/all) by section 9 below.
+    if (hash.indexOf('#project/') === 0 || hash.indexOf('#work/') === 0 || link.hasAttribute('data-all-back')) return;
 
     var target = document.querySelector(hash);
     if (!target) return;
@@ -451,6 +452,77 @@ var WHEEL_IMAGES = [
       requestAnimationFrame(follow);
     })(lastTime);
   }
+
+  /* ---------- 9. All projects view (#work/all) ----------
+     "Explore more projects" opens every project in a view laid over the
+     homepage, with its own URL. The page underneath never moves, so Back
+     returns to exactly the same scroll position. */
+  (function () {
+    var view = document.getElementById('all-projects');
+    if (!view) return;
+    var ALL = '#work/all';
+    var outside = [];
+    var pushed = false;
+    var returnFocus = null;
+
+    function show(fromClick) {
+      if (!view.hidden) return;
+      returnFocus = fromClick ? document.activeElement : document.querySelector('.work-more__btn');
+      view.hidden = false;
+      view.scrollTop = 0;
+      root.classList.add('all-open');
+      if (lenis) lenis.stop();
+      // Only the view is reachable while it is open.
+      outside = Array.prototype.filter.call(document.body.children, function (el) {
+        return el !== view && el.tagName !== 'SCRIPT' && !el.inert && !el.classList.contains('cs-layer') && !el.classList.contains('cs-lightbox');
+      });
+      outside.forEach(function (el) { el.inert = true; });
+      if (!reduceMotion && view.animate) {
+        view.animate([{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 450, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+      }
+      var title = document.getElementById('all-title');
+      if (title) title.focus({ preventScroll: true });
+    }
+    function hide() {
+      if (view.hidden) return;
+      var done = function () {
+        view.hidden = true;
+        root.classList.remove('all-open');
+        outside.forEach(function (el) { el.inert = false; });
+        outside = [];
+        if (lenis && !root.classList.contains('cs-open')) lenis.start();
+        if (returnFocus && document.contains(returnFocus)) returnFocus.focus({ preventScroll: true });
+      };
+      if (!reduceMotion && view.animate) view.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease' }).finished.then(done, done);
+      else done();
+    }
+    function back() {
+      if (pushed) { pushed = false; history.back(); }
+      else { history.replaceState(null, '', location.pathname + location.search); hide(); }
+    }
+
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href="' + ALL + '"], [data-all-back]');
+      if (!link || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+      e.preventDefault();
+      if (link.hasAttribute('data-all-back')) { back(); return; }
+      history.pushState({ allProjects: true }, '', ALL);
+      pushed = true;
+      show(true);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !view.hidden && !root.classList.contains('cs-open')) { e.preventDefault(); back(); }
+    });
+    // The URL is the source of truth. A case study opened from this view
+    // keeps it open underneath (#project/...); anything else closes it.
+    function route() {
+      if (location.hash === ALL) show(false);
+      else if (location.hash.indexOf('#project/') !== 0) { pushed = false; hide(); }
+    }
+    window.addEventListener('popstate', route);
+    window.addEventListener('hashchange', route);
+    if (location.hash === ALL) show(false);
+  })();
 
   /* ---------- 8. Scroll animation (GSAP + ScrollTrigger) ---------- */
   if (!hasGsap || reduceMotion) return;

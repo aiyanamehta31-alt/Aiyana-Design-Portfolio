@@ -514,6 +514,46 @@ html.js .site-header {
   color: var(--accent);
 }
 
+/* --- More projects: the button, and the All projects view ---------- */
+.work-more { display: flex; justify-content: center; margin-top: var(--space-l); }
+.work-more__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--c-silver-mist);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.work-more__btn span { transition: transform var(--dur-base) var(--ease-out); }
+.work-more__btn:hover span { transform: translateX(5px); }
+.work-more__btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
+html.all-open,
+html.all-open body { overflow: hidden; }
+.all-view {
+  position: fixed;
+  inset: 0;
+  z-index: 400;   /* over the page, under the case-study sheet (500) */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--c-mist-shade);
+  color: var(--c-ink-dark);
+  --accent: var(--c-amber-light);
+}
+.all-view[hidden] { display: none; }
+.all-view__inner { padding: var(--space-m) var(--gutter) var(--space-xl); }
+.all-view__head { display: grid; gap: var(--space-m); margin-bottom: var(--space-l); }
+.all-view__back { justify-self: start; display: inline-flex; gap: 8px; min-height: 44px; align-items: center; font-weight: 600; text-decoration: none; }
+.all-view .section-title:focus { outline: none; }
+.all-view .project-card__meta { color: var(--c-amber-light); }
+
 /* --- About --------------------------------------------------------- */
 .about {
   display: grid;

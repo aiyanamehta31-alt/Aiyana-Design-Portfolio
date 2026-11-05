@@ -6,14 +6,14 @@
   <title>Aiyana Mehta · Design portfolio</title>
   <!-- PLACEHOLDER: refine this one-line description of you -->
   <meta name="description" content="Aiyana Mehta is a design student who designs journeys, not just screens. Portfolio of UX, service and visual design work." />
-  <meta name="theme-color" content="#E6E2D9" />
+  <meta name="theme-color" content="#0A0A0A" />
 
   <!-- Fonts: Geist + Geist Mono (hero), Funnel Display + Funnel Sans (rest of the page) taste-skill-ignore -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
-  <link rel="stylesheet" href="css/style.css?v=4" />
+  <link rel="stylesheet" href="css/style.css?v=5" />
   <link rel="stylesheet" href="css/case-study.css?v=8" />
 
   <!-- Hide reveal-on-scroll elements only when motion is allowed.
@@ -48,6 +48,7 @@
     <nav aria-label="Site">
       <ul class="nav-links">
         <li><a class="line-link" href="#work">Work</a></li>
+        <li><a class="line-link" href="#skills">Skills</a></li>
         <li><a class="line-link" href="#about">About</a></li>
         <li><a class="line-link" href="#resume">Resume</a></li>
         <li><a class="line-link" href="#contact">Contact</a></li>
@@ -76,6 +77,7 @@
         <nav class="hero-nav" aria-label="Main">
           <a class="hero-nav__link hero-nav__work" href="#work">Work</a>
           <ul class="hero-nav__right">
+            <li><a class="hero-nav__link" href="#skills">Skills</a></li>
             <li><a class="hero-nav__link" href="#about">About</a></li>
             <li><a class="hero-nav__link" href="#resume">Resume</a></li>
             <li><a class="hero-nav__link" href="#contact">Contact</a></li>
@@ -86,6 +88,7 @@
         <button class="hero-menu" type="button" aria-expanded="false" aria-controls="hero-menu-panel">Menu</button>
         <ul class="hero-menu__panel" id="hero-menu-panel" hidden>
           <li><a class="hero-nav__link" href="#work">Work</a></li>
+          <li><a class="hero-nav__link" href="#skills">Skills</a></li>
           <li><a class="hero-nav__link" href="#about">About</a></li>
           <li><a class="hero-nav__link" href="#resume">Resume</a></li>
           <li><a class="hero-nav__link" href="#contact">Contact</a></li>
@@ -113,24 +116,23 @@
       </a>
     </section>
 
-    <!-- ========== PROJECTS ========== -->
+    <!-- ========== PROJECTS ==========
+         Selected work: Nexo full width, then Wiglet and Codes side by side.
+         A finished case study links with href="#project/<slug>" data-project="<slug>"
+         and opens from projects/<slug>.js. Every project, Branding included,
+         is in the All projects view (#work/all) after the footer. -->
     <section class="section work" id="work" aria-labelledby="work-title" tabindex="-1">
-      <div class="section-head">
-        <h2 class="section-title" id="work-title" data-reveal>Selected work</h2>
-        <p class="section-text" data-reveal>Each project opens on the result, then goes back to the start and plays the journey forward. [Placeholder: tweak this intro.]</p>
-      </div>
+      <div class="wrap">
+        <header class="section-head">
+          <p class="label" data-reveal>Projects</p>
+          <h2 class="section-title" id="work-title" data-guide>Selected work</h2>
+          <p class="section-text" data-reveal>Each project opens on the result, then goes back to the start and plays the journey forward. [Placeholder: tweak this intro.]</p>
+        </header>
 
-      <!--
-        REUSABLE PROJECT CARD
-        Copy one <article class="project-card"> per project and keep the class names.
-        A finished case study links with href="#project/<slug>" data-project="<slug>"
-        and opens from projects/<slug>.js. Selected work shows three (Nexo, Wiglet, Codes);
-        every project, Branding included, is in the All projects view below the footer.
-      -->
-      <div class="work-grid">
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/projects/nexo/card-cover.webp" width="905" height="566" loading="lazy"
+        <div class="work-grid work-grid--selected">
+        <article class="project-card project-card--wide" data-card>
+          <figure class="project-card__media project-card__media--stage">
+            <img src="assets/images/projects/nexo/cover-colourways-cutout.webp" width="1800" height="1944" loading="lazy"
                  alt="Three Nexo desk companions in orange, black and blue, each with a round face showing a blue blob." />
           </figure>
           <div class="project-card__body">
@@ -163,68 +165,193 @@
             <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
           </div>
         </article>
-      </div>
+        </div>
 
-      <p class="work-more"><a class="work-more__btn" href="#work/all">Explore more projects <span aria-hidden="true">→</span></a></p>
+        <p class="work-more"><a class="work-more__btn" href="#work/all">Explore more projects <span aria-hidden="true">→</span></a></p>
+      </div>
     </section>
 
-    <!-- ========== ABOUT ========== -->
-    <section class="section about" id="about" aria-labelledby="about-title" tabindex="-1">
-      <div class="about-side">
-        <h2 class="section-title" id="about-title" data-reveal>About me</h2>
-        <!-- PLACEHOLDER: three quick facts -->
-        <ul class="facts" data-reveal>
-          <li>Based in [City]</li>
-          <li>Studying [Program] at [School]</li>
-          <li>Graduating [Year]</li>
-        </ul>
+    <!-- ========== SKILLS (placeholder) ==========
+         Coming in its own step: a school locker that opens onto a 3D stage
+         of the work. Kept here, with its title, so the guide light lands on it. -->
+    <section class="section skills" id="skills" aria-labelledby="skills-title" tabindex="-1">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="label" data-reveal>What I do</p>
+          <h2 class="section-title" id="skills-title" data-guide>Skills</h2>
+        </header>
+        <div class="skills-placeholder" data-reveal>
+          <p class="label">Placeholder</p>
+          <p>The Skills section is being built separately: a school locker that opens, then a 3D stage for the work.</p>
+        </div>
       </div>
+    </section>
 
-      <div class="about-text">
-        <!-- PLACEHOLDER: rewrite in your own voice (50–80 words) -->
-        <p class="bio" data-reveal>
-          <img class="bio__portrait" src="assets/images/portrait-placeholder.svg" width="800" height="800" loading="lazy"
-               alt="Placeholder for a portrait of Aiyana." />
-          <strong>Hi, I'm Aiyana.</strong> I'm the person who brings snacks to the critique and a twelve-tab spreadsheet to the kickoff. I love the messy start of a project, and I love the moment it clicks even more. [Placeholder: a line about what you're into outside the studio.]
-        </p>
-        <p class="bio" data-reveal>Right now I'm looking for a summer internship with a team that cares about the whole journey, not only the final frame. [Placeholder]</p>
+    <!-- ========== ABOUT: AIYANA'S DESKTOP ==========
+         A frosted window over the storm-sea wallpaper, with widgets that can be
+         dragged (or moved with their arrow keys) and put back with "Straighten up".
+         js/home/desktop.js runs it; js/home/storm.js runs the storm mixer. -->
+    <section class="section about" id="about" aria-labelledby="about-title" tabindex="-1">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="label" data-reveal>About</p>
+          <h2 class="section-title" id="about-title" data-guide>About me</h2>
+        </header>
 
-        <figure class="about-photo" data-reveal>
-          <!-- PLACEHOLDER: swap for your own photo (your wallpaper, or you at work) -->
-          <img src="assets/images/sea-1049.jpg" width="1200" height="750" loading="lazy"
-               alt="A lone figure on a wet beach facing a rock island and its reflection." />
-          <figcaption>[Placeholder photo: swap in your own wallpaper or a picture of you at work.]</figcaption>
-        </figure>
+        <div class="desk" data-desk>
+          <div class="desk__bar">
+            <p class="desk__name"><span class="desk__dot" aria-hidden="true"></span>Aiyana's desktop</p>
+            <button type="button" class="desk__tidy" data-tidy>Straighten up</button>
+          </div>
+
+          <div class="desk__screen" data-screen>
+            <!-- PLACEHOLDER wallpaper: swap for the real storm-sea image -->
+            <img class="desk__wall" src="assets/images/sea-1049.jpg" width="1200" height="750" loading="lazy" alt="" />
+            <span class="desk__sea" aria-hidden="true"></span>
+            <canvas class="desk__rain" aria-hidden="true"></canvas>
+            <span class="desk__flash" aria-hidden="true"></span>
+
+            <!-- Widget: Hi -->
+            <article class="widget widget--hi" id="w-hi" data-widget="hi" aria-labelledby="w-hi-title" tabindex="-1">
+              <header class="widget__bar">
+                <h3 class="widget__title" id="w-hi-title">Hi, I'm Aiyana</h3>
+                <button type="button" class="widget__grip" data-grip aria-label="Move Hi, I'm Aiyana. Use the arrow keys."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="5" cy="4" r="1.2"/><circle cx="11" cy="4" r="1.2"/><circle cx="5" cy="8" r="1.2"/><circle cx="11" cy="8" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="11" cy="12" r="1.2"/></svg></button>
+              </header>
+              <div class="widget__body hi">
+                <!-- PLACEHOLDER: a small photo of Aiyana -->
+                <div class="hi__photo" role="img" aria-label="Placeholder for a photo of Aiyana">A</div>
+                <p><mark class="needs">[NEEDS FROM AIYANA: a short bio, two or three sentences]</mark></p>
+              </div>
+            </article>
+
+            <!-- Widget: Where I've been -->
+            <article class="widget widget--been" id="w-been" data-widget="been" aria-labelledby="w-been-title" tabindex="-1">
+              <header class="widget__bar">
+                <h3 class="widget__title" id="w-been-title">Where I've been</h3>
+                <button type="button" class="widget__grip" data-grip aria-label="Move Where I've been. Use the arrow keys."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="5" cy="4" r="1.2"/><circle cx="11" cy="4" r="1.2"/><circle cx="5" cy="8" r="1.2"/><circle cx="11" cy="8" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="11" cy="12" r="1.2"/></svg></button>
+              </header>
+              <!-- PLACEHOLDER: education and experience, newest first -->
+              <ul class="widget__body been">
+                <li><span class="been__date"><span>[Mon]</span><strong>[Year]</strong></span><span class="been__what"><strong>[NEEDS FROM AIYANA: degree or role]</strong><span>[School or company]</span></span></li>
+                <li><span class="been__date"><span>[Mon]</span><strong>[Year]</strong></span><span class="been__what"><strong>[NEEDS FROM AIYANA: degree or role]</strong><span>[School or company]</span></span></li>
+                <li><span class="been__date"><span>[Mon]</span><strong>[Year]</strong></span><span class="been__what"><strong>[NEEDS FROM AIYANA: degree or role]</strong><span>[School or company]</span></span></li>
+              </ul>
+            </article>
+
+            <!-- Widget: Toolbox -->
+            <article class="widget widget--tools" id="w-tools" data-widget="tools" aria-labelledby="w-tools-title" tabindex="-1">
+              <header class="widget__bar">
+                <h3 class="widget__title" id="w-tools-title">Toolbox</h3>
+                <button type="button" class="widget__grip" data-grip aria-label="Move Toolbox. Use the arrow keys."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="5" cy="4" r="1.2"/><circle cx="11" cy="4" r="1.2"/><circle cx="5" cy="8" r="1.2"/><circle cx="11" cy="8" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="11" cy="12" r="1.2"/></svg></button>
+              </header>
+              <!-- PLACEHOLDER list: confirm the final tools. Icons are generic on purpose (no brand logos). -->
+              <div class="widget__body">
+                <ul class="tools">
+                  <li><span class="tools__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="3.5"/><rect x="4" y="13" width="7" height="7" rx="2"/><path d="M13 13h7v7h-7z" /></svg></span>Figma</li>
+                  <li><span class="tools__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></span>Blender</li>
+                  <li><span class="tools__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l5 9-5 9-5-9z"/><circle cx="12" cy="12" r="1.6"/></svg></span>Illustrator</li>
+                  <li><span class="tools__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M6.5 16l4-4.5 3 3 2-2 2.5 3.5"/><circle cx="15.5" cy="9" r="1.3"/></svg></span>Photoshop</li>
+                  <li><span class="tools__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg></span>VS Code</li>
+                  <li><span class="tools__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></span>[More]</li>
+                </ul>
+                <p class="widget__note"><mark class="needs">[NEEDS FROM AIYANA: the final list]</mark></p>
+              </div>
+            </article>
+
+            <!-- Widget: Away from the desk -->
+            <article class="widget widget--away" id="w-away" data-widget="away" aria-labelledby="w-away-title" tabindex="-1">
+              <header class="widget__bar">
+                <h3 class="widget__title" id="w-away-title">Away from the desk</h3>
+                <button type="button" class="widget__grip" data-grip aria-label="Move Away from the desk. Use the arrow keys."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="5" cy="4" r="1.2"/><circle cx="11" cy="4" r="1.2"/><circle cx="5" cy="8" r="1.2"/><circle cx="11" cy="8" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="11" cy="12" r="1.2"/></svg></button>
+              </header>
+              <div class="widget__body">
+                <!-- PLACEHOLDER photos: each <li> is one photo (swap the inner span for an <img>). The last one is on top. -->
+                <button type="button" class="stack" data-stack aria-label="Show the next photo">
+                  <ul class="stack__photos">
+                    <li class="stack__photo"><span class="stack__ph stack__ph--4">Photo 4</span></li>
+                    <li class="stack__photo"><span class="stack__ph stack__ph--3">Photo 3</span></li>
+                    <li class="stack__photo"><span class="stack__ph stack__ph--2">Photo 2</span></li>
+                    <li class="stack__photo"><span class="stack__ph stack__ph--1">Photo 1</span></li>
+                  </ul>
+                </button>
+                <p class="widget__note"><span data-stack-caption>1 of 4</span> · <mark class="needs">[NEEDS FROM AIYANA: photos]</mark></p>
+              </div>
+            </article>
+
+            <!-- Widget: Storm mixer -->
+            <article class="widget widget--storm" id="w-storm" data-widget="storm" aria-labelledby="w-storm-title" tabindex="-1">
+              <header class="widget__bar">
+                <h3 class="widget__title" id="w-storm-title">Storm mixer</h3>
+                <button type="button" class="widget__grip" data-grip aria-label="Move Storm mixer. Use the arrow keys."><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="5" cy="4" r="1.2"/><circle cx="11" cy="4" r="1.2"/><circle cx="5" cy="8" r="1.2"/><circle cx="11" cy="8" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="11" cy="12" r="1.2"/></svg></button>
+              </header>
+              <div class="widget__body storm" data-storm>
+                <div class="storm__row">
+                  <button type="button" class="storm__play" data-storm-play aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="storm__icon-play" d="M8 5.5v13l10-6.5z"/><path class="storm__icon-pause" d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z"/></svg><span data-storm-label>Play</span></button>
+                  <button type="button" class="storm__mute" data-storm-mute aria-pressed="false" aria-label="Mute"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="storm__waves" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="storm__cross" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+                </div>
+                <label class="storm__slider"><span>Rain</span><input type="range" min="0" max="100" value="40" data-mix="rain" /></label>
+                <label class="storm__slider"><span>Sea</span><input type="range" min="0" max="100" value="50" data-mix="sea" /></label>
+                <label class="storm__slider"><span>Thunder</span><input type="range" min="0" max="100" value="20" data-mix="thunder" /></label>
+                <p class="widget__note">Sound starts only when you press Play.</p>
+              </div>
+            </article>
+
+            <!-- Easter egg: a Wiglet blob -->
+            <button type="button" class="desk__blob" data-blob aria-label="A Wiglet blob. Say hello.">
+              <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                <defs><radialGradient id="desk-blob-fill" cx="0.36" cy="0.66" r="0.85"><stop offset="0" stop-color="#2E6BEA"/><stop offset="0.55" stop-color="#3B9BE6"/><stop offset="1" stop-color="#6FE3C4"/></radialGradient>
+                <radialGradient id="desk-blob-shine" cx="0.62" cy="0.3" r="0.4"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.35"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs>
+                <g class="desk__blob-body">
+                  <path d="M60 14C84 14 104 34 106 60C108 88 88 106 60 106C32 106 12 90 14 62C16 34 36 14 60 14Z" fill="url(#desk-blob-fill)"/>
+                  <path d="M60 14C84 14 104 34 106 60C108 88 88 106 60 106C32 106 12 90 14 62C16 34 36 14 60 14Z" fill="url(#desk-blob-shine)"/>
+                  <g class="desk__blob-eyes"><ellipse cx="50" cy="56" rx="4.6" ry="6.4" fill="#0B1530"/><ellipse cx="70" cy="56" rx="4.6" ry="6.4" fill="#0B1530"/></g>
+                </g>
+              </svg>
+            </button>
+          </div>
+
+          <!-- The dock: each icon brings its widget forward; Resume downloads the PDF -->
+          <nav class="dock" aria-label="Desktop">
+            <button type="button" class="dock__icon" data-open="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="3.5"/><path d="M5 19.5c1.2-3.6 4-5 7-5s5.8 1.4 7 5"/></svg><span>Hi</span></button>
+            <button type="button" class="dock__icon" data-open="been"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg><span>Where I've been</span></button>
+            <button type="button" class="dock__icon" data-open="tools"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="17" height="11" rx="2.5"/><path d="M9 8V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v2M3.5 13h17"/></svg><span>Toolbox</span></button>
+            <button type="button" class="dock__icon" data-open="away"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="14" height="12" rx="2"/><path d="M7 3.5h12.5a1 1 0 0 1 1 1V15"/><path d="M5.5 15.5l3.5-4 2.5 2.5 2-1.5 2.5 3"/></svg><span>Away from the desk</span></button>
+            <button type="button" class="dock__icon" data-open="storm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15.5a4 4 0 0 1-.5-8A5.5 5.5 0 0 1 17 8.5a3.5 3.5 0 0 1 .5 7"/><path d="M12.5 13l-2 4h3l-2 4"/></svg><span>Storm mixer</span></button>
+            <!-- PLACEHOLDER: add assets/Aiyana-Mehta-Resume.pdf -->
+            <a class="dock__icon" href="assets/Aiyana-Mehta-Resume.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M12.5 11v6M10 14.5l2.5 2.5 2.5-2.5"/></svg><span>Resume</span></a>
+          </nav>
+          <p class="sr-only" aria-live="polite" data-desk-live></p>
+        </div>
       </div>
     </section>
 
     <!-- ========== CONTACT ========== -->
     <section class="section contact" id="contact" aria-labelledby="contact-title" tabindex="-1">
-      <div class="section-head">
-        <h2 class="section-title" id="contact-title" data-reveal>Let's make something.</h2>
-        <p class="section-text" data-reveal>Internships, collaborations, or just to say hi. I reply within two days.</p>
+      <div class="wrap">
+        <header class="section-head">
+          <p class="label" data-reveal>Contact</p>
+          <h2 class="section-title" id="contact-title" data-guide>Let's make something.</h2>
+          <p class="section-text" data-reveal>Internships, collaborations, or just to say hi. I reply within two days.</p>
+        </header>
+
+        <ul class="contact-rows">
+          <!-- PLACEHOLDER: your real email -->
+          <li data-reveal><a class="contact-row" href="mailto:hello@example.com"><span class="contact-row__kind">Email</span><span class="contact-row__value">hello@example.com</span><span class="contact-row__arrow" aria-hidden="true">→</span></a></li>
+          <!-- PLACEHOLDER: your LinkedIn URL -->
+          <li data-reveal><a class="contact-row" href="https://www.linkedin.com/" rel="noopener"><span class="contact-row__kind">LinkedIn</span><span class="contact-row__value">in/aiyana</span><span class="contact-row__arrow" aria-hidden="true">→</span></a></li>
+          <!-- PLACEHOLDER: add assets/Aiyana-Mehta-Resume.pdf -->
+          <li data-reveal id="resume" tabindex="-1"><a class="contact-row" href="assets/Aiyana-Mehta-Resume.pdf" download><span class="contact-row__kind">Resume</span><span class="contact-row__value">Download PDF</span><span class="contact-row__arrow" aria-hidden="true">↓</span></a></li>
+        </ul>
       </div>
-
-      <div class="horizon horizon--divider" aria-hidden="true"></div>
-
-      <ul class="contact-rows">
-        <!-- PLACEHOLDER: your real email -->
-        <li data-reveal><a class="contact-row line-link" href="mailto:hello@example.com"><span class="contact-row__kind">Email</span><span class="contact-row__value">hello@example.com</span></a></li>
-        <!-- PLACEHOLDER: your LinkedIn URL -->
-        <li data-reveal><a class="contact-row line-link" href="https://www.linkedin.com/" rel="noopener"><span class="contact-row__kind">LinkedIn</span><span class="contact-row__value">in/aiyana</span></a></li>
-        <!-- PLACEHOLDER: add assets/Aiyana-Mehta-Resume.pdf -->
-        <li data-reveal id="resume" tabindex="-1"><a class="contact-row line-link" href="assets/Aiyana-Mehta-Resume.pdf"><span class="contact-row__kind">Resume</span><span class="contact-row__value">Download PDF</span></a></li>
-      </ul>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="site-footer__row">
+    <div class="wrap site-footer__row">
       <p>© 2026 Aiyana Mehta</p>
-      <p class="credits">About photo by Rosan Harmens, Unsplash licence (placeholder).</p>
+      <p class="credits">Desktop wallpaper: photo by Rosan Harmens, Unsplash licence (placeholder).</p>
       <a class="line-link" href="#top">Back to the top</a>
     </div>
-    <p class="footer-name" aria-hidden="true">Aiyana Mehta</p>
   </footer>
 
 
@@ -232,7 +359,7 @@
        Opened by "Explore more projects". It sits over the homepage, so
        "Back" returns to exactly where the visitor was. js/main.js runs it. -->
   <section class="all-view" id="all-projects" aria-labelledby="all-title" hidden data-lenis-prevent>
-    <div class="all-view__inner">
+    <div class="all-view__inner wrap">
       <header class="all-view__head">
         <a class="all-view__back line-link" href="#work" data-all-back><span aria-hidden="true">←</span> Back</a>
         <h2 class="section-title" id="all-title" tabindex="-1">All projects</h2>
@@ -293,7 +420,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-  <script src="js/main.js?v=4" defer></script>
+  <script src="js/main.js?v=5" defer></script>
+  <!-- The homepage's own pieces: the guide light, the desktop, the storm mixer -->
+  <script src="js/home/guide.js?v=1" defer></script>
+  <script src="js/home/desktop.js?v=1" defer></script>
+  <script src="js/home/storm.js?v=1" defer></script>
   <!-- Case studies: the glass sheet; each project's data loads on demand from projects/<slug>.js -->
   <script src="js/case-study.js?v=9" defer></script>
 </body>

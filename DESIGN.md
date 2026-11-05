@@ -1,7 +1,7 @@
 # DESIGN.md — Aiyana's portfolio brief
 
 > The source of truth for this portfolio. Refer back to this in future prompts.
-> Last updated 2026-10-27: Wiglet added as the first project (see "Project worlds: Wiglet"). 2026-10-25: Nexo rebuilt as its own world inside the glass sheet (see "Project worlds: Nexo"). 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
+> Last updated 2026-11-05: the homepage redesigned as one black world, with a calm type scale, a Skills placeholder, About as Aiyana's desktop and a wandering guide light (see "Homepage"). 2026-10-27: Wiglet added as the first project (see "Project worlds: Wiglet"). 2026-10-25: Nexo rebuilt as its own world inside the glass sheet (see "Project worlds: Nexo"). 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
 
 I'm Aiyana, a design student building my portfolio for summer design internships at companies like Google, Microsoft, and design agencies. It must feel creative, personal, and professional, not like a generic AI-made template.
 
@@ -21,44 +21,52 @@ I'm Aiyana, a design student building my portfolio for summer design internships
 
 - Plain HTML, CSS, and JavaScript. No framework, no build step (it will go on GitHub Pages later).
 - GSAP with ScrollTrigger (CDN) for scroll animation, Lenis (CDN) for smooth scrolling.
-- Files: `index.html`, `css/style.css`, `js/main.js`, `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `js/worlds/<world>.js` + `css/worlds/<world>.css` (a project's own world, loaded on demand), `assets/images/`, `content/` (original project files), `references/`, `BUILD_LOG.md` (a dated entry for every change).
+- Files: `index.html`, `css/style.css`, `js/main.js`, `js/home/` (the guide light, the desktop, the storm mixer), `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `js/worlds/<world>.js` + `css/worlds/<world>.css` (a project's own world, loaded on demand), `assets/images/`, `content/` (original project files), `references/`, `BUILD_LOG.md` (a dated entry for every change).
 - All colours, fonts, spacing, and animation timings are CSS variables at the top of `style.css`.
 - Animate with GPU-friendly properties only: translate, rotate, scale, opacity.
 
-## Palette: "Storm Light" (do not add other colours)
+## Palette: one black world (do not add other colours)
 
 | Role | Hex | Use |
 | --- | --- | --- |
-| Silver mist | `#E6E2D9` | Homepage start (hero) |
-| Mist shade | `#D7D1C7` | In-between grey: top of the projects |
-| Pale taupe | `#C8C1B4` | In-between grey: end of the projects |
-| Storm taupe | `#B9B0A2` | Homepage end (About, Contact) |
-| Deep cloud | `#57514A` | Case-study chapters (later) |
-| Dark sea | `#1C1C1B` | Case-study chapters (later) |
-| Text on light | `#1F1E1C` | All homepage text |
-| Text on dark | `#ECE8DF` | Text on dark case-study chapters |
-| Amber glow | `#845B23` on lighter greys, blending to `#5B3D16` on storm taupe; `#E2B877` on dark grounds | Cursor, links, highlights, active states |
-| Line of light | soft silver-amber gradient (amber → `#FFFFFF` → amber) | The signature element |
+| Black | `#0A0A0A` | The whole homepage, top to bottom |
+| Primary text | `#EDEDED` | Body text and titles (16.9:1) |
+| Secondary text | `#9A9A9A` | Descriptions, intros (7.0:1) |
+| Muted | `#7A7A7A` | Labels and quiet notes (4.6:1; the brief's `#6B6B6B` is only 3.7:1) |
+| Amber | `#E2B877` | Links, focus, active states, the guide light (10.7:1) |
 
-- The two in-between greys sit one-third and two-thirds of the way from silver mist to storm taupe, so the blend is even.
-- **The hero is its own black stage**, outside the Storm Light journey: background `--hero-bg` `#000000` (one variable, to change later), headline `#FFFFFF`, secondary text `#8A8A8A` (6.0:1 on black), nav links `#EDEDED`.
-- **Contrast (WCAG AA):** the brief's `#8A5F24` (4.34:1 on mist) and `#6E4A1A` (3.69:1 on taupe) fall short of 4.5:1, so they are nudged to `#845B23` (4.64) and `#5B3D16` (4.61). The accent blends with the background, never dropping below 4.6:1. Text `#1F1E1C` stays at 7.8:1 or more throughout.
+- No light or beige sections on the homepage, and no colour blocks or hard cuts: sections are separated by space alone.
+- A very fine film grain over the black (`body::after`, one static noise tile at 3% opacity).
+- **The hero** keeps its own black stage and type (`--hero-*` tokens).
+- **Frosted widgets** (About) sit over a photo, so inside them the greys are lighter (`#BDBDBD`, `#ADADAD`) and the glass denser (`rgba(16,16,18,0.72)`), which keeps AA (5.5:1 and 4.6:1 on the brightest wallpaper).
+- Case-study sheets keep their own worlds and colours (`css/case-study.css`, `css/worlds/`).
 
 ## Typography
 
-- **Hero:** **Geist** (headline, paragraph, name, "Scroll to explore") and **Geist Mono** (nav links, "Let's talk" corner, card labels), both Google Fonts.
-- **Rest of the page:** **Funnel Display** (headings) and **Funnel Sans** (body), both Google Fonts by the same designer: rounded, slightly bubbly letters held in a tight structure, with a clean, readable body face.
+- **Hero:** **Geist** (headline, paragraph, name, "Scroll to explore") and **Geist Mono** (nav links, "Let's talk" corner, card labels), unchanged.
+- **Rest of the homepage:** **Funnel Display** (section titles, project names), **Funnel Sans** (body) and **Geist Mono** (small labels).
+
+### Type scale (homepage, strict)
+
+| Step | Size | Font and style | Token |
+| --- | --- | --- | --- |
+| Label | 12px | Geist Mono, uppercase, letter-spacing 0.06em | `--t-label` |
+| Secondary | 14px | Funnel Sans | `--t-small` |
+| Body | 16px, line-height 1.6 | Funnel Sans | `--t-body` |
+| Section title | clamp(28px, 3.2vw, 44px), weight 600, letter-spacing −0.025em | Funnel Display | `--t-title` |
+
+- Only the hero headline may be larger.
+- At most three text sizes per section; lines no longer than about 60 characters (`--measure: 60ch`).
+- Project names are body size in weight 600; category and year are labels.
 
 ## Homepage: one continuous scroll
 
 No full-screen chapters, no slides, no snapping: one long page.
 
-### Colour: a continuous grey journey
+### Layout
 
-- Below the black hero, the homepage is light. It starts on silver mist and blends continuously through the two in-between greys, ending on storm taupe at About and Contact.
-- The blend is tied directly to scroll position: no hard edges between sections, one long gradient journey.
-- Text stays dark `#1F1E1C` the whole way; the amber accent darkens with the background to keep its contrast.
-- Reduced motion: the background changes in simple steps with a short fade instead of a scrubbed blend.
+- Content sits in one centred column, at most 1200px wide (`--page-max`), so on a laptop there is a clear margin either side: the guide light's lane.
+- Order: hero, Selected work, Skills, About, Contact, footer.
 
 ### Section 1: the hero (first screen)
 
@@ -124,20 +132,47 @@ Built to match the reference frames. The code lives in `index.html` (section `.h
 
 **Reduced motion:** no rotation, no entrance, no hover zoom; the cards stay still in their ring with two cards either side of 12 o'clock.
 
-**Below the hero:** the light top bar (name, Work, About, Resume, Contact) stays tucked away while the hero is on screen and slides in once the visitor scrolls past it.
+**Below the hero:** the black top bar (name, Work, Skills, About, Resume, Contact) stays tucked away while the hero is on screen and slides in once the visitor scrolls past it.
 
-### Section 2: projects grid
+### Section 2: Selected work
 
-- "Selected work" shows 3 project cards, in this order: Nexo, Wiglet, Codes (3 columns on desktop, 2 on tablets, 1 on phones). Each has a cover, project name, one-line description, category and year, and opens its case study (`#project/<slug>`).
-- Below them, an "Explore more projects" button opens the **All projects** view (`#work/all`): every project, Branding included, laid over the homepage. "Back" (or Esc, or the browser's back button) returns to the homepage at the same scroll position. A project opened from this view closes back into it.
-- Hover: the cover zooms slightly inside its frame, the card lifts a little, and the cursor becomes the focus ring.
-- Cards fade and rise in one after another as they scroll into view.
-- Keep it simple for now. A reference for the final grid design is coming.
+- Three large cards, in this order: **Nexo full width** (the three companions on a soft studio light, 21:9), then **Wiglet and Codes side by side**. One column on phones. Each card: cover, name, one line, category and year, and it opens the case study (`#project/<slug>`).
+- Hover: the cover zooms slightly inside its frame and the card lifts, with a faint amber edge.
+- Below them, **Explore more projects** opens the **All projects** view (`#work/all`): every project, Branding included, on the same black. "Back" (or Esc, or the browser's back button) returns to the homepage at the same scroll position. A project opened from this view closes back into it.
 
-### Section 3: About and Contact
+### Section 3: Skills (placeholder)
 
-- The About (portrait placeholder, bio, three facts, a photo) and Contact (email, LinkedIn, resume) sections, restyled for the light page, on storm taupe.
-- The footer closes with my name set very large, cropped by the bottom edge.
+- For now a clearly marked empty section with its title, so the guide light still lands on it. Coming in its own step: a school locker that opens, then a 3D stage for the work.
+- When 3D arrives: Three.js r158 as a classic script, `.glb` models loaded over http(s) (Live Server, GitHub Pages); from `file://` a still image shows instead.
+
+### Section 4: About, as Aiyana's desktop
+
+Code: `index.html` (section `.about`), `css/style.css` ("About: Aiyana's desktop"), `js/home/desktop.js`, `js/home/storm.js`.
+
+- A large frosted window of my own design (no operating-system look): a bar with "Aiyana's desktop" and a **Straighten up** button, the storm-sea wallpaper, and a dock along the bottom.
+- Frosted glass widgets that can be dragged by their bar, or moved with the arrow keys from their grip button (Shift for bigger steps). **Straighten up** glides them back to their places.
+  - **Hi, I'm Aiyana:** a short bio and a photo slot.
+  - **Where I've been:** education and experience as calendar-style entries.
+  - **Toolbox:** my tools as generic app icons (never brand logos).
+  - **Away from the desk:** a photo stack; click to shuffle.
+  - **Storm mixer:** Rain, Sea and Thunder sliders over a live Web Audio soundscape (filtered noise for rain, slow swells for the sea, occasional low rumbles; no audio files). Nothing plays until **Play**; a clear **Mute**. The wallpaper reacts: rain streaks on the glass, the sea darkens, a soft flash for thunder.
+  - A small **Wiglet blob** in the corner that blinks and squishes on hover (an easter egg).
+- The dock brings each widget forward; **Resume** downloads the PDF.
+- Phones (≤ 860px): the widgets stack as a column of cards on the wallpaper, dragging is off, and the dock sits under them.
+- Names are my own, chosen not to echo a classmate's portfolio.
+
+### Section 5: Contact and footer
+
+- "Let's make something.", then Email, LinkedIn and Resume as clean rows with amber underlines that draw in on hover.
+- A quiet footer row: copyright, credits, back to the top.
+
+### The guide: a wandering light
+
+Code: `js/home/guide.js` (settings at its top).
+- A small glowing amber orb, a sibling of the bubble cursor, appears once the hero has gone by. It travels down with the scroll, weaving gently in the left margin, and leaves a soft trail that fades in under three seconds (a canvas, not a permanent line).
+- When a section title (Selected work, Skills, About, Contact; any `[data-guide]` title) passes, the light lands beside it and the title lights up for a moment.
+- It only moves in the margin, never over text or images. On phones it steps back to the very edge at 40% opacity with a shorter trail. It rests when nothing moves, and hides under the All projects view and the glass sheet.
+- Reduced motion: no light and no trail; section titles simply fade in.
 
 ## Case studies: the glass sheet
 
@@ -187,7 +222,7 @@ Added 2026-11-03 (replacing the first carousel draft, kept on the `branding-v1` 
 
 ## Signature element: the line of light
 
-- A thin horizontal line, like light on water: soft silver-amber on the light homepage (the divider above Contact). The black hero does not use it for now.
+- On the black homepage the light is carried by the guide (above) rather than a drawn line.
 - Link underlines grow in amber from the left on hover and focus.
 - In case studies it draws across the top of Deliver, as if the light breaks through.
 
@@ -202,7 +237,7 @@ Added 2026-11-03 (replacing the first carousel draft, kept on the `branding-v1` 
 ## Navigation
 
 - **In the hero:** the hero's own transparent top bar (see Section 1).
-- **Below the hero:** a small fixed light top bar (my name on the left; Work, About, Resume, Contact on the right) slides in once the hero has scrolled away. Its background follows the page's grey, so it always stays readable.
+- **Below the hero:** a small fixed black top bar (my name on the left; Work, Skills, About, Resume, Contact on the right, in mono labels) slides in once the hero has scrolled away.
 - "Scroll to explore" in the hero doubles as a shortcut to the work.
 
 ## Smaller interactions
@@ -214,6 +249,7 @@ Added 2026-11-03 (replacing the first carousel draft, kept on the `branding-v1` 
 
 - Fully responsive. On tablets and phones the wheel has 8 cards and its own sizes (see Section 1), the phone nav becomes a MENU button, and touch devices skip hover zoom.
 - Accessible: semantic HTML, alt text, visible keyboard focus, keyboard navigation.
-- `prefers-reduced-motion`: no smooth scrolling, no wheel rotation or entrance (cards stay still in their ring), no hover zoom, no squishing or scroll-scrubbed motion; background colour changes in steps.
+- `prefers-reduced-motion`: no smooth scrolling, no wheel rotation or entrance (cards stay still in their ring), no hover zoom, no guide light, no rain animation or thunder flashes, no widget animations; everything shows in its final state.
+- Audio never plays by itself. Every interaction has a keyboard path, and every control is labelled.
 - Fast: no heavy libraries beyond GSAP, ScrollTrigger, and Lenis.
 - Clearly marked placeholder text and images, to be replaced with real content.

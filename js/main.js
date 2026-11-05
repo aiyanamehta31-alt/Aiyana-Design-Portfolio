@@ -4,7 +4,7 @@
    1. Setup                               6. Hero: wheel, menu, top bar
    2. Smooth scroll                       7. Cursor (off by default)
    3. Anchor jumps                        8. Scroll animation (runs last)
-   4. Colour journey                      9. All projects view (#work/all)
+   4. One black world                     9. All projects view (#work/all)
    Timings and colours for the rest of the page are tokens in style.css.
    ===================================================================== */
 
@@ -48,7 +48,6 @@ var WHEEL_IMAGES = [
     var n = parseFloat(token(name));
     return isNaN(n) ? fallback : n;
   }
-  function clamp01(n) { return Math.min(1, Math.max(0, n)); }
   function headerHeight() {
     var header = document.querySelector('.site-header');
     return header ? header.offsetHeight : 0;
@@ -95,57 +94,9 @@ var WHEEL_IMAGES = [
     if (history.replaceState) history.replaceState(null, '', hash === '#top' ? ' ' : hash);
   });
 
-  /* ---------- 4. Colour journey: one continuous blend of warm greys ----------
-     Four stops, each pinned to a place on the page. The background (and the
-     amber accent, so it keeps its contrast) blends between them with scroll. */
-  function parseColor(value) {
-    var hex = value.trim().replace('#', '');
-    if (hex.length === 3) hex = hex.replace(/./g, '$&$&');
-    return [0, 2, 4].map(function (i) { return parseInt(hex.substr(i, 2), 16); });
-  }
-  function mix(a, b, t) {
-    return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(',') + ')';
-  }
-
-  var journeyColors = ['--journey-1', '--journey-2', '--journey-3', '--journey-4'].map(function (n) { return parseColor(token(n)); });
-  var accentLight = parseColor(token('--c-amber-light'));
-  var accentDeep = parseColor(token('--c-amber-deep'));
-  var journeyStops = [0, 0, 0, 0];
-
-  function measureJourney() {
-    var vh = window.innerHeight;
-    var work = document.getElementById('work');
-    var about = document.getElementById('about');
-    if (!work || !about) return;
-    var workTop = work.getBoundingClientRect().top + window.scrollY;
-    var workEnd = workTop + work.offsetHeight;
-    var aboutTop = about.getBoundingClientRect().top + window.scrollY;
-    journeyStops = [
-      0,                                       // hero: silver mist
-      Math.max(1, workTop - vh * 0.4),         // projects arriving: mist shade
-      Math.max(2, workEnd - vh * 0.8),         // projects ending: pale taupe
-      Math.max(3, aboutTop - vh * 0.5)         // About in view: storm taupe
-    ];
-    for (var i = 1; i < 4; i++) journeyStops[i] = Math.max(journeyStops[i], journeyStops[i - 1] + 1);
-  }
-
-  if (reduceMotion) root.classList.add('theme-fade');
-  var lastBg = '';
-  function applyJourney() {
-    var y = window.scrollY;
-    var seg = 0;
-    while (seg < 2 && y > journeyStops[seg + 1]) seg++;
-    var t = clamp01((y - journeyStops[seg]) / (journeyStops[seg + 1] - journeyStops[seg]));
-    // Reduced motion: hold each grey, then step (CSS fades the change).
-    if (reduceMotion) t = t < 0.5 ? 0 : 1;
-    var overall = (seg + t) / 3;
-
-    var bg = mix(journeyColors[seg], journeyColors[seg + 1], t);
-    if (bg === lastBg) return;
-    lastBg = bg;
-    root.style.setProperty('--bg', bg);
-    root.style.setProperty('--accent', mix(accentLight, accentDeep, overall));
-  }
+  /* ---------- 4. One black world ----------
+     The homepage is one black page now (DESIGN.md); the old grey-to-taupe
+     scroll blend is gone, so there is nothing to do here. */
 
   /* ---------- 5. Nav state ---------- */
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
@@ -166,16 +117,13 @@ var WHEEL_IMAGES = [
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () {
-      applyJourney();
       updateNav();
       ticking = false;
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { measureJourney(); onScroll(); });
-  window.addEventListener('load', function () { measureJourney(); onScroll(); });
-  measureJourney();
-  applyJourney();
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', onScroll);
   updateNav();
 
   /* ---------- 6. Hero: wheel, phone menu, top bar ---------- */
@@ -556,5 +504,5 @@ var WHEEL_IMAGES = [
   });
 
   // Recalculate once fonts and images have settled.
-  window.addEventListener('load', function () { ScrollTrigger.refresh(); measureJourney(); onScroll(); });
+  window.addEventListener('load', function () { ScrollTrigger.refresh(); onScroll(); });
 })();

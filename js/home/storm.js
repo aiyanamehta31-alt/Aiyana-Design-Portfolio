@@ -128,6 +128,13 @@
     if (document.hidden) audio.ac.suspend(); else audio.ac.resume();
   });
 
+  // Other parts of the site (the locker's clunk) only make a sound when this is on.
+  window.siteSound = {
+    on: function () { return !!(audio && playing && !muted); },
+    context: function () { return audio ? audio.ac : null; },
+    output: function () { return audio ? audio.master : null; }
+  };
+
   /* ---------- Thunder: a flash, and a rumble when the sound is on ---------- */
   function scheduleThunder() {
     var wait = 7000 + Math.random() * 12000 * (1.4 - mix.thunder);

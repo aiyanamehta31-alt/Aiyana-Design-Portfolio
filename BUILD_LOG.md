@@ -4,6 +4,78 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-05 · Homepage redesign: one black world
+
+**Why:** a big design pass so the homepage feels as cohesive, interactive and polished as the strongest portfolios my reviewers will see, while looking clearly my own. Before building, I checked a classmate's portfolio (Arnav Srinath) so nothing here copies his layouts, guide line, skills sheets, window-style About, music room, cursor or wording. His About uses the tab names "Work log", "The kit" and "Off the clock" and a "Tidy up" button, so my widgets are named "Where I've been", "Toolbox" and "Away from the desk", with "Straighten up".
+
+**What changed**
+- **One black world** (`css/style.css`, rewritten except the hero and cursor rules, which are unchanged):
+  - The page is #0A0A0A from top to bottom. The grey-to-taupe scroll blend is removed (`js/main.js` section 4).
+  - Sections are separated by space only.
+  - Text is #EDEDED, #9A9A9A, and #7A7A7A for muted text (#6B6B6B would only be 3.7:1). The accent is amber #E2B877.
+  - A 3% film grain sits over everything.
+  - Content is a 1200px column, so the margins are free for the guide light.
+- **Calm, even type:**
+  - One scale: 12px mono labels (uppercase, 0.06em), 14px secondary, 16px body at 1.6, and section titles at clamp(28px, 3.2vw, 44px), weight 600. Only the hero is larger.
+  - At most three sizes per section, 60-character lines. The scale is written into DESIGN.md.
+  - The huge footer name and the big contact type are gone.
+- **Selected work:**
+  - Nexo runs full width, the three companions on a soft studio light (from the sharp 1800px cutout), with Wiglet and Codes side by side below.
+  - Large covers that zoom slightly in their frame and lift on hover, with a faint amber edge.
+  - The Explore more projects button and the All projects view (`#work/all`) are restyled black.
+- **Skills:** a clearly marked placeholder section with its title, as you asked. The locker and 3D stage come next.
+- **About, as Aiyana's desktop** (`js/home/desktop.js`, `js/home/storm.js`):
+  - A frosted window of my own design over the storm-sea wallpaper (a placeholder photo for now).
+  - **Widgets:**
+    - Hi, I'm Aiyana: bio and photo slot.
+    - Where I've been: calendar-style date badges.
+    - Toolbox: generic icons, no brand logos.
+    - Away from the desk: a photo stack you click to shuffle.
+    - Storm mixer.
+    - A Wiglet blob that blinks, squishes on hover and hops when clicked.
+  - **Moving widgets:** drag them by their bar, or use the arrow keys on their grip button (Shift moves further). Moves are announced. "Straighten up" glides everything back.
+  - **The dock** brings each widget forward. Resume downloads the PDF.
+  - **The storm mixer** is a live Web Audio soundscape, with no audio files:
+    - Rain is high filtered noise, the sea is deep noise swelling at 0.09 Hz, and thunder is low rumbles every 7 to 19 seconds.
+    - Sound starts only on Play. Mute is clear, and the sound goes quiet when the tab is hidden.
+    - The wallpaper reacts: rain streaks (drawn only while the desktop is on screen), the sea darkens, and thunder brings a soft flash.
+  - **Phones (≤ 860px):** a column of cards on the wallpaper, with no dragging.
+  - **Contrast:** inside the widgets the glass is denser and the greys lighter, so text stays AA over the brightest wallpaper (5.5:1 and 4.6:1).
+- **The guide, a wandering light** (`js/home/guide.js`):
+  - An amber orb that appears after the hero and weaves down the left margin with the scroll, leaving a trail that fades in under three seconds.
+  - At each section title it lands beside it and the title glows for 1.3 seconds.
+  - It never enters the content column. On phones it sits at the edge at 40% opacity.
+  - It rests when nothing moves, and hides under the All projects view and the glass sheet.
+- **Contact and footer:**
+  - Email, LinkedIn and Resume as clean rows, with amber underlines that draw in and arrows that nudge.
+  - A quiet one-line footer.
+- **Navigation:** the top bar is black, with Skills added to both the top bar and the hero menu (the wheel itself is untouched).
+
+**Checked** (headless Chrome at 1440×900, 1024×768 and 390×844, over http:// and file://)
+- **Black page:** black throughout, no horizontal scroll at 390px, no console errors.
+- **Guide light:** with real wheel scrolling it lit all four titles (Selected work, Skills, About, Contact) at both widths.
+- **Desktop:**
+  - Drag, keyboard moves with announcements, and Straighten up all work.
+  - The dock brings widgets forward (on phones it scrolls to them), and the photo stack shuffles ("2 of 4").
+  - The blob hops, and Play, Pause and Mute toggle with the right labels.
+  - The Sea slider darkens the wallpaper and the Rain slider thickens the streaks.
+- **Reduced motion (file://):** no light; titles fade in; no rain animation, flashes or widget animations.
+- **Contrast:** every pair checked: 16.9, 7.0, 4.6, 10.7:1 on black; 8.9, 5.5, 4.6:1 inside the widgets.
+- **Nothing broken:** Nexo, Wiglet, Codes, the All projects view and the Branding book open and close as before.
+
+**Still needed from Aiyana**
+- **Skills:** the next prompt (locker and 3D stage).
+- **Wallpaper:** your real storm-sea image (the current one is a placeholder).
+- **Hi:** a short bio and a small photo.
+- **Where I've been:** education and experience entries (month, year, role, place).
+- **Toolbox:** the final list.
+- **Away from the desk:** the photos.
+- **Resume PDF:** `assets/Aiyana-Mehta-Resume.pdf`, used by the dock and Contact.
+- **Contact:** your real email and LinkedIn.
+- **Selected work:** the intro line ("[Placeholder: tweak this intro.]").
+
+---
+
 ## 2026-11-03 · New project: Branding, five brand identities as one book
 
 **Why:** to show my brand identity work as one book to flip through, each brand opening into its own short story in its own colours and fonts.

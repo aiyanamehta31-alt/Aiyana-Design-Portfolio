@@ -1,6 +1,6 @@
 // Makes web copies of one brand's images for the Branding project:
 //
-//   node tools/brand-images.mjs <brand>
+//   node tools/brand-images.mjs <brand> [--crops-only]
 //
 // Reads every PNG/JPG in content/branding/<brand>/ and writes, to
 // assets/images/projects/branding/<brand>/, keeping the file name:
@@ -68,7 +68,8 @@ function save(name, url) {
   console.log(out + '/' + name);
 }
 
-for (const f of files) {
+const cropsOnly = process.argv.includes('--crops-only');
+for (const f of cropsOnly ? [] : files) {
   const name = basename(f, extname(f)).toLowerCase().replace(/[^a-z0-9]+/g, '-');
   save(name + '.webp', await encode(f, 2400));
   save(name + '-sm.webp', await encode(f, 720));

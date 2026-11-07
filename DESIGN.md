@@ -140,10 +140,21 @@ Built to match the reference frames. The code lives in `index.html` (section `.h
 - Hover: the cover zooms slightly inside its frame and the card lifts, with a faint amber edge.
 - Below them, **Explore more projects** opens the **All projects** view (`#work/all`): every project, Branding included, on the same black. "Back" (or Esc, or the browser's back button) returns to the homepage at the same scroll position. A project opened from this view closes back into it.
 
-### Section 3: Skills (placeholder)
+### Section 3: Skills, a locker then a show-and-tell stage
 
-- For now a clearly marked empty section with its title, so the guide light still lands on it. Coming in its own step: a school locker that opens, then a 3D stage for the work.
-- When 3D arrives: Three.js r158 as a classic script, `.glb` models loaded over http(s) (Live Server, GitHub Pages); from `file://` a still image shows instead.
+Code: `index.html` (section `.skills`), `css/skills.css`, `js/home/locker.js`, `js/home/stage.js`; all content in **`js/skills-data.js`** (adding work means editing only this file and adding the files). Galleries: `projects/skills.js`, `js/worlds/skills.js`, `css/worlds/skills.css`. Reference: `references/locker-reference.png` (look and feel only; everything here is my own).
+
+- **The locker (closed):** one grey steel school locker centred on the black, lit softly from above (the only bright thing on screen). CSS 3D with layered-gradient brushed steel; vents, hinges, handle, the "AIYANA" nameplate and the padlock are SVG. Drawn at 380 × 620 and scaled to fit.
+- **The padlock** wiggles every few seconds and on hover, with "Open my locker" under it. It is a combination dial: drag it round, and any full turn opens it. A click, Enter or Space opens it too.
+- **Opening:** the door (hinged on the right) swings open in 900 ms with a small overshoot, the strip light flickers twice and stays on, and the halo, arrows and underline draw themselves stroke by stroke while the handwriting (Caveat) writes in with a wipe. A soft metal clunk plays only if the storm mixer's sound is already on. It stays open.
+- **Inside:** the pixel portrait taped up (placeholder silhouette until `portrait` is set), "Designer" with a halo, "About me…" and "I'm here to…" notes. On the door: a big "AIYANA" sticker and tool stickers (labelled name placeholders until the official logo files are in `assets/images/skills/logos/`; logos are used unaltered). Hover peels a corner; on desktop stickers drag about (or move with the arrow keys) and "Put back" returns them.
+- **The shelf:** six SVG objects (camera, sketchbook and pencils, tablet, 3D-printed figure, clapper, rolled poster). Hover wiggles and names them; a click glides down to the stage with that skill.
+- **The glide:** 1.5 s after the door opens, the page glides down to the stage once; any scroll, touch, key or click stops it. Never under reduced motion.
+- **The stage:** a dark stage with a spotlight, a small round plinth with a soft gloss and an amber rim light; the piece floats above it and turns slowly. Drag to spin (with momentum), pinch or Ctrl+scroll to zoom (plain scroll only after clicking the stage, so it never hijacks the page), double-click or the reset button to reset, arrow keys and buttons to rotate. "Drag to spin" shows once.
+- **Class schedule:** six tabs ("Period 1" … "Period 6": 3D modelling and animation, UI design, Graphic design, Product sketching, Video generation, Photography), a swipeable row on phones. Swapping sinks the old piece and raises the new one. Under them, thumbnails of every piece with arrows; the info card shows the title, one line, the tools and "See all … work" (`#project/skills/<skill>`, a gallery in the glass sheet with the lightbox).
+- **Object types** (one shared Three.js r158 scene): `model` (.glb, Draco), `phone` (tap for the next screen), `can` (label wrapped round the front), `box` (takeout box with its front and lid), `poster` (paper thickness, note on the back), `prints` (click deals the next), `sketchbook` (click opens), `screen` (video texture). Real pieces now: the Velvet Vine can and the KOMA takeout box (Graphic design), built from my brand files as they are.
+- **Loading:** the page stays classic scripts; `stage.js` imports Three.js and its loaders as modules (import map in `index.html`) only over http(s), and only when the stage is near the screen. From `file://` or without WebGL each piece shows its still image. The scene renders only while on screen and while something moves.
+- **Reduced motion:** the locker opens instantly with no flicker, wipe or glide; the piece stands still and "Rotate left / Rotate right" turn it in 45° steps.
 
 ### Section 4: About, as Aiyana's desktop
 

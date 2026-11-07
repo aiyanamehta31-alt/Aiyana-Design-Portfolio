@@ -940,6 +940,11 @@ html.has-cursor * { cursor: none !important; }
 @media (max-width: 760px) {
   :root { --header-h: 56px; }
   .nav-links { gap: 12px; }
+}
+@media (max-width: 480px) {
+  /* Six links don't fit: Resume stays in Contact and the desktop dock */
+  .nav-links { gap: 10px; letter-spacing: 0.03em; }
+  .nav-links li:has(a[href="#resume"]) { display: none; }
   .wordmark__last { display: none; }
   .work-grid, .work-grid--selected { grid-template-columns: 1fr; }
   .project-card__media--stage { aspect-ratio: 4 / 3; }

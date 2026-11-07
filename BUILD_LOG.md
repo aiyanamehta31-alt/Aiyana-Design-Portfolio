@@ -4,6 +4,66 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-06 · Skills: a locker, then a show-and-tell stage
+
+**Why:** to replace the empty Skills placeholder with something only mine. My own locker opens onto my tools and skills, then a stage shows the work in 3D. I took the look and feel from my locker reference and none of a classmate's skills section (no numbered sheets, side lists, icon boxes, thumbnails beside rows or work counts).
+
+**What changed**
+- **The locker** (`js/home/locker.js`, `css/skills.css`):
+  - **Look:** a grey steel school locker, centred and lit from above, built in CSS 3D. The steel is brushed gradients; the vents, hinges, handle, the "AIYANA" nameplate and the padlock are SVG.
+  - **The padlock:** it wiggles every few seconds and on hover, with "Open my locker" under it. It's a combination dial: drag it round, and any full turn opens it. A click, Enter or Space also opens it.
+  - **Opening:** a 900 ms swing with a small bounce, then the strip light flickers twice and stays on. The halo, arrows and underline draw themselves stroke by stroke while the handwriting (Caveat) writes in. A soft metal clunk plays only if the storm mixer's sound is on (`window.siteSound`, new in `js/home/storm.js`).
+  - **Inside:**
+    - The pixel portrait, taped up (a pixel silhouette as a placeholder).
+    - "Designer" with a halo.
+    - "About me…" and "I'm here to…".
+    - On the door, a big "AIYANA" sticker and tool stickers (labelled name placeholders until the logo files arrive). Hover peels a corner. On desktop you drag them, or move them with the arrow keys; "Put back" returns them.
+  - **The shelf:** six SVG objects (camera, sketchbook, tablet, 3D-printed figure, clapper, rolled poster). Each wiggles and shows its name, and a click glides to its skill on the stage.
+  - **The glide:** once, 1.5 s after opening, the page glides down to the stage; any scroll, touch, key or click stops it.
+- **The stage** (`js/home/stage.js`):
+  - **The scene:** one Three.js r158 scene with a spotlight, a glossy round plinth and an amber rim light. The piece floats and turns slowly.
+  - **Controls:** drag to spin with momentum, pinch or Ctrl+scroll to zoom (plain scroll only after clicking the stage), double-click to reset, and arrow keys or the round buttons to rotate.
+  - **Below it:** "Period 1–6" class-schedule tabs; swapping sinks the old piece and raises the new one. Thumbnails with arrows, and an info card with "See all … work".
+  - **Object builders:** model (.glb + Draco), phone (tap for the next screen), can, takeout box, poster (paper thickness, back note), prints (click deals), sketchbook (click opens) and screen (video texture, or a live placeholder clip).
+  - **Real pieces:** the **Velvet Vine can** (its label from the brand book, wrapped round the front) and the **KOMA takeout box** (its front and lid from the packaging photo), under Graphic design. The crops are recorded in `tools/brand-crops/` (`node tools/brand-images.mjs <brand> --crops-only`).
+  - **Loading:** Three.js and its loaders load as modules (import map in `index.html`) only over http(s) and only near the stage; from file:// or without WebGL, each piece shows its still image. The scene renders only while on screen and while something moves.
+- **Data:** everything is in `js/skills-data.js`: the portrait, notes, stickers, and each piece's title, line, tools, type, still and files.
+- **Galleries:** `#project/skills/<skill>` opens a grid of that skill's work in the glass sheet, with period tabs and the lightbox (`projects/skills.js`, `js/worlds/skills.js`, `css/worlds/skills.css`).
+- **Placeholders:** stills in `assets/images/skills/placeholders/`.
+- **Phones:** the top bar drops its Resume link (it's still in Contact and the dock), so the six links fit.
+
+**Checked** (headless Chrome, 1440×900 and 390×844, http:// and file://)
+- **Locker, with real mouse input:**
+  - A full turn of the dial opens it.
+  - A sticker drags and Put back returns it.
+  - A shelf click selects UI design and glides the stage into view.
+  - A wheel event stops the auto-glide.
+- **Stage:**
+  - Every object type renders.
+  - Tapping the phone changes its screen, Enter opens the sketchbook, and a click deals the next print.
+  - Drag spins the piece.
+  - "See all" opens the gallery (period tabs work), and a piece opens in the lightbox ("1 of 3").
+- **Reduced motion:** the locker opens instantly with no glide; the piece is still and turns 45° per button press.
+- **file://:** each piece shows its still (including the real KOMA and Velvet Vine photos).
+- **Phone:** the locker and its open door fit at 390px with no horizontal scroll, and the tabs are a swipeable row.
+- **Errors:** none in the console.
+- **The guide light** still lands on the Skills title.
+
+**Still needed from Aiyana**
+- **Portrait:** `assets/images/skills/portrait-pixel.png`, then set `portrait` in `js/skills-data.js`.
+- **Locker notes:** the "About me…" and "I'm here to…" lines.
+- **Tool stickers:** the final list, and each official logo file in `assets/images/skills/logos/`.
+- **Every skill:** the work (titles, one line, tools, files):
+  - 3D: .glb models.
+  - UI: screen images.
+  - Graphic: posters, plus a back image or note.
+  - Sketching: sketch pages.
+  - Video: the clip and a still frame.
+  - Photography: the prints.
+- **The two real pieces:** the tools used for the Velvet Vine can and the KOMA box.
+
+---
+
 ## 2026-11-05 · Homepage redesign: one black world
 
 **Why:** a big design pass so the homepage feels as cohesive, interactive and polished as the strongest portfolios my reviewers will see, while looking clearly my own. Before building, I checked a classmate's portfolio (Arnav Srinath) so nothing here copies his layouts, guide line, skills sheets, window-style About, music room, cursor or wording. His About uses the tab names "Work log", "The kit" and "Off the clock" and a "Tidy up" button, so my widgets are named "Where I've been", "Toolbox" and "Away from the desk", with "Straighten up".

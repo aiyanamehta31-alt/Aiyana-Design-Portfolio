@@ -1,7 +1,58 @@
 [
-  { "name": "logo-primary", "from": "koma_slide_1_logo.png", "x": 110, "y": 560, "w": 1460, "h": 760 },
-  { "name": "logo-bun", "from": "koma_slide_7_pattern.png", "x": 400, "y": 610, "w": 870, "h": 800 },
-  { "name": "logo-box", "from": "koma_slide_6_packaging.png", "x": 470, "y": 1070, "w": 540, "h": 450 },
-  { "name": "logo-sticker", "from": "koma_slide_5_flatlay.png", "x": 930, "y": 1760, "w": 540, "h": 290 },
-  { "name": "logo-badge", "from": "koma_slide_3_badges.png", "x": 120, "y": 150, "w": 870, "h": 975 }
+  {
+    "name": "logo-primary",
+    "from": "koma_slide_1_logo.png",
+    "x": 110,
+    "y": 560,
+    "w": 1460,
+    "h": 760
+  },
+  {
+    "name": "logo-bun",
+    "from": "koma_slide_7_pattern.png",
+    "x": 400,
+    "y": 610,
+    "w": 870,
+    "h": 800
+  },
+  {
+    "name": "logo-box",
+    "from": "koma_slide_6_packaging.png",
+    "x": 470,
+    "y": 1070,
+    "w": 540,
+    "h": 450
+  },
+  {
+    "name": "logo-sticker",
+    "from": "koma_slide_5_flatlay.png",
+    "x": 930,
+    "y": 1760,
+    "w": 540,
+    "h": 290
+  },
+  {
+    "name": "logo-badge",
+    "from": "koma_slide_3_badges.png",
+    "x": 120,
+    "y": 150,
+    "w": 870,
+    "h": 975
+  },
+  {
+    "name": "box-front",
+    "from": "koma_slide_6_packaging.png",
+    "x": 395,
+    "y": 1000,
+    "w": 740,
+    "h": 560
+  },
+  {
+    "name": "box-lid",
+    "from": "koma_slide_6_packaging.png",
+    "x": 640,
+    "y": 540,
+    "w": 440,
+    "h": 200
+  }
 ]

@@ -386,6 +386,7 @@
   function render(p) {
     P = p;
     var html = '<div class="nx-world" data-nx-world>' +
+      '<div class="nx-tones" aria-hidden="true"></div>' +
       '<svg class="nx-thread" aria-hidden="true" focusable="false"><defs><linearGradient id="nx-thread-ink" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"></linearGradient></defs>' +
         '<path class="nx-thread__ghost" stroke="url(#nx-thread-ink)" /><g class="nx-thread__lines"></g><g class="nx-thread__knots"></g></svg>' +
       '<span class="nx-thread__tip" aria-hidden="true"></span>' +
@@ -418,6 +419,14 @@
     setVH();
 
     sheet.classList.add('nx-sheet');
+    // The sheet itself stays paper; each scene paints its own tone (see buildThread).
+    function setTone(el, tone) {
+      el.style.setProperty('--cs-tint', 'var(--cs-' + tone + ')');
+      el.style.setProperty('--cs-ink', 'var(--cs-ink-' + tone + ')');
+      el.style.setProperty('--cs-amber', 'var(--cs-amber-' + tone + ')');
+    }
+    setTone(sheet, 'paper');
+    sheet.style.setProperty('--cs-alpha', '1');
     if (motion) world.classList.add('is-motion');
     if (hover) world.classList.add('can-hover');
 
@@ -561,6 +570,19 @@
         cut(tone);
       });
 
+      // The scenes' colours, painted once into a layer behind the thread: each
+      // scene is its tone, easing in from the one before over the top of its
+      // padding, so crossing between scenes changes nothing while scrolling.
+      var tonesBox = world.querySelector('.nx-tones');
+      tonesBox.innerHTML = sections.map(function (sec, i) {
+        var r = rel(sec);
+        var t = sec.getAttribute('data-tone') || 'paper';
+        var pv = i ? sections[i - 1].getAttribute('data-tone') || 'paper' : t;
+        var band = pv === t ? 0 : Math.min(260, (parseFloat(getComputedStyle(sec).paddingTop) || 120) * 0.85);
+        var h = i === sections.length - 1 ? H - r.y : r.h + 1;
+        return '<div class="nx-tone" style="top:' + f(r.y) + 'px;height:' + f(h) + 'px;--t:var(--cs-' + t + ');--p:var(--cs-' + pv + ');--band:' + f(band) + 'px"></div>';
+      }).join('');
+
       // Ink: orange, deep indigo over the orange scenes.
       grad.innerHTML = stops.map(function (st, i) {
         var col = st.tone === 'orange' ? 'var(--nx-deep)' : 'var(--nx-orange)';
@@ -603,7 +625,7 @@
 
       // Knots, placed on the route.
       knotsG.innerHTML = knotPts.map(function (kp) {
-        return '<g class="nx-knot' + (kp.tone === 'orange' ? ' is-deep' : '') + '" transform="translate(' + f(kp.x) + ' ' + f(kp.y) + ')"><circle class="nx-knot__ring" r="9" /><circle class="nx-knot__dot" r="4.5" /></g>';
+        return '<g class="nx-knot' + (kp.tone === 'orange' ? ' is-deep' : '') + '" style="--kt:var(--cs-' + kp.tone + ')" transform="translate(' + f(kp.x) + ' ' + f(kp.y) + ')"><circle class="nx-knot__ring" r="9" /><circle class="nx-knot__dot" r="4.5" /></g>';
       }).join('');
       var kEls = knotsG.querySelectorAll('.nx-knot');
       T.knots = knotPts.map(function (kp, i) { return { el: kEls[i], len: lenAt(kp.y), lit: false }; });
@@ -664,6 +686,22 @@
       T.cur += diff * (1 - Math.exp(-dt * 9));
       draw(false);
     }
+    // The bar and the dock take the colours of the scene being read: one small
+    // change as a new scene begins, not a blend on every frame.
+    var bar = sheet.querySelector('.cs-bar');
+    var chromeTone = null;
+    function chrome() {
+      if (!T.built) return;
+      var y = storyY();
+      var tn = 'paper';
+      for (var t = 0; t < T.tones.length; t++) { if (T.tones[t].y <= y) tn = T.tones[t].tone; }
+      if (tn === chromeTone) return;
+      chromeTone = tn;
+      if (bar) setTone(bar, tn);
+      if (dock) setTone(dock, tn);
+    }
+    cleanups.push(function () { if (bar) ['--cs-tint', '--cs-ink', '--cs-amber'].forEach(function (v) { bar.style.removeProperty(v); }); });
+
     // A key moment in a scene: the tip sends out a soft ripple.
     function pulse() {
       if (!motion) return;
@@ -1108,7 +1146,7 @@
     var raf = 0;
     function onScroll() {
       if (raf) return;
-      raf = requestAnimationFrame(function () { raf = 0; updateDock(); });
+      raf = requestAnimationFrame(function () { raf = 0; updateDock(); chrome(); });
     }
     on(scroller, 'scroll', onScroll, { passive: true });
 
@@ -1125,6 +1163,8 @@
         drawCallouts();
         buildThread();
         updateDock();
+        chromeTone = null;
+        chrome();
       }, 120);
     }
     Array.prototype.forEach.call(world.querySelectorAll('img'), function (im) {
@@ -1138,7 +1178,22 @@
     drawCallouts();
     buildThread();
     updateDock();
+    chrome();
     if (motion) ST.refresh();
+
+    // Decode every picture quietly in idle time, so a scene's images are ready
+    // before it scrolls in (no decode hitch at the start of a scene).
+    var idle = window.requestIdleCallback || function (fn) { return setTimeout(function () { fn({ timeRemaining: function () { return 8; } }); }, 60); };
+    var pending = Array.prototype.slice.call(world.querySelectorAll('img'));
+    (function warm(deadline) {
+      if (dead) return;
+      while (pending.length && deadline.timeRemaining() > 4) {
+        var im = pending.shift();
+        im.loading = 'eager';
+        if (im.decode) im.decode().catch(function () {});
+      }
+      if (pending.length) idle(warm);
+    })({ timeRemaining: function () { return 0; } });
 
     return {
       refresh: refresh,
@@ -1171,6 +1226,8 @@
     css: 'css/worlds/nexo.css',
     fonts: 'https://fonts.googleapis.com/css2?family=Chewy&family=Inter+Tight:ital,wght@0,400..800;1,400&display=swap',
     render: render,
-    mount: mount
+    mount: mount,
+    // The scenes paint their own colours (a static layer), so the sheet doesn't blend tones on scroll.
+    ownTones: true
   };
 })();

@@ -25,7 +25,7 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '17';
+  var DATA_VERSION = '18';
   var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
   // #project/<slug>, or #project/<slug>/<page> for a world with pages of its
@@ -371,6 +371,10 @@
       });
     });
     if (!stops.length) return;
+    // A world that paints its own tones (Nexo) gets no sheet-wide colour blend:
+    // changing the sheet's colours every frame restyles and repaints everything.
+    var ownWorld = state.project && state.project.world && window.CASE_WORLDS && window.CASE_WORLDS[state.project.world];
+    if (ownWorld && ownWorld.ownTones) return;
 
     // Which part is in the middle of the view, and how far into the blend
     // towards the next part we are (blend over the last stretch before it).

@@ -4,6 +4,19 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-23 · Nexo: no stutter between scenes
+
+**Why:** the line was smooth within a scene, but crossing from one scene to the next lagged and went blocky.
+
+**The cause:** at every scene boundary the shell blended the sheet's colours (paper, indigo, orange) by changing its CSS variables on every frame. Every element inherits them, so each frame of a crossing restyled and repainted the whole story. The dock (frosted glass) widening at each chapter, and pictures decoding as a scene came in, added to the same moments.
+
+**What changed**
+- The scenes paint their own tones: a static layer behind the thread (`.nx-tones` in `js/worlds/nexo.js`), each scene's colour easing in from the one before over the top of its padding. Each scene sets its own ink. Nexo declares `ownTones`, and `js/case-study.js` then skips its per-frame colour blend.
+- The bar and the dock take the tone of the scene being read with one change per scene (a 450 ms fade), not one per frame. The dock is solid, no backdrop blur.
+- Every picture in the story is decoded in idle time after it opens, so no scene stalls on its images.
+
+---
+
 ## 2026-11-23 · Nexo: back to a line, rebuilt to be smooth
 
 **Why:** Aiyana disliked the leaping icon too, and asked to go back to a line like the original, but smoother, more appealing and coherent: something that actually traces the reader through the project, in Nexo's colours, with no icon.

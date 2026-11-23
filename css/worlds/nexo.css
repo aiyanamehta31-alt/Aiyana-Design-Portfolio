@@ -51,6 +51,17 @@
 .cs-sheet.nx-sheet,
 .cs-sheet.nx-sheet .cs-bar { background: rgb(var(--cs-tint)); -webkit-backdrop-filter: none; backdrop-filter: none; }
 
+/* Each scene paints its own tone in a static layer behind the thread, and
+   sets its own ink, so crossing from one scene to the next restyles nothing.
+   (The sheet no longer blends colours while scrolling: ownTones in nexo.js.) */
+.nx-tones { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.nx-tone { position: absolute; left: 0; right: 0; background: linear-gradient(rgb(var(--p)) 0, rgb(var(--t)) var(--band), rgb(var(--t)) 100%); }
+.nx-world > section[data-tone="paper"]  { --cs-tint: var(--cs-paper);  --cs-ink: var(--cs-ink-paper);  --cs-amber: var(--cs-amber-paper); }
+.nx-world > section[data-tone="indigo"] { --cs-tint: var(--cs-indigo); --cs-ink: var(--cs-ink-indigo); --cs-amber: var(--cs-amber-indigo); }
+.nx-world > section[data-tone="orange"] { --cs-tint: var(--cs-orange); --cs-ink: var(--cs-ink-orange); --cs-amber: var(--cs-amber-orange); }
+.nx-world > section { color: var(--cs-ink); }
+.cs-sheet.nx-sheet .cs-bar, .nx-dock { transition: background-color 450ms ease, color 450ms ease, opacity 400ms var(--nx-ease); }
+
 
 /* ---------------------------------------------------------------------
    2. THE SHEET, WHEN A PROJECT HAS ITS OWN WORLD
@@ -148,7 +159,7 @@
 .nx-thread__ghost { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 1.5 9; opacity: 0.32; }
 .nx-thread__line { fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 .nx-knot__ring { fill: none; stroke: var(--nx-orange); stroke-width: 1.6; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.nx-knot__dot { fill: rgb(var(--cs-tint)); stroke: var(--nx-orange); stroke-width: 1.8; opacity: 0.55; transition: fill 500ms ease, opacity 500ms ease; }
+.nx-knot__dot { fill: rgb(var(--kt, var(--cs-tint))); stroke: var(--nx-orange); stroke-width: 1.8; opacity: 0.55; transition: fill 500ms ease, opacity 500ms ease; }
 .nx-knot.is-deep .nx-knot__dot, .nx-knot.is-deep .nx-knot__ring { stroke: var(--nx-deep); }
 .nx-knot.is-lit .nx-knot__dot { fill: var(--nx-orange); opacity: 1; }
 .nx-knot.is-deep.is-lit .nx-knot__dot { fill: var(--nx-deep); }
@@ -192,12 +203,9 @@
   transform: translateX(-50%);
   padding: 5px;
   border-radius: 999px;
-  background: rgba(var(--cs-tint), 0.74);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: inset 0 0 0 1px var(--cs-edge), inset 0 1px 0 var(--cs-highlight), 0 18px 40px -24px rgba(28, 29, 94, 0.55); /* taste-skill-ignore: a floating glass dock */
+  background: rgb(var(--cs-tint));
+  box-shadow: inset 0 0 0 1px var(--cs-edge), 0 18px 40px -24px rgba(28, 29, 94, 0.55); /* taste-skill-ignore: a floating dock, solid so nothing re-blurs behind it */
   color: var(--cs-ink);
-  transition: opacity 400ms var(--nx-ease);
 }
 .nx-dock ul { display: flex; align-items: center; }
 .nx-dock button {

@@ -4,6 +4,18 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-23 · Nexo: back to a line, rebuilt to be smooth
+
+**Why:** Aiyana disliked the leaping icon too, and asked to go back to a line like the original, but smoother, more appealing and coherent: something that actually traces the reader through the project, in Nexo's colours, with no icon.
+
+**What changed** (`js/worlds/nexo.js` "5. The thread", `css/worlds/nexo.css`)
+- The leaping icon and its paw trail are gone.
+- **The route:** from the breathing face on the cover, down each scene's margin, a smooth S across to the other side between scenes, into Luna's emotion curve and out of it, ending where owner and dog touch. No ECG spikes.
+- **Reading aids:** a faint dotted copy of the route shows the way ahead; the orange line (deep indigo on orange scenes) fills in up to the reading line, led by a soft glowing tip; knots at the key moments fill with a ripple as the line reaches them.
+- **Smoothness** (what made the first thread stutter, and the fix): it was one story-tall path redrawn every scroll, located with `getPointAtLength` and layout reads each frame. Now the route is built and sampled once per refresh, split into one path per scene so only the scene being read redraws; each frame eases the drawn length towards the reading line on GSAP's ticker (after Lenis), the tip moves by transform, and nothing is measured.
+
+---
+
 ## 2026-11-23 · Nexo: a leaping icon instead of the walking dog
 
 **Why:** Aiyana found the walking dog ugly and its motion choppy. She asked for a small icon that bounces from one section to the next like a dog jumping, with paw prints as a trail and no props, moving smoothly.

@@ -7,7 +7,7 @@
                   finished state, so it reads fine with no script/motion
      mount(ctx)   adds the motion on top, and returns { destroy }
 
-   1. Helpers           5. The walking guide
+   1. Helpers           5. The leaping guide
    2. Scenes → HTML     6. The phase dock
    3. Mount             7. Scene motion (GSAP + ScrollTrigger)
    4. Measuring         8. Small live parts (AEIOU tabs, form steps, face)
@@ -386,7 +386,6 @@
   function render(p) {
     P = p;
     var html = '<div class="nx-world" data-nx-world>' +
-      '<div class="nx-prints" aria-hidden="true"></div>' +
       coverHTML(p) + openerHTML(p) + fieldHTML(p) + quotesHTML(p) + affinityHTML(p) + journeyHTML(p) + problemHTML(p) +
       ideationHTML(p) + formHTML(p) + deviceHTML(p) + appHTML(p) + outcomeHTML(p) + closeHTML(p) +
       '</div>';
@@ -448,128 +447,130 @@
 
     var heads = Array.prototype.slice.call(world.querySelectorAll('[data-phase-head]'));
 
-    /* ---------- 5. The walking guide ----------
-       A little Nexo companion walks down the left margin at the reading line.
-       Paw prints land under its feet in the page and drift away behind it as
-       the story scrolls, so it seems to walk down through the project; scroll
-       back and it turns round. When the scroll stops it sits and wags. Each
-       chapter gives it a mood and a prop, and a tag with the chapter's name.
-       Everything is measured once (on refresh), so a scroll only does sums. */
+    /* ---------- 5. The leaping guide ----------
+       A small Nexo face rests in the margin at the reading line. The scenes
+       alternate sides; as the reading line crosses into the next scene, it
+       leaps across to that scene's margin in one arc, like a dog jumping,
+       with paw prints left along the arc. Each leap is a complete, timed
+       animation (not tied to every scroll step), so it is always smooth; a
+       fast scroll through several scenes just leaps on to the latest one.
+       Everything is measured once on refresh; a scroll only does sums. */
     var READ = 0.62;   // the reading line, as a share of the sheet's height
+    var LEAP_MS = 820;
     var PAW = '<svg viewBox="0 0 20 20" focusable="false"><ellipse cx="10" cy="13.4" rx="4.9" ry="4.1"/><circle cx="4.3" cy="7.8" r="1.9"/><circle cx="8" cy="4.8" r="1.9"/><circle cx="12" cy="4.8" r="1.9"/><circle cx="15.7" cy="7.8" r="1.9"/></svg>';
     var guide = document.createElement('div');
     guide.className = 'nx-guide';
     guide.setAttribute('aria-hidden', 'true');
-    guide.innerHTML =
-      '<span class="nx-guide__tag"></span>' +
-      '<svg class="nx-guide__dog" viewBox="-6 -34 112 120" focusable="false">' +
-        '<path class="nx-guide__leash" d="M64 30 C 74 6, 86 -14, 106 -34" />' +
-        '<g class="nx-guide__props">' +
-          '<path class="nx-guide__heart" d="M70 -6 c -3 -6 -11 -4 -10 3 c 1 5 10 10 10 10 s 9 -5 10 -10 c 1 -7 -7 -9 -10 -3 z" />' +
-          '<text class="nx-guide__bang" x="66" y="2">!</text>' +
-          '<g class="nx-guide__sniff"><path d="M92 30 q 4 4 0 8" /><path d="M98 27 q 6 7 0 14" /></g>' +
-          '<path class="nx-guide__tear" d="M83 40 q 3 5 0 8 q -3 -3 0 -8 z" />' +
-        '</g>' +
-        '<path class="nx-guide__tail" d="M20 38 q -12 -4 -12 -20" />' +
-        '<g class="nx-guide__legs nx-guide__legs--back"><rect class="nx-guide__leg" x="22" y="50" width="9" height="20" rx="4.5" /><rect class="nx-guide__leg" x="33" y="50" width="9" height="20" rx="4.5" /></g>' +
-        '<g class="nx-guide__legs nx-guide__legs--front"><rect class="nx-guide__leg" x="54" y="50" width="9" height="20" rx="4.5" /><rect class="nx-guide__leg" x="65" y="50" width="9" height="20" rx="4.5" /></g>' +
-        '<g class="nx-guide__body">' +
-          '<ellipse class="nx-guide__torso" cx="46" cy="46" rx="30" ry="18" />' +
-          '<ellipse class="nx-guide__ear" cx="64" cy="19" rx="6.5" ry="8.5" transform="rotate(-28 64 19)" />' +
-          '<ellipse class="nx-guide__ear" cx="88" cy="17" rx="6.5" ry="8.5" transform="rotate(24 88 17)" />' +
-          '<circle class="nx-guide__head" cx="76" cy="36" r="20" />' +
-          '<circle class="nx-guide__screen" cx="78" cy="36" r="14.5" />' +
-          '<path class="nx-guide__blob" d="" />' +
-        '</g>' +
-        '<circle class="nx-guide__ball" cx="96" cy="64" r="6" />' +
-      '</svg>';
+    guide.innerHTML = '<span class="nx-guide__icon">' + face('nx-guide__face') + '</span>';
+    var trail = document.createElement('div');
+    trail.className = 'nx-trail';
+    trail.setAttribute('aria-hidden', 'true');
+    sheet.appendChild(trail);
     sheet.appendChild(guide);
-    cleanups.push(function () { guide.remove(); });
-    var guideBlob = guide.querySelector('.nx-guide__blob');
-    var tag = guide.querySelector('.nx-guide__tag');
-    var prints = world.querySelector('.nx-prints');
+    cleanups.push(function () { guide.remove(); trail.remove(); });
+    var icon = guide.querySelector('.nx-guide__icon');
+    var guideBlob = guide.querySelector('.nx-face__blob');
 
-    // Measured on refresh: where the story starts in the scroller, the chapter
-    // heads and tones (in story space), and the margin the guide walks in.
-    var M = { ok: false, worldTop: 0, view: 0, x: 0, coverEnd: 0, heads: [], tones: [] };
+    // Measured on refresh: where the story starts in the scroller, each
+    // scene's top, side and tone (in story space), and the two margins.
+    var M = { ok: false, worldTop: 0, view: 0, restY: 0, xl: 0, xr: 0, scenes: [], heads: [] };
     function measureGuide() {
       var sr = scroller.getBoundingClientRect(), wr = world.getBoundingClientRect(), shr = sheet.getBoundingClientRect();
       M.worldTop = wr.top - sr.top + scroller.scrollTop;
       M.view = scroller.clientHeight;
       var wrap = world.querySelector('.nx-cover .nx-wrap');
       var room = wrap ? wrap.getBoundingClientRect().left - wr.left + parseFloat(getComputedStyle(wrap).paddingLeft) : 0;
-      M.x = room / 2;
-      M.ok = motion && room >= 72;
-      guide.style.setProperty('--g-size', Math.min(84, room - 10).toFixed(0) + 'px');
-      var cover = world.querySelector('section.nx-s');
-      M.coverEnd = cover ? rel(cover).y + cover.offsetHeight * 0.75 : 0;
+      M.ok = motion && room >= 56;
+      M.xl = wr.left - shr.left + room / 2;
+      M.xr = wr.right - shr.left - room / 2;
+      M.restY = sr.top - shr.top + M.view * READ;
+      M.scenes = Array.prototype.map.call(world.querySelectorAll('section.nx-s'), function (sec, i) {
+        return { y: rel(sec).y, side: sec.getAttribute('data-side') || 'l', tone: sec.getAttribute('data-tone'), cover: i === 0 };
+      });
       M.heads = heads.map(function (h) { return { id: h.getAttribute('data-phase-head'), y: rel(h).y }; });
-      M.tones = Array.prototype.map.call(world.querySelectorAll('section.nx-s'), function (sec) { return { y: rel(sec).y, tone: sec.getAttribute('data-tone') }; });
-      guide.style.left = (wr.left - shr.left + M.x).toFixed(1) + 'px';
       guide.classList.toggle('is-off', !M.ok);
-      lastY = null;
+      at = -1;
+      if (pos.x === null) { pos.x = M.xl; pos.y = M.restY; }
+      else if (!leaping) { pos.x = scene && scene.side === 'r' ? M.xr : M.xl; pos.y = M.restY; }
+      place();
     }
     // The reading line, in story space: only scroll sums, no layout reads.
     function storyY() { return scroller.scrollTop + M.view * READ - M.worldTop; }
 
-    var lastY = null, lastPrintY = 0, foot = 1, dir = 1, mood = null, tone = 'paper', sitTimer = 0, tagTimer = 0;
-    function setMood(id) {
-      mood = id;
-      if (id) guide.setAttribute('data-mood', id); else guide.removeAttribute('data-mood');
-      var ph = id && p.phases.filter(function (x) { return x.id === id; })[0];
-      if (!ph) return;
-      tag.textContent = ph.name;
-      guide.classList.add('is-tagged');
-      clearTimeout(tagTimer);
-      tagTimer = setTimeout(function () { guide.classList.remove('is-tagged'); }, 2200);
+    var pos = { x: null, y: 0, sx: 1, sy: 1, rot: 0 };
+    var at = -1, scene = null, leaping = false, leapRaf = 0;
+    function place() {
+      guide.style.transform = 'translate3d(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px,0)';
+      icon.style.transform = 'rotate(' + pos.rot.toFixed(1) + 'deg) scale(' + pos.sx.toFixed(3) + ',' + pos.sy.toFixed(3) + ')';
     }
-    function stamp(y) {
+    function stamp(x, y, angle) {
       var el = document.createElement('span');
-      el.className = 'nx-print' + (tone === 'orange' ? ' is-deep' : '');
-      foot = -foot;
-      // Toes point the way it walks; left and right feet a little apart.
-      el.style.transform = 'translate3d(' + (M.x - 8 + foot * 6).toFixed(1) + 'px,' + (y + 22).toFixed(1) + 'px,0) rotate(' + (dir > 0 ? 180 : 0) + 'deg)';
+      el.className = 'nx-print' + (scene && scene.tone === 'orange' ? ' is-deep' : '');
+      el.style.transform = 'translate3d(' + (x - 7).toFixed(1) + 'px,' + (y - 7).toFixed(1) + 'px,0) rotate(' + angle.toFixed(0) + 'deg)';
       el.innerHTML = PAW;
-      prints.appendChild(el);
-      setTimeout(function () { el.remove(); }, 2600);
-      while (prints.childElementCount > 36) prints.firstChild.remove();
+      trail.appendChild(el);
+      setTimeout(function () { el.remove(); }, 1300);
+      while (trail.childElementCount > 24) trail.firstChild.remove();
     }
-    function walk() {
+    function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    // One leap from wherever it is now to (x2, rest height), in an arc.
+    function leap(x2, lift) {
+      cancelAnimationFrame(leapRaf);
+      leaping = true;
+      var x1 = pos.x, y1 = pos.y, y2 = M.restY;
+      var dx = x2 - x1;
+      var h = lift != null ? lift : Math.min(M.view * 0.32, 110 + Math.abs(dx) * 0.16);
+      var start = performance.now(), lastStamp = 0, foot = 1;
+      (function frame(now) {
+        var t = Math.min(1, (now - start) / LEAP_MS);
+        var e = ease(t);
+        var arc = 4 * e * (1 - e);
+        var px = pos.x, py = pos.y;
+        pos.x = x1 + dx * e;
+        pos.y = y1 + (y2 - y1) * e - h * arc;
+        var vx = pos.x - px, vy = pos.y - py;
+        // Crouch before take-off, stretch in the air, squash on landing.
+        var squash = t < 0.12 ? -Math.sin(t / 0.12 * Math.PI) * 0.18 : t > 0.86 ? -Math.sin((t - 0.86) / 0.14 * Math.PI) * 0.22 : Math.min(0.16, Math.hypot(vx, vy) * 0.01);
+        pos.sx = 1 - squash * 0.6;
+        pos.sy = 1 + squash;
+        pos.rot = Math.max(-18, Math.min(18, vx * 0.8));
+        if (t > 0.08 && t < 0.92 && e - lastStamp > 0.11) {
+          lastStamp = e;
+          foot = -foot;
+          var ang = Math.atan2(vy, vx) * 180 / Math.PI + 90;
+          stamp(pos.x + foot * 5, pos.y + 16, ang);
+        }
+        place();
+        if (t < 1) { leapRaf = requestAnimationFrame(frame); return; }
+        pos.sx = pos.sy = 1; pos.rot = 0;
+        place();
+        leaping = false;
+        guide.classList.remove('is-landed');
+        void guide.offsetWidth;
+        guide.classList.add('is-landed');
+      })(start);
+    }
+    function follow() {
       if (!M.ok) return;
       var y = storyY();
-      var here = y > M.coverEnd;
-      guide.classList.toggle('is-here', here);
-      if (lastY === null) { lastY = y; lastPrintY = y; }
-      var dy = y - lastY;
-      lastY = y;
-      if (Math.abs(dy) > 0.5) {
-        var d = dy > 0 ? 1 : -1;
-        if (d !== dir) { dir = d; guide.classList.toggle('is-back', dir < 0); }
-        guide.classList.add('is-walking');
-        guide.classList.remove('is-sitting');
-        clearTimeout(sitTimer);
-        sitTimer = setTimeout(function () { guide.classList.remove('is-walking'); guide.classList.add('is-sitting'); }, 360);
-      }
-      var t = 'paper';
-      for (var i = 0; i < M.tones.length; i++) { if (M.tones[i].y <= y) t = M.tones[i].tone; }
-      if (t !== tone) { tone = t; guide.classList.toggle('is-deep', tone === 'orange'); }
-      if (here && Math.abs(y - lastPrintY) >= 40) { lastPrintY = y; stamp(y); }
-      var id = null;
-      for (var k = 0; k < M.heads.length; k++) { if (M.heads[k].y <= y) id = M.heads[k].id; }
-      if (id !== mood) setMood(id);
+      var i = 0;
+      for (var k = 0; k < M.scenes.length; k++) { if (M.scenes[k].y <= y) i = k; }
+      if (i === at) return;
+      var first = at === -1;
+      at = i;
+      scene = M.scenes[i];
+      guide.classList.toggle('is-here', !scene.cover);
+      guide.classList.toggle('is-deep', scene.tone === 'orange');
+      var x2 = scene.side === 'r' ? M.xr : M.xl;
+      if (first || scene.cover) { cancelAnimationFrame(leapRaf); leaping = false; pos.x = x2; pos.y = M.restY; place(); return; }
+      leap(x2);
     }
-    // A key moment in a scene: the guide does a little happy hop.
-    var hopTimer = 0;
+    // A key moment in a scene: a little hop on the spot.
     function pulse() {
-      if (!M.ok) return;
-      guide.classList.remove('is-hop');
-      void guide.offsetWidth;
-      guide.classList.add('is-hop');
-      clearTimeout(hopTimer);
-      hopTimer = setTimeout(function () { guide.classList.remove('is-hop'); }, 700);
+      if (!M.ok || leaping || !guide.classList.contains('is-here')) return;
+      leap(pos.x, 46);
     }
-    cleanups.push(function () { clearTimeout(sitTimer); clearTimeout(tagTimer); clearTimeout(hopTimer); });
-    guide.classList.add('is-sitting');
+    cleanups.push(function () { cancelAnimationFrame(leapRaf); });
 
     /* ---------- 6. The phase dock ---------- */
     var dock = document.createElement('nav');
@@ -689,13 +690,9 @@
     }, { root: scroller });
     faces.forEach(function (fc) { faceIO.observe(fc.el); });
     cleanups.push(function () { faceIO.disconnect(); });
-    var MOOD_R = { whine: 5.6, sniff: 7, scent: 7.6, fetch: 8, walkies: 7.6, treat: 8.6 };
     function breathe(time) {
       faces.forEach(function (fc) { if (fc.live) fc.blob.setAttribute('d', blob(time * 1.4, 60, 60, 24 + Math.sin(time * 1.6) * 1.6)); });
-      if (M.ok && guide.classList.contains('is-here')) {
-        var r = (MOOD_R[mood] || 7) + Math.sin(time * 2) * 0.4;
-        guideBlob.setAttribute('d', blob(time * 1.6, 78, mood === 'whine' ? 38.5 : 36, r));
-      }
+      if (M.ok && guide.classList.contains('is-here')) guideBlob.setAttribute('d', blob(time * 1.6, 60, 60, 24 + Math.sin(time * 2) * 1.8));
     }
 
     // Device callouts: lines from each label to its point on the render.
@@ -1011,7 +1008,7 @@
     var raf = 0;
     function onScroll() {
       if (raf) return;
-      raf = requestAnimationFrame(function () { raf = 0; walk(); updateDock(); });
+      raf = requestAnimationFrame(function () { raf = 0; follow(); updateDock(); });
     }
     on(scroller, 'scroll', onScroll, { passive: true });
 
@@ -1027,7 +1024,7 @@
         if (motion) ST.refresh();
         drawCallouts();
         measureGuide();
-        walk();
+        follow();
         updateDock();
       }, 120);
     }
@@ -1041,7 +1038,7 @@
 
     drawCallouts();
     measureGuide();
-    walk();
+    follow();
     updateDock();
     if (motion) ST.refresh();
 

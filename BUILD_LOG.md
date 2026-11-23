@@ -4,6 +4,17 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-23 · Nexo: a leaping icon instead of the walking dog
+
+**Why:** Aiyana found the walking dog ugly and its motion choppy. She asked for a small icon that bounces from one section to the next like a dog jumping, with paw prints as a trail and no props, moving smoothly.
+
+**What changed** (`js/worlds/nexo.js` "5. The leaping guide", `css/worlds/nexo.css`)
+- The dog drawing, its moods, props and chapter tag are gone. The guide is the Nexo face icon (42px) resting in the margin at the reading line.
+- The scenes alternate sides; crossing into the next scene makes it leap across to that margin in one arc (crouch, stretch, squash, settle), leaving paw prints along the arc that fade in about a second.
+- Smoothness: each leap is a complete 820 ms animation played on its own clock (requestAnimationFrame, transforms only) rather than following every scroll step, so uneven scrolling can't make it stutter. Between leaps it does nothing on scroll beyond one comparison.
+
+---
+
 ## 2026-11-23 · Nexo: smoother scrolling, and a walking Nexo instead of the thread
 
 **Why:** Aiyana found the Nexo story abrupt and laggy to scroll, and wanted something more creative than the heartbeat line to guide people through it. She chose a walking Nexo companion.

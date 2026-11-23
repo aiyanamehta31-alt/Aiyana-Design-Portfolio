@@ -141,116 +141,54 @@
 /* ---------------------------------------------------------------------
    4. THE THREAD AND THE DOCK
    --------------------------------------------------------------------- */
-/* The walking guide (js/worlds/nexo.js, "5. The walking guide") --------
-   A small Nexo companion in the left margin at the reading line; paw prints
-   land in the story under its feet and drift away behind it. */
-.nx-prints { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+/* The leaping guide (js/worlds/nexo.js, "5. The leaping guide") --------
+   A small Nexo face rests in the margin at the reading line and leaps
+   across to the next scene's margin, leaving paw prints along the arc. */
+.nx-trail { position: absolute; inset: 0; z-index: 3; overflow: hidden; pointer-events: none; }
 .nx-print {
   position: absolute;
   top: 0;
   left: 0;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: var(--nx-orange);
   opacity: 0;
-  animation: nx-print 2.6s var(--nx-ease) forwards;
+  animation: nx-print 1.3s ease-out forwards;
 }
 .nx-print.is-deep { color: var(--nx-deep); }
 .nx-print svg { display: block; width: 100%; height: 100%; fill: currentColor; }
-@keyframes nx-print { 0% { opacity: 0; scale: 0.6; } 10% { opacity: 0.55; scale: 1; } 55% { opacity: 0.4; } 100% { opacity: 0; } }
+@keyframes nx-print { 0% { opacity: 0; } 12% { opacity: 0.7; } 100% { opacity: 0; } }
 
 .nx-guide {
-  --g-body: var(--nx-orange);
-  --g-line: var(--nx-deep);
-  --g-blob: var(--nx-indigo);
   position: absolute;
-  top: calc(var(--cs-bar-h) + (100% - var(--cs-bar-h)) * 0.62);
+  top: 0;
   left: 0;
-  z-index: 3;
-  width: var(--g-size, 76px);
-  margin: calc(var(--g-size, 76px) * -0.6) 0 0 calc(var(--g-size, 76px) * -0.5);
+  z-index: 4;
+  width: 0;
+  height: 0;
   pointer-events: none;
-  opacity: 0;
-  translate: 0 14px;
-  transition: opacity 500ms ease, translate 600ms var(--nx-ease);
+  will-change: transform;
 }
-.nx-guide.is-here { opacity: 1; translate: 0 0; }
 .nx-guide.is-off { display: none; }
-.nx-guide.is-deep { --g-body: var(--nx-indigo); --g-line: #FBF9F5; --g-blob: var(--nx-orange); }
-.nx-guide__dog { display: block; width: 100%; overflow: visible; transition: scale 400ms var(--nx-ease); }
-.nx-guide.is-back .nx-guide__dog { scale: -1 1; }
-.nx-guide__dog * { transition: fill 400ms ease, stroke 400ms ease; }
-.nx-guide__torso, .nx-guide__head, .nx-guide__ear, .nx-guide__leg { fill: var(--g-body); stroke: var(--g-line); stroke-width: 2.4; }
-.nx-guide__screen { fill: #FFFFFF; stroke: var(--g-line); stroke-width: 2; }
-.nx-guide__blob { fill: var(--g-blob); }
-.nx-guide__tail { fill: none; stroke: var(--g-line); stroke-width: 5; stroke-linecap: round; transform-box: fill-box; transform-origin: 100% 100%; }
-.nx-guide__leg { transform-box: fill-box; transform-origin: 50% 0; }
-.nx-guide__body { transform-box: fill-box; transform-origin: 50% 100%; }
-
-/* Walking: legs swing in pairs, the body bobs */
-.nx-guide.is-walking .nx-guide__legs--back .nx-guide__leg:first-child,
-.nx-guide.is-walking .nx-guide__legs--front .nx-guide__leg:last-child { animation: nx-step 0.38s ease-in-out infinite alternate; }
-.nx-guide.is-walking .nx-guide__legs--back .nx-guide__leg:last-child,
-.nx-guide.is-walking .nx-guide__legs--front .nx-guide__leg:first-child { animation: nx-step 0.38s ease-in-out infinite alternate-reverse; }
-.nx-guide.is-walking .nx-guide__body { animation: nx-bob 0.38s ease-in-out infinite alternate; }
-.nx-guide.is-walking .nx-guide__tail { animation: nx-wag 0.38s ease-in-out infinite alternate; }
-@keyframes nx-step { from { rotate: -24deg; } to { rotate: 24deg; } }
-@keyframes nx-bob { from { translate: 0 0; } to { translate: 0 -3px; } }
-
-/* Sitting: the back sinks, the tail wags slowly */
-.nx-guide__legs--back { transform-box: fill-box; transform-origin: 50% 0; transition: scale 400ms var(--nx-ease); }
-.nx-guide.is-sitting .nx-guide__legs--back { scale: 1 0.45; }
-.nx-guide.is-sitting .nx-guide__body { rotate: -6deg; translate: 0 3px; transition: rotate 400ms var(--nx-ease), translate 400ms var(--nx-ease); }
-.nx-guide.is-sitting .nx-guide__tail { animation: nx-wag 1.1s ease-in-out infinite alternate; }
-@keyframes nx-wag { from { rotate: -14deg; } to { rotate: 16deg; } }
-
-/* A happy hop at a key moment */
-.nx-guide.is-hop .nx-guide__dog { animation: nx-hop 0.62s var(--nx-ease); }
-@keyframes nx-hop { 0% { translate: 0 0; } 35% { translate: 0 -16px; rotate: -6deg; } 70% { translate: 0 0; rotate: 2deg; } 100% { translate: 0 0; rotate: 0deg; } }
-
-/* Moods and props, one per chapter */
-.nx-guide__props > *, .nx-guide__leash, .nx-guide__ball { opacity: 0; transition: opacity 400ms ease; }
-.nx-guide__heart { fill: #E8566C; }
-.nx-guide__bang { font-family: var(--nx-display); font-size: 30px; fill: var(--g-line); }
-.nx-guide__sniff path { fill: none; stroke: var(--g-line); stroke-width: 2.4; stroke-linecap: round; }
-.nx-guide__tear { fill: #6FA8FF; }
-.nx-guide__leash { fill: none; stroke: var(--g-line); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 5; }
-.nx-guide__ball { fill: var(--g-blob); stroke: var(--g-line); stroke-width: 2; }
-.nx-guide[data-mood="whine"] .nx-guide__tear { opacity: 1; animation: nx-tear 1.8s ease-in infinite; }
-.nx-guide[data-mood="whine"] .nx-guide__ear { rotate: 20deg; transform-box: fill-box; transform-origin: 50% 100%; }
-.nx-guide[data-mood="sniff"] .nx-guide__sniff { opacity: 1; animation: nx-sniff 0.9s ease-in-out infinite; }
-.nx-guide[data-mood="sniff"] .nx-guide__body { rotate: 6deg; }
-.nx-guide[data-mood="scent"] .nx-guide__bang { opacity: 1; animation: nx-pop 1.6s var(--nx-ease) infinite; }
-.nx-guide[data-mood="fetch"] .nx-guide__ball { opacity: 1; animation: nx-ball 0.9s ease-in infinite alternate; }
-.nx-guide[data-mood="walkies"] .nx-guide__leash { opacity: 1; }
-.nx-guide[data-mood="treat"] .nx-guide__heart { opacity: 1; animation: nx-pop 1.4s var(--nx-ease) infinite; }
-.nx-guide[data-mood="treat"].is-sitting .nx-guide__tail { animation-duration: 0.28s; }
-@keyframes nx-tear { 0% { translate: 0 0; opacity: 0; } 25% { opacity: 1; } 100% { translate: 0 14px; opacity: 0; } }
-@keyframes nx-sniff { 0%, 100% { opacity: 0.2; translate: 0 0; } 50% { opacity: 1; translate: 3px 0; } }
-@keyframes nx-pop { 0%, 100% { translate: 0 0; } 40% { translate: 0 -5px; } }
-@keyframes nx-ball { from { translate: 0 0; } to { translate: 0 -12px; } }
-
-/* The chapter's name, for a moment as it begins */
-.nx-guide__tag {
+.nx-guide__icon {
   position: absolute;
-  bottom: calc(100% + 2px);
-  left: 50%;
-  translate: -50% 6px;
-  max-width: 132px;
-  padding: 5px 10px 6px;
-  border-radius: 999px;
-  background: var(--g-line);
-  color: var(--g-body);
-  font-family: var(--nx-display);
-  font-size: 15px;
-  line-height: 1.1;
-  text-align: center;
-  white-space: nowrap;
+  left: -21px;
+  top: -21px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  box-shadow: 0 10px 18px -8px rgba(28, 29, 94, 0.45);
+  transform-origin: 50% 100%;
+  will-change: transform;
   opacity: 0;
-  transition: opacity 300ms ease, translate 500ms var(--nx-ease);
+  scale: 0.4;
+  transition: opacity 400ms ease, scale 500ms var(--nx-ease);
 }
-.nx-guide.is-deep .nx-guide__tag { color: var(--nx-deep); }
-.nx-guide.is-tagged .nx-guide__tag { opacity: 1; translate: -50% 0; }
+.nx-guide.is-here .nx-guide__icon { opacity: 1; scale: 1; }
+.nx-guide.is-deep .nx-guide__face .nx-face__ring { fill: var(--nx-indigo); }
+/* A soft settle after each landing */
+.nx-guide.is-landed .nx-guide__icon { animation: nx-settle 420ms var(--nx-ease); }
+@keyframes nx-settle { 0% { translate: 0 0; } 40% { translate: 0 -5px; } 100% { translate: 0 0; } }
 
 .nx-dock {
   position: absolute;

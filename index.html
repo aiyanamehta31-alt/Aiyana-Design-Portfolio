@@ -6,19 +6,16 @@
   <title>Aiyana Mehta · Design portfolio</title>
   <!-- PLACEHOLDER: refine this one-line description of you -->
   <meta name="description" content="Aiyana Mehta is a design student who designs journeys, not just screens. Portfolio of UX, service and visual design work." />
-  <meta name="theme-color" content="#0A0A0A" />
+  <meta name="theme-color" content="#000000" />
 
   <!-- Fonts: Geist + Geist Mono (hero), Funnel Display + Funnel Sans (rest of the page) taste-skill-ignore -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Caveat:wght@500;700&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
-  <link rel="stylesheet" href="css/style.css?v=5" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
   <link rel="stylesheet" href="css/case-study.css?v=8" />
-  <link rel="stylesheet" href="css/skills.css?v=1" />
-  <!-- Three.js r158 for the Skills stage. js/home/stage.js imports it (as a module) only
-       over http(s) and only when the stage is near the screen; from file:// stills show instead. -->
-  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/" } }</script>
+  <link rel="stylesheet" href="css/skills.css?v=2" />
 
   <!-- Hide reveal-on-scroll elements only when motion is allowed.
        js/main.js removes this class straight away if GSAP failed to load. -->
@@ -65,7 +62,7 @@
     <!-- ========== HERO ==========
          A black stage with a slow, constant wheel of work. The cards are built
          by js/main.js from the WHEEL_IMAGES list at the top of that file. -->
-    <section class="hero" id="top" aria-labelledby="hero-title">
+    <section class="hero" id="top" aria-labelledby="hero-title" data-cloud="#8A8A8A #BDBDBD #E2B877">
       <header class="hero-bar">
         <a class="hero-brand" href="#top">
           <svg class="hero-brand__mark" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
@@ -112,7 +109,7 @@
         <a class="hero-talk__email" href="mailto:hello@example.com">hello@example.com</a>
       </p>
 
-      <a class="hero-explore" href="#work">
+      <a class="hero-explore" href="#hi">
         <svg class="hero-explore__icon" viewBox="0 0 14 14" aria-hidden="true" focusable="false">
           <path d="M7 1 V13 M1 7 H13 M7 1 L5.2 2.8 M7 1 L8.8 2.8 M7 13 L5.2 11.2 M7 13 L8.8 11.2 M1 7 L2.8 5.2 M1 7 L2.8 8.8 M13 7 L11.2 5.2 M13 7 L11.2 8.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -120,53 +117,93 @@
       </a>
     </section>
 
+    <!-- ========== HELLO: who I am, before the work ==========
+         DRAFT: written from Aiyana's own words in DESIGN.md ("fun on the outside,
+         focused underneath", "when I have a goal, I get there") and from the work
+         itself. js/home/intro.js lights the words up as they scroll by. -->
+    <section class="section intro" id="hi" aria-labelledby="hi-title" tabindex="-1" data-cloud="#8A8A8A #BDBDBD #6E6E6E">
+      <div class="wrap wrap--narrow">
+        <p class="label" data-reveal>Hello</p>
+        <h2 class="intro__title" id="hi-title" data-light-words>I’m Aiyana, a design student who designs journeys, not just screens.</h2>
+        <div class="intro__cols">
+          <p class="intro__text" data-reveal>Fun on the outside, focused underneath. I wander, play and sketch until an idea clicks, and once I have a goal, I get there.</p>
+          <p class="intro__text" data-reveal>I move between brands, packaging, products and code, and I like to show every step it took to get to the final piece. Right now I’m looking for a summer design internship.</p>
+        </div>
+        <ul class="intro__what" aria-label="What I work on" data-reveal>
+          <li>Brand identity</li><li>Packaging</li><li>Product design</li><li>Research</li><li>Creative coding</li><li>Agentic AI</li>
+        </ul>
+        <p class="intro__meta" data-reveal><mark class="needs">[NEEDS FROM AIYANA: school, course and year]</mark></p>
+      </div>
+    </section>
+
     <!-- ========== PROJECTS ==========
-         Selected work: Nexo full width, then Wiglet and Codes side by side.
-         A finished case study links with href="#project/<slug>" data-project="<slug>"
-         and opens from projects/<slug>.js. Every project, Branding included,
+         Selected work: a narrow two-column grid, Nexo, Branding, Maggi, Wiglet.
+         A case study links with href="#project/<slug>" data-project="<slug>"
+         and opens from projects/<slug>.js. Every project, Codes included,
          is in the All projects view (#work/all) after the footer. -->
-    <section class="section work" id="work" aria-labelledby="work-title" tabindex="-1">
-      <div class="wrap">
-        <header class="section-head">
+    <section class="section work" id="work" aria-labelledby="work-title" tabindex="-1" data-cloud="#8A8A8A #BDBDBD">
+      <div class="wrap wrap--narrow">
+        <header class="section-head section-head--center">
           <p class="label" data-reveal>Projects</p>
-          <h2 class="section-title" id="work-title" data-guide>Selected work</h2>
-          <p class="section-text" data-reveal>Each project opens on the result, then goes back to the start and plays the journey forward. [Placeholder: tweak this intro.]</p>
+          <h2 class="section-title" id="work-title">Selected work</h2>
+          <p class="section-text" data-reveal>Each project opens on the finished piece. Scroll, and it goes back to the start to show how it got there.</p>
         </header>
 
         <div class="work-grid work-grid--selected">
-        <article class="project-card project-card--wide" data-card>
+        <article class="project-card" data-card data-cloud="#F36E23 #4A6CF7">
           <figure class="project-card__media project-card__media--stage">
             <img src="assets/images/projects/nexo/cover-colourways-cutout.webp" width="1800" height="1944" loading="lazy"
                  alt="Three Nexo desk companions in orange, black and blue, each with a round face showing a blue blob." />
           </figure>
           <div class="project-card__body">
+            <p class="project-card__meta"><span>Design thinking</span><span>2025</span></p>
             <h3 class="project-card__title"><a href="#project/nexo" data-project="nexo">Nexo</a></h3>
             <p class="project-card__desc">A desk companion, smart collar and app that make room for shared play between dogs and owners.</p>
-            <p class="project-card__meta"><span>Design thinking</span><span>2025</span></p>
+            <ul class="project-card__tags"><li>Research</li><li>Product</li><li>App</li></ul>
           </div>
         </article>
 
-        <article class="project-card" data-card>
+        <article class="project-card" data-card data-cloud="#B6E530 #B6E530 #FF4FA3 #DBB56B #F8716C #A77BA7">
+          <figure class="project-card__media project-card__media--strip">
+            <img src="assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp" width="720" height="900" loading="lazy"
+                 alt="Velvet Vine sparkling water cans in deep fig with a cream label." />
+            <img src="assets/images/projects/branding/static/static-product-shot-sm.webp" width="720" height="900" loading="lazy"
+                 alt="STATIC. streetwear in acid green, hot pink and chrome." />
+            <img src="assets/images/projects/branding/koma/koma-slide-6-packaging-sm.webp" width="720" height="900" loading="lazy"
+                 alt="A black KOMA takeout box with a green steam mark." />
+          </figure>
+          <div class="project-card__body">
+            <p class="project-card__meta"><span>Brand identity</span><span>Five brands</span></p>
+            <h3 class="project-card__title"><a href="#project/branding" data-project="branding">Branding</a></h3>
+            <p class="project-card__desc">Five identities, from the marks that didn’t make it to the brand out in the world: Velvet Vine, STATIC., KOMA, Meridian and Pebble &amp; Co.</p>
+            <ul class="project-card__tags"><li>Logo</li><li>Colour</li><li>Packaging</li></ul>
+          </div>
+        </article>
+
+        <article class="project-card" data-card data-cloud="#F2C21B #E2412F">
+          <figure class="project-card__media project-card__media--yellow">
+            <img src="assets/images/projects/maggi/poster-moustache-sm.webp" width="720" height="960" loading="lazy" style="object-position: 50% 62%"
+                 alt="A fork of masala noodles with a curled moustache on bright yellow, from the Très Maggi poster." />
+          </figure>
+          <div class="project-card__body">
+            <p class="project-card__meta"><span>Packaging</span><span>2026</span></p>
+            <h3 class="project-card__title"><a href="#project/maggi" data-project="maggi">Maggi</a></h3>
+            <!-- DRAFT -->
+            <p class="project-card__desc">Maggi Masala noodles re-dressed for France: a new pack, a noodle with a moustache, and an Eiffel Tower made of boxes.</p>
+            <ul class="project-card__tags"><li>Pack</li><li>Campaign</li><li>Retail</li></ul>
+          </div>
+        </article>
+
+        <article class="project-card" data-card data-cloud="#5EEAD4 #3B9BE6">
           <figure class="project-card__media">
             <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
                  alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
           </figure>
           <div class="project-card__body">
+            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
             <h3 class="project-card__title"><a href="#project/wiglet" data-project="wiglet">Wiglet</a></h3>
             <p class="project-card__desc">An ambient daily planner that already knows your day. My Agentic AI capstone, with a live demo of its real scheduler.</p>
-            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
-          </div>
-        </article>
-
-        <article class="project-card" data-card>
-          <figure class="project-card__media">
-            <img src="assets/images/projects/codes/card-cover.webp" width="1280" height="800" loading="lazy"
-                 alt="A spiral galaxy of blue and violet dust on black, a still from the Galaxy to Sun sketch." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#project/codes" data-project="codes">Codes</a></h3>
-            <p class="project-card__desc">Creative coding experiments in JavaScript: shapes, motion, type and space.</p>
-            <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
+            <ul class="project-card__tags"><li>AI</li><li>UI</li><li>Live demo</li></ul>
           </div>
         </article>
         </div>
@@ -175,15 +212,16 @@
       </div>
     </section>
 
-    <!-- ========== SKILLS: the locker, then the show-and-tell stage ==========
-         js/home/locker.js opens the locker; js/home/stage.js runs the stage.
-         All the content (portrait, notes, stickers, every piece of work) is in js/skills-data.js. -->
-    <section class="section skills" id="skills" aria-labelledby="skills-title" tabindex="-1">
-      <div class="wrap">
-        <header class="section-head">
+    <!-- ========== SKILLS: the locker ==========
+         js/home/locker.js opens the locker; each object on the shelf opens that
+         skill's work (#project/skills/<skill>). All the content (portrait,
+         notes, stickers, every piece of work) is in js/skills-data.js. -->
+    <section class="section skills" id="skills" aria-labelledby="skills-title" tabindex="-1" data-cloud="#E2B877 #EDEDED">
+      <div class="wrap wrap--narrow">
+        <header class="section-head section-head--center">
           <p class="label" data-reveal>What I do</p>
-          <h2 class="section-title" id="skills-title" data-guide>Skills</h2>
-          <p class="section-text" data-reveal>Open my locker, then pick a period to see the work up close.</p>
+          <h2 class="section-title" id="skills-title">Skills</h2>
+          <p class="section-text" data-reveal>Open my locker, then pick something off the shelf to see that work.</p>
         </header>
       </div>
 
@@ -258,22 +296,17 @@
         <button type="button" class="locker-putback" data-putback hidden>Put back</button>
         <p class="sr-only" aria-live="polite" data-locker-live></p>
       </div>
-
-      <!-- The show-and-tell stage (built by js/home/stage.js from js/skills-data.js) -->
-      <div class="wrap">
-        <div class="stage" id="stage" data-stage aria-label="Show-and-tell stage" role="region"></div>
-      </div>
     </section>
 
     <!-- ========== ABOUT: AIYANA'S DESKTOP ==========
          A frosted window over the storm-sea wallpaper, with widgets that can be
          dragged (or moved with their arrow keys) and put back with "Straighten up".
          js/home/desktop.js runs it; js/home/storm.js runs the storm mixer. -->
-    <section class="section about" id="about" aria-labelledby="about-title" tabindex="-1">
+    <section class="section about" id="about" aria-labelledby="about-title" tabindex="-1" data-cloud="#9FB4CC #EDEDED">
       <div class="wrap">
         <header class="section-head">
           <p class="label" data-reveal>About</p>
-          <h2 class="section-title" id="about-title" data-guide>About me</h2>
+          <h2 class="section-title" id="about-title">About me</h2>
         </header>
 
         <div class="desk" data-desk>
@@ -404,11 +437,11 @@
     </section>
 
     <!-- ========== CONTACT ========== -->
-    <section class="section contact" id="contact" aria-labelledby="contact-title" tabindex="-1">
-      <div class="wrap">
+    <section class="section contact" id="contact" aria-labelledby="contact-title" tabindex="-1" data-cloud="#E2B877">
+      <div class="wrap wrap--narrow">
         <header class="section-head">
           <p class="label" data-reveal>Contact</p>
-          <h2 class="section-title" id="contact-title" data-guide>Let's make something.</h2>
+          <h2 class="section-title" id="contact-title">Let's make something.</h2>
           <p class="section-text" data-reveal>Internships, collaborations, or just to say hi. I reply within two days.</p>
         </header>
 
@@ -437,7 +470,7 @@
        Opened by "Explore more projects". It sits over the homepage, so
        "Back" returns to exactly where the visitor was. js/main.js runs it. -->
   <section class="all-view" id="all-projects" aria-labelledby="all-title" hidden data-lenis-prevent>
-    <div class="all-view__inner wrap">
+    <div class="all-view__inner wrap wrap--narrow">
       <header class="all-view__head">
         <a class="all-view__back line-link" href="#work" data-all-back><span aria-hidden="true">←</span> Back</a>
         <h2 class="section-title" id="all-title" tabindex="-1">All projects</h2>
@@ -449,45 +482,53 @@
                  alt="Three Nexo desk companions in orange, black and blue, each with a round face showing a blue blob." />
           </figure>
           <div class="project-card__body">
+            <p class="project-card__meta"><span>Design thinking</span><span>2025</span></p>
             <h3 class="project-card__title"><a href="#project/nexo" data-project="nexo">Nexo</a></h3>
             <p class="project-card__desc">A desk companion, smart collar and app that make room for shared play between dogs and owners.</p>
-            <p class="project-card__meta"><span>Design thinking</span><span>2025</span></p>
           </div>
         </article>
-
+        <article class="project-card">
+          <figure class="project-card__media">
+            <img src="assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp" width="720" height="900" loading="lazy"
+                 alt="Velvet Vine sparkling water cans in deep fig with a cream label." />
+          </figure>
+          <div class="project-card__body">
+            <p class="project-card__meta"><span>Brand identity</span><span>Five brands</span></p>
+            <h3 class="project-card__title"><a href="#project/branding" data-project="branding">Branding</a></h3>
+            <p class="project-card__desc">Five brand identities: Velvet Vine, STATIC., KOMA, Meridian and Pebble &amp; Co.</p>
+          </div>
+        </article>
+        <article class="project-card">
+          <figure class="project-card__media">
+            <img src="assets/images/projects/maggi/pack-front-sm.webp" width="720" height="788" loading="lazy"
+                 alt="The front of the yellow Maggi Nouilles Masala box with a 1€ badge." />
+          </figure>
+          <div class="project-card__body">
+            <p class="project-card__meta"><span>Packaging</span><span>2026</span></p>
+            <h3 class="project-card__title"><a href="#project/maggi" data-project="maggi">Maggi</a></h3>
+            <p class="project-card__desc">Maggi Masala noodles re-dressed for France: a new pack, a noodle with a moustache, and an Eiffel Tower made of boxes.</p>
+          </div>
+        </article>
         <article class="project-card">
           <figure class="project-card__media">
             <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
                  alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
           </figure>
           <div class="project-card__body">
+            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
             <h3 class="project-card__title"><a href="#project/wiglet" data-project="wiglet">Wiglet</a></h3>
             <p class="project-card__desc">An ambient daily planner that already knows your day. My Agentic AI capstone, with a live demo of its real scheduler.</p>
-            <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
           </div>
         </article>
-
         <article class="project-card">
           <figure class="project-card__media">
             <img src="assets/images/projects/codes/card-cover.webp" width="1280" height="800" loading="lazy"
                  alt="A spiral galaxy of blue and violet dust on black, a still from the Galaxy to Sun sketch." />
           </figure>
           <div class="project-card__body">
+            <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
             <h3 class="project-card__title"><a href="#project/codes" data-project="codes">Codes</a></h3>
             <p class="project-card__desc">Creative coding experiments in JavaScript: shapes, motion, type and space.</p>
-            <p class="project-card__meta"><span>Creative coding</span><span>2026</span></p>
-          </div>
-        </article>
-
-        <article class="project-card">
-          <figure class="project-card__media">
-            <img src="assets/images/projects/branding/card-cover.webp" width="1280" height="800" loading="lazy"
-                 alt="The front cover of the Branding book: “Branding” in large type on charcoal, with a thin amber rule." />
-          </figure>
-          <div class="project-card__body">
-            <h3 class="project-card__title"><a href="#project/branding" data-project="branding">Branding</a></h3>
-            <p class="project-card__desc">Five brand identities in one book to flip through: Velvet Vine, STATIC., KOMA, Meridian and Pebble &amp; Co.</p>
-            <p class="project-card__meta"><span>Brand identity</span><span>[NEEDS FROM AIYANA: year]</span></p>
           </div>
         </article>
       </div>
@@ -498,16 +539,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-  <script src="js/main.js?v=5" defer></script>
-  <!-- The homepage's own pieces: the guide light, the desktop, the storm mixer -->
-  <script src="js/home/guide.js?v=1" defer></script>
+  <script src="js/main.js?v=6" defer></script>
+  <!-- The homepage's own pieces: the colour smoke, the desktop, the storm mixer -->
+  <script src="js/home/fluid.js?v=8" defer></script>
   <script src="js/home/desktop.js?v=1" defer></script>
   <script src="js/home/storm.js?v=2" defer></script>
-  <!-- Skills: the content, the locker, the stage (Three.js loads itself as a module over http only) -->
+  <!-- Hello: the intro's words light up as they scroll by -->
+  <script src="js/home/intro.js?v=1" defer></script>
+  <!-- Skills: the content and the locker -->
   <script src="js/skills-data.js?v=1" defer></script>
-  <script src="js/home/locker.js?v=1" defer></script>
-  <script src="js/home/stage.js?v=1" defer></script>
+  <script src="js/home/locker.js?v=2" defer></script>
   <!-- Case studies: the glass sheet; each project's data loads on demand from projects/<slug>.js -->
-  <script src="js/case-study.js?v=9" defer></script>
+  <script src="js/case-study.js?v=12" defer></script>
 </body>
 </html>

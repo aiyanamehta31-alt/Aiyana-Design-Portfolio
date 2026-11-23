@@ -1,5 +1,5 @@
 /* =====================================================================
-   SKILLS · the locker, then the show-and-tell stage
+   SKILLS · the locker
    The locker is drawn at 380 × 620 px and scaled to fit (--lk-scale, set by
    js/home/locker.js). Steel is layered gradients; vents, hinges, the padlock
    and the shelf objects are SVG. The door is a real CSS 3D door.
@@ -335,137 +335,15 @@ html.js .locker:not(.is-written) .doodle, html.js .locker:not(.is-written) .dood
 .locker-putback[hidden] { display: none; }
 
 /* ---------------------------------------------------------------------
-   4. THE STAGE
-   --------------------------------------------------------------------- */
-.stage { display: grid; gap: 20px; margin-top: var(--space-l); scroll-margin-top: calc(var(--header-h) + 20px); }
-.stage__box { position: relative; }
-.stage__view {
-  position: relative;
-  height: min(64vh, 600px);
-  min-height: 380px;
-  overflow: hidden;
-  border-radius: 20px;
-  background:
-    radial-gradient(38% 60% at 50% -5%, rgba(255, 238, 214, 0.16), rgba(255, 238, 214, 0) 70%),
-    radial-gradient(70% 40% at 50% 100%, #161514, #0B0B0B 70%);
-  box-shadow: inset 0 0 0 1px var(--c-line);
-  outline: none;
-  touch-action: pan-y;
-}
-.stage__view:focus-visible { box-shadow: inset 0 0 0 2px var(--c-amber); }
-.stage__view canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; }
-.stage__view.is-grabbing canvas { cursor: grabbing; }
-.stage__still { position: absolute; inset: 6% 10% 18%; width: 80%; height: 76%; object-fit: contain; filter: drop-shadow(0 30px 30px rgba(0, 0, 0, 0.6)); }
-.stage__still[hidden], .stage__view canvas[hidden] { display: none; }
-.stage__hint {
-  position: absolute;
-  left: 50%;
-  top: 18px;
-  padding: 6px 12px;
-  border-radius: var(--radius-pill);
-  background: rgba(10, 10, 10, 0.7);
-  font-family: var(--font-mono);
-  font-size: var(--t-label);
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
-  color: var(--c-soft);
-  transform: translateX(-50%);
-  transition: opacity 600ms ease;
-  pointer-events: none;
-}
-.stage__hint.is-gone { opacity: 0; }
-.stage__loading { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-size: var(--t-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-muted); }
-.stage__controls { position: absolute; right: 16px; bottom: 16px; display: flex; gap: 6px; }
-.stage__btn {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 50%;
-  background: rgba(16, 16, 18, 0.7);
-  color: var(--c-ink);
-  cursor: pointer;
-}
-.stage__btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.stage__btn:hover { border-color: var(--c-amber); color: var(--c-amber); }
-
-.stage__info {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  display: grid;
-  gap: 6px;
-  width: min(320px, calc(100% - 180px));
-  padding: 14px 16px 16px;
-  border-radius: 14px;
-  background: rgba(16, 16, 18, 0.72);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  box-shadow: inset 0 0 0 1px var(--c-line);
-}
-.stage__title { font-family: var(--font-display); font-size: var(--t-body); font-weight: 600; line-height: 1.3; }
-.stage__line { font-size: var(--t-small); line-height: 1.5; color: var(--c-soft); }
-.stage__tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
-.stage__tools li, .stage__badge { padding: 2px 8px; border-radius: 6px; background: rgba(255, 255, 255, 0.07); font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-soft); }
-.stage__badge { justify-self: start; background: rgba(226, 184, 119, 0.14); color: var(--c-amber); }
-.stage__all { justify-self: start; margin-top: 4px; font-size: var(--t-small); color: var(--c-amber); text-decoration: none; }
-.stage__all:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-/* The class schedule */
-.periods { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
-.period {
-  display: grid;
-  gap: 4px;
-  align-content: start;
-  min-height: 74px;
-  padding: 12px 12px 14px;
-  border: 0;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.035);
-  box-shadow: inset 0 0 0 1px var(--c-line);
-  color: var(--c-soft);
-  font-size: var(--t-small);
-  line-height: 1.3;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 250ms ease, color 250ms ease, box-shadow 250ms ease;
-}
-.period__no { font-family: var(--font-mono); font-size: var(--t-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-muted); }
-.period:hover { color: var(--c-ink); background: rgba(255, 255, 255, 0.06); }
-.period[aria-selected="true"] { color: var(--c-ink); background: rgba(226, 184, 119, 0.08); box-shadow: inset 0 0 0 1px rgba(226, 184, 119, 0.45), inset 0 3px 0 var(--c-amber); }
-.period[aria-selected="true"] .period__no { color: var(--c-amber); }
-
-/* Thumbnails of every piece in the skill */
-.thumbs { display: flex; align-items: center; gap: 10px; }
-.thumbs__list { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px; }
-.thumbs__list::-webkit-scrollbar { display: none; }
-.thumb { flex: none; width: 72px; height: 72px; padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: #141414; box-shadow: inset 0 0 0 1px var(--c-line); cursor: pointer; scroll-snap-align: start; opacity: 0.7; transition: opacity 200ms ease, box-shadow 200ms ease; }
-.thumb img { width: 100%; height: 100%; object-fit: cover; }
-.thumb:hover { opacity: 1; }
-.thumb[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--c-amber); }
-.thumbs__count { margin-left: auto; font-family: var(--font-mono); font-size: var(--t-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--c-muted); white-space: nowrap; }
-
-/* ---------------------------------------------------------------------
-   5. PHONES AND REDUCED MOTION
+   4. PHONES AND REDUCED MOTION
    --------------------------------------------------------------------- */
 @media (max-width: 760px) {
   :root { --lk-open: 118deg; }
   .sticker { cursor: default; }
   .locker-putback { display: none; }
-  .stage__view { height: 400px; min-height: 0; }
-  .stage__info { position: static; width: auto; margin: 0; border-radius: 0 0 20px 20px; }
-  .stage__view { border-radius: 20px 20px 0 0; }
-  .stage__controls { bottom: auto; top: 14px; right: 14px; }
-  .stage__hint { top: auto; bottom: 16px; }
-  .periods { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 calc(var(--gutter) * -1); padding: 0 var(--gutter); }
-  .periods::-webkit-scrollbar { display: none; }
-  .period { flex: none; width: 46%; scroll-snap-align: start; }
 }
 @media (prefers-reduced-motion: reduce) {
   .padlock, .padlock:hover, .shelf__item:hover, .shelf__item:focus-visible { animation: none; }
   .locker, .locker.is-written [data-hand], .locker.is-written .doodle, .locker.is-written .doodle *, .sticker, .sticker::after { transition: none !important; }
   .locker.is-swinging .door, .locker.is-flickering .locker__dark, .locker.is-flickering .locker__strip { animation: none; }
 }
-.stage__controls[hidden], .stage__loading[hidden] { display: none; }

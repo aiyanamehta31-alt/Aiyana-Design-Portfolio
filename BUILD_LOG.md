@@ -4,6 +4,37 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-23 · A fabric the cursor bends, instead of the guide light (branch `simplify`)
+
+**Why:** Aiyana didn't like the golden light following the scroll and wanted something fun to touch. We tried water ripples, colour clouds, a liquid-glass blob and a colour-smoke trail (after her friend's site). She then asked for the cursor to look as if it warps and bends the very fabric of the background, softer and subtler, smooth while scrolling, in her projects' colours.
+
+**What changed**
+- **Removed:** the guide light (`js/home/guide.js` deleted, its styles, the `data-guide` hooks, and the amber glow on section titles), and the earlier experiments.
+- **Added** `js/home/fluid.js`: a WebGL fluid simulation drives a woven grid behind the black. The grid shows only round the cursor and where it moves; the flow bends its threads behind the hand, and they spring back. It scrolls with the page, and scrolling sends an elastic wave through it. A soft wash of the nearest project's colours (`data-cloud` in `index.html`) tints the threads.
+- The hero and `body` lost their own black so the canvas behind shows through; `html` keeps the black.
+
+---
+
+## 2026-11-23 · Simpler, one black, the work first (branch `simplify`)
+
+**Why:** the homepage felt like too much. Aiyana pointed to a friend's portfolio for its flow: a short "about me" before the work, a calm two-column work grid, and projects that show every step to the final piece. We took the flow only; the look stays hers, all black. Nothing of the reference site was copied.
+
+**What changed**
+- **One black:** the whole page is now `#000`, the same as the hero, and the film grain is gone, so there's no step from black to grey below the hero.
+- **Hello** (new, after the hero; `index.html`, `js/home/intro.js`): "I'm Aiyana, a design student who designs journeys, not just screens." Its words light from grey to white as they scroll by. Two short paragraphs and six pills for what she works on. DRAFT text from her own words in DESIGN.md; school, course and year are [NEEDS FROM AIYANA].
+- **Selected work:** a narrow (960px) two-column grid of Nexo, Branding, Maggi, Wiglet. Cards: picture, category and year, name, one line, tag pills. Codes moved to "Explore more projects", which now lists all five.
+- **Hero wheel:** real work instead of the placeholder cards (Nexo, Maggi, the five brands, Wiglet, Codes) until Aiyana sends her own picks.
+- **Journey world** (new: `js/worlds/journey.js`, `css/worlds/journey.css`): a project opens full screen on the finished work, then numbered chapters (01, 02 …) beside a sticky index go from the first step to the final piece, with handwritten notes (Caveat) and each brand's own accent on its numbers.
+- **Maggi** (new: `projects/maggi.js`, `assets/images/projects/maggi/`): five chapters from the Illustrator artboards and the dieline, to the pack, the moustache character, the store scenes and the exhibition (with a 15 s walk-past video). From the "rebranding maggi" folder; originals copied to `content/maggi/`. Left out: the team photo (other people's faces) and a selfie.
+- **Branding:** now uses the journey world instead of the flip book. The five finished brands open side by side; each brand's chapter goes explorations → the mark → colour → in the world, built from its existing file in `projects/branding/`. `#project/branding/<brand>` lands on that chapter. The book stays in `js/worlds/branding.js` and on `main`.
+- **Next project** loops Nexo → Branding → Maggi → Wiglet → Codes → Nexo.
+- **Skills:** the show-and-tell stage and the Period 1–6 tabs are gone (`js/home/stage.js` deleted, its styles removed). The locker stays; a shelf object now opens that skill's work (`#project/skills/<skill>`). The auto-glide is gone.
+- **Tools:** `node tools/brand-images.mjs --project <slug>` makes web copies for any project, not just a brand.
+
+**Still needed from Aiyana:** Maggi's brief, team and role, tools, and how the store scenes were made; the year for Branding; school, course and year for Hello; her own wheel images; and whether the team photo may be shown.
+
+---
+
 ## 2026-11-06 · Skills: a locker, then a show-and-tell stage
 
 **Why:** to replace the empty Skills placeholder with something only mine. My own locker opens onto my tools and skills, then a stage shows the work in 3D. I took the look and feel from my locker reference and none of a classmate's skills section (no numbered sheets, side lists, icon boxes, thumbnails beside rows or work counts).

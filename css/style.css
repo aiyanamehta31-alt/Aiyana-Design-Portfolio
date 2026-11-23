@@ -8,15 +8,16 @@
    Every colour, font, size, space and timing lives here.
    --------------------------------------------------------------------- */
 :root {
-  /* One black world. Contrast on #0A0A0A: ink 17:1, soft 7.1:1, muted 4.6:1, amber 10.7:1 */
-  --c-black:     #0A0A0A;
+  /* One black world, the same pure black as the hero, top to bottom.
+     Contrast on #000: ink 17.9:1, soft 7.5:1, muted 4.9:1, amber 11.3:1 */
+  --c-black:     #000000;
   --c-ink:       #EDEDED;   /* primary text */
   --c-soft:      #9A9A9A;   /* secondary text */
   --c-muted:     #7A7A7A;   /* labels and quiet notes (the brief's #6B6B6B is 3.7:1, too low) */
-  --c-amber:     #E2B877;   /* links, focus, active states, the guide light */
+  --c-amber:     #E2B877;   /* links, focus, active states */
   --c-amber-dim: rgba(226, 184, 119, 0.35);
   --c-line:      rgba(255, 255, 255, 0.09);
-  --c-panel:     #141414;   /* behind covers while they load */
+  --c-panel:     #0C0C0C;   /* behind covers while they load */
 
   /* Live values (the case-study sheet and other pieces read these) */
   --bg: var(--c-black);
@@ -40,7 +41,8 @@
   --measure: 60ch;
 
   /* Space */
-  --page-max: 1200px;           /* content width; the margins either side are the guide light's */
+  --page-max: 1200px;           /* content width */
+  --page-narrow: 960px;         /* the reading column: intro, work, skills, contact */
   --gutter: clamp(16px, 2.4vw, 32px);
   --grid-gap: clamp(16px, 1.8vw, 28px);
   --header-h: 64px;
@@ -106,7 +108,7 @@
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 8px); background: var(--c-black); }
 body {
   margin: 0;
-  background: var(--c-black);
+  /* No background of its own: html carries the black, so the smoke canvas behind the page shows */
   color: var(--c-ink);
   font-family: var(--font-body);
   font-size: var(--t-body);
@@ -114,16 +116,6 @@ body {
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-/* A very fine film grain over the black, so it never feels flat (one static tile) */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  pointer-events: none;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
 }
 h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
@@ -161,6 +153,9 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
 
+/* Colour smoke: a fluid simulation on one canvas behind the whole page (js/home/fluid.js) */
+.fluid { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+
 /* Reveal-on-scroll start state (only when motion is allowed and JS runs) */
 html.motion-ok [data-reveal],
 html.motion-ok [data-card] { opacity: 0; }
@@ -169,6 +164,7 @@ html.motion-ok [data-card] { opacity: 0; }
    3. SHARED PIECES
    --------------------------------------------------------------------- */
 .wrap { width: 100%; max-width: var(--page-max); margin-inline: auto; }
+.wrap--narrow { max-width: var(--page-narrow); }
 
 .label {
   font-family: var(--font-mono);
@@ -213,10 +209,7 @@ html.motion-ok [data-card] { opacity: 0; }
   line-height: 1.08;
   color: var(--c-ink);
   text-wrap: balance;
-  transition: color 700ms ease, text-shadow 900ms ease;
 }
-/* The guide light lands next to a title: it lights up for a moment */
-.section-title.is-lit { color: #FFF4E2; text-shadow: 0 0 28px rgba(226, 184, 119, 0.55), 0 0 2px rgba(226, 184, 119, 0.6); }
 .section-text { max-width: var(--measure); color: var(--c-soft); }
 
 .needs {
@@ -240,7 +233,7 @@ html.motion-ok [data-card] { opacity: 0; }
   justify-content: space-between;
   gap: var(--space-s);
   padding: 0 max(var(--gutter), calc((100% - var(--page-max)) / 2));
-  background: rgba(10, 10, 10, 0.78);
+  background: rgba(0, 0, 0, 0.8);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   box-shadow: 0 1px 0 var(--c-line);
@@ -267,7 +260,7 @@ html.motion-ok [data-card] { opacity: 0; }
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  background: var(--hero-bg);
+  background: transparent;   /* the page is the same black; the colour smoke shows through */
   color: var(--hero-text);
   font-family: var(--font-hero);
 }
@@ -480,25 +473,59 @@ html.js .site-header {
 .section-head { display: grid; gap: 12px; margin-bottom: var(--space-l); max-width: var(--measure); }
 .section-head .section-text { margin-top: 4px; }
 
+.section-head--center { margin-inline: auto; justify-items: center; text-align: center; }
+
+/* --- Hello: who I am, before the work ------------------------------ */
+.intro { padding-top: var(--space-xl); }
+.intro__title {
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4.4vw, 60px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  color: var(--c-ink);
+  text-wrap: balance;
+  margin-top: 14px;
+}
+/* js/home/intro.js wraps each word; they light from grey to white as they scroll by */
+.intro__title .lw { color: #3A3A3A; transition: color 500ms ease; }
+.intro__title .lw.is-lit { color: var(--c-ink); }
+.intro__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-m) var(--space-l); margin-top: var(--space-l); }
+.intro__text { color: var(--c-soft); font-size: 17px; line-height: 1.65; }
+.intro__what { display: flex; flex-wrap: wrap; gap: 10px; margin-top: var(--space-l); }
+.intro__what li {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  color: var(--c-ink);
+  font-size: var(--t-small);
+  transition: box-shadow var(--dur-base) ease, color var(--dur-base) ease, transform var(--dur-base) var(--ease-out);
+}
+.intro__what li:hover { box-shadow: inset 0 0 0 1px var(--c-amber); color: var(--c-amber); transform: translateY(-2px) rotate(-1.5deg); }
+.intro__what li:nth-child(even):hover { transform: translateY(-2px) rotate(1.5deg); }
+.intro__meta { margin-top: var(--space-m); font-size: var(--t-small); color: var(--c-muted); }
+
 /* --- Project card (reusable component) ----------------------------- */
 .work { padding-top: var(--space-xl); }
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-l) var(--grid-gap);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(48px, 6vw, 72px) clamp(20px, 2.6vw, 36px);
 }
-.work-grid--selected { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.project-card--wide { grid-column: 1 / -1; }
 .project-card {
   position: relative;
+  display: grid;
+  align-content: start;
   transition: transform var(--dur-base) var(--ease-out);
 }
 .project-card__media {
+  position: relative;
   overflow: hidden;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   border-radius: var(--radius-card);
   background: var(--c-panel);
-  box-shadow: var(--shadow-soft);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   transition: box-shadow var(--dur-base) var(--ease-out);
 }
 .project-card__media img {
@@ -507,41 +534,52 @@ html.js .site-header {
   object-fit: cover;
   transition: transform var(--dur-slow) var(--ease-out);
 }
-/* Nexo, full width: the three companions on a soft studio light */
-.project-card__media--stage {
-  position: relative;
-  aspect-ratio: 21 / 9;
-  background: radial-gradient(60% 90% at 50% 58%, #3A3734 0%, #22201E 48%, #121212 100%);
-}
-.project-card__media--stage img { position: absolute; inset: 4% 0; height: 92%; object-fit: contain; filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.55)); }
+/* Nexo: the three companions on a soft studio light */
+.project-card__media--stage { background: radial-gradient(70% 80% at 50% 60%, #2C2A28 0%, #161514 55%, #0A0A0A 100%); }
+.project-card__media--stage img { position: absolute; inset: 6% 0; height: 88%; object-fit: contain; filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.6)); }
+/* Branding: three brands side by side */
+.project-card__media--strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.project-card__media--strip img { min-width: 0; }
+.project-card__media--strip img:nth-child(2) { transition-delay: 60ms; }
+.project-card__media--strip img:nth-child(3) { transition-delay: 120ms; }
+.project-card__media--yellow { background: #F2C21B; }
 .project-card:hover,
 .project-card:focus-within { transform: translateY(-6px); }
 .project-card:hover .project-card__media,
-.project-card:focus-within .project-card__media { box-shadow: var(--shadow-lift); }
+.project-card:focus-within .project-card__media { box-shadow: inset 0 0 0 1px rgba(226, 184, 119, 0.4), var(--shadow-soft); }
 .project-card:hover .project-card__media img { transform: scale(1.04); }
-.project-card__body { display: grid; gap: 6px; padding-top: 18px; max-width: var(--measure); }
+.project-card__body { display: grid; gap: 8px; padding-top: 20px; }
 .project-card__title {
   font-family: var(--font-display);
-  font-size: var(--t-body);
+  font-size: clamp(22px, 2vw, 28px);
   font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  transition: color var(--dur-base) ease;
 }
+.project-card:hover .project-card__title { color: var(--c-amber); }
 .project-card__title a { text-decoration: none; }
 .project-card__title a::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-card); }
 .project-card__title a:focus-visible { outline: none; }
 .project-card:has(a:focus-visible) .project-card__media { outline: 2px solid var(--c-amber); outline-offset: 4px; }
-.project-card__desc { color: var(--c-soft); }
+.project-card__desc { color: var(--c-soft); font-size: 15px; line-height: 1.6; }
 .project-card__meta {
   display: flex;
   justify-content: space-between;
   gap: var(--space-s);
-  margin-top: 4px;
   font-family: var(--font-mono);
   font-size: var(--t-label);
   letter-spacing: var(--track-label);
   text-transform: uppercase;
   color: var(--c-muted);
+}
+.project-card__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.project-card__tags li {
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  color: var(--c-soft);
 }
 
 /* --- More projects: the button, and the All projects view ---------- */
@@ -835,13 +873,6 @@ html.all-open body { overflow: hidden; }
   color: var(--c-muted);
 }
 
-/* --- The guide light ----------------------------------------------- */
-.guide { position: fixed; inset: 0; z-index: 60; width: 100%; height: 100%; pointer-events: none; }
-html.all-open .guide, html.cs-open .guide { visibility: hidden; }
-/* Reduced motion: no light; titles fade in */
-.section-title.is-waiting { opacity: 0; }
-.section-title.is-seen { opacity: 1; transition: opacity 600ms ease; }
-
 /* ---------------------------------------------------------------------
    7. CUSTOM CURSOR: bubble → bullseye (off by default)
    --------------------------------------------------------------------- */
@@ -890,7 +921,6 @@ html.has-cursor * { cursor: none !important; }
    8. RESPONSIVE
    --------------------------------------------------------------------- */
 @media (max-width: 1080px) {
-  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .widget--away { left: 36%; top: 10%; width: 210px; }
 }
 @media (max-width: 639px) {
@@ -918,7 +948,7 @@ html.has-cursor * { cursor: none !important; }
     min-width: 160px;
     padding: 18px 20px;
     border-radius: 14px;
-    background: #111111;
+    background: #0E0E0E;
   }
   .hero-copy__title { font-size: clamp(18px, 5vw, 22px); }
   .hero-talk { left: 20px; bottom: 24px; }
@@ -940,6 +970,10 @@ html.has-cursor * { cursor: none !important; }
 @media (max-width: 760px) {
   :root { --header-h: 56px; }
   .nav-links { gap: 12px; }
+  .intro__cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .work-grid, .work-grid--selected { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   /* Six links don't fit: Resume stays in Contact and the desktop dock */

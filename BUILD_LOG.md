@@ -4,6 +4,16 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-24 · Nexo: a still, flowing line, and the colour fades back
+
+**Why:** Aiyana felt the scene crossings still stuttered and asked for a line that simply sits in the page and guides, with no movement of its own, flowy and good-looking. She also pointed out that the last change broke Nexo's smooth colour fades between scenes, and asked for them back exactly.
+
+**What changed**
+- **The line** (`js/worlds/nexo.js` "5. The thread", `css/worlds/nexo.css`): drawn once and static. From the cover face, a gentle meander down each scene's margin; a sweep across in the empty space at the top of the next scene with a soft loop in the middle; into Luna's emotion curve and out; ending where owner and dog touch. Small dots at the key moments. The moving tip, the dotted route, the per-frame easing and the per-scene paths are gone; nothing runs while scrolling.
+- **The colour fades** are back as they were: the whole sheet blends from one scene's tone to the next. The static per-scene tone layer is gone. To keep it light, `js/case-study.js` now (for worlds with `ownTones`) sets only the sheet's and bar's background colour per frame and flips the inherited colour variables once at the midpoint. The inline colours are cleared when another project opens.
+
+---
+
 ## 2026-11-23 · Nexo: no stutter between scenes
 
 **Why:** the line was smooth within a scene, but crossing from one scene to the next lagged and went blocky.

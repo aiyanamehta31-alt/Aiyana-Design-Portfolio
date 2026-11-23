@@ -25,7 +25,7 @@
   /* ---------- 1. Setup ---------- */
   var PROJECT_DIR = 'projects/';
   // Bump with each content change so browsers fetch the new project data instead of a cached copy.
-  var DATA_VERSION = '18';
+  var DATA_VERSION = '20';
   var WORLD_DIR = 'js/worlds/';
   var SLUG = /^[a-z0-9-]+$/;
   // #project/<slug>, or #project/<slug>/<page> for a world with pages of its
@@ -276,6 +276,10 @@
   }
 
   function fill(p) {
+    // Clear a solid-tone world's per-frame colours before the next project.
+    sheet.style.backgroundColor = '';
+    bar.style.backgroundColor = '';
+    lastBg = '';
     groups = {};
     state.project = p;
     barName.textContent = p.title;
@@ -351,6 +355,7 @@
   }
 
   var lastKey = '';
+  var lastBg = '';
   var lastPhase = null;
   function lerp(a, b, t) { return a + (b - a) * t; }
 
@@ -371,10 +376,12 @@
       });
     });
     if (!stops.length) return;
-    // A world that paints its own tones (Nexo) gets no sheet-wide colour blend:
-    // changing the sheet's colours every frame restyles and repaints everything.
+    // A world with solid tones (Nexo) blends only the sheet's and the bar's
+    // background colour per frame, and flips its colour variables once, at the
+    // midpoint: variables are inherited, so changing them every frame would
+    // restyle the whole story, while a background colour repaints one layer.
     var ownWorld = state.project && state.project.world && window.CASE_WORLDS && window.CASE_WORLDS[state.project.world];
-    if (ownWorld && ownWorld.ownTones) return;
+    var solid = !!(ownWorld && ownWorld.ownTones);
 
     // Which part is in the middle of the view, and how far into the blend
     // towards the next part we are (blend over the last stretch before it).
@@ -394,8 +401,20 @@
     var rgb = [0, 1, 2].map(function (k) { return Math.round(lerp(a.rgb[k], b.rgb[k], t)); }).join(',');
     var alpha = lerp(a.alpha, b.alpha, t).toFixed(3);
     var side = t < 0.5 ? a : b;   // text flips at the midpoint of the blend
+    if (solid) {
+      var bg = 'rgb(' + rgb + ')';
+      if (bg !== lastBg) { lastBg = bg; sheet.style.backgroundColor = bg; bar.style.backgroundColor = bg; }
+      var flip = side.rgb.join(',') + side.ink;
+      if (flip !== lastKey) {
+        lastKey = flip;
+        sheet.style.setProperty('--cs-tint', side.rgb.join(','));
+        sheet.style.setProperty('--cs-alpha', '1');
+        sheet.style.setProperty('--cs-ink', side.ink);
+        sheet.style.setProperty('--cs-amber', side.amber);
+      }
+    }
     var key = rgb + alpha + side.ink;
-    if (key !== lastKey) {
+    if (!solid && key !== lastKey) {
       lastKey = key;
       sheet.style.setProperty('--cs-tint', rgb);
       sheet.style.setProperty('--cs-alpha', alpha);

@@ -386,10 +386,8 @@
   function render(p) {
     P = p;
     var html = '<div class="nx-world" data-nx-world>' +
-      '<div class="nx-tones" aria-hidden="true"></div>' +
       '<svg class="nx-thread" aria-hidden="true" focusable="false"><defs><linearGradient id="nx-thread-ink" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"></linearGradient></defs>' +
-        '<path class="nx-thread__ghost" stroke="url(#nx-thread-ink)" /><g class="nx-thread__lines"></g><g class="nx-thread__knots"></g></svg>' +
-      '<span class="nx-thread__tip" aria-hidden="true"></span>' +
+        '<path class="nx-thread__line" stroke="url(#nx-thread-ink)" /><g class="nx-thread__knots"></g></svg>' +
       coverHTML(p) + openerHTML(p) + fieldHTML(p) + quotesHTML(p) + affinityHTML(p) + journeyHTML(p) + problemHTML(p) +
       ideationHTML(p) + formHTML(p) + deviceHTML(p) + appHTML(p) + outcomeHTML(p) + closeHTML(p) +
       '</div>';
@@ -419,14 +417,6 @@
     setVH();
 
     sheet.classList.add('nx-sheet');
-    // The sheet itself stays paper; each scene paints its own tone (see buildThread).
-    function setTone(el, tone) {
-      el.style.setProperty('--cs-tint', 'var(--cs-' + tone + ')');
-      el.style.setProperty('--cs-ink', 'var(--cs-ink-' + tone + ')');
-      el.style.setProperty('--cs-amber', 'var(--cs-amber-' + tone + ')');
-    }
-    setTone(sheet, 'paper');
-    sheet.style.setProperty('--cs-alpha', '1');
     if (motion) world.classList.add('is-motion');
     if (hover) world.classList.add('can-hover');
 
@@ -460,34 +450,26 @@
     var heads = Array.prototype.slice.call(world.querySelectorAll('[data-phase-head]'));
 
     /* ---------- 5. The thread ----------
-       One calm line traces the story. It grows out of the breathing face on
-       the cover, runs down the margin of each scene, eases across to the
-       other side between scenes, flows into Luna's emotion curve and out of
-       it, and ends where owner and dog come back together. A faint dotted
-       copy shows the way ahead; the orange line fills in up to the reading
-       line, and a soft glowing tip leads it. Small knots mark the key moments
-       and light up as the line reaches them.
-
-       Smooth by design: the route is built and sampled once (on refresh);
-       each frame only eases the drawn length towards the reading line,
-       updates the one or two section paths that changed, and moves the tip
-       with a transform. No layout reads and no path lookups while scrolling. */
-    var READ = 0.62;   // the reading line, as a share of the sheet's height
+       A static line, drawn once and part of the page: it scrolls with the
+       story like everything else and never moves on its own. It grows out of
+       the breathing face on the cover, meanders gently down the margin of each
+       scene, sweeps across to the other side between scenes with a soft loop
+       in the middle (a leash curling), flows into Luna's emotion curve and out
+       of it, and ends where owner and dog touch. Small dots mark the key
+       moments. Built on refresh only; nothing runs while scrolling. */
+    var READ = 0.62;   // the reading line, as a share of the sheet's height (the dock uses it)
     var svg = world.querySelector('.nx-thread');
-    var ghost = svg.querySelector('.nx-thread__ghost');
-    var linesG = svg.querySelector('.nx-thread__lines');
+    var path = svg.querySelector('.nx-thread__line');
     var knotsG = svg.querySelector('.nx-thread__knots');
     var grad = svg.querySelector('linearGradient');
-    var tip = world.querySelector('.nx-thread__tip');
     var M = { worldTop: 0, view: 0, heads: [] };
-    var T = { built: false, segs: [], xs: null, ys: null, ls: null, ymax: null, n: 0, total: 0, knots: [], tones: [], cur: 0, target: 0, tone: null };
 
     function sideX(side) {
       var wrap = world.querySelector('.nx-cover .nx-wrap');
       var w = world.clientWidth;
       var inner = wrap ? wrap.getBoundingClientRect() : null;
       var contentLeft = inner ? inner.left - world.getBoundingClientRect().left + parseFloat(getComputedStyle(wrap).paddingLeft) : 40;
-      var m = Math.max(12, Math.min(64, contentLeft / 2));
+      var m = Math.max(14, Math.min(64, contentLeft / 2));
       return side === 'l' ? m : w - m;
     }
 
@@ -502,20 +484,45 @@
       svg.setAttribute('height', H);
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
       grad.setAttribute('y2', H);
+      var narrow = W < 700;
+      var SWAY = narrow ? 4 : 9;           // how far the line meanders in a margin
+      var WAVE = 560;                     // the length of one meander
+      var LOOP = narrow ? 14 : 24;        // the loop's radius between scenes
 
-      // The route, one path per scene so a frame only redraws the scene being read.
       var start = rel(world.querySelector('[data-thread-start]'));
       var cur = { x: start.cx, y: start.cy };
-      var parts = [];          // { d, tone }
       var d = 'M' + f(cur.x) + ' ' + f(cur.y);
-      var knotPts = [];
+      var knots = [];
       function curveTo(x, y) {
-        var dy = (y - cur.y) * 0.55;
+        var dy = (y - cur.y) * 0.5;
         d += 'C' + f(cur.x) + ' ' + f(cur.y + dy) + ' ' + f(x) + ' ' + f(y - dy) + ' ' + f(x) + ' ' + f(y);
         cur = { x: x, y: y };
       }
-      function lineTo(x, y) { if (y > cur.y + 0.5) { d += 'L' + f(x) + ' ' + f(y); cur = { x: x, y: y }; } }
-      function cut(tone) { parts.push({ d: d, tone: tone }); d = 'M' + f(cur.x) + ' ' + f(cur.y); }
+      // Down a margin, meandering gently: a smooth curve through swaying points.
+      function runTo(base, y, from) {
+        if (y <= cur.y + 4) return;
+        var pts = [[cur.x, cur.y]];
+        var steps = Math.max(1, Math.round((y - cur.y) / (WAVE / 4)));
+        for (var k = 1; k <= steps; k++) {
+          var yy = cur.y + (y - cur.y) * k / steps;
+          pts.push([k === steps ? base : base + SWAY * Math.sin((yy - from) / WAVE * Math.PI * 2), yy]);
+        }
+        d += openCurve(pts).replace(/^M[^C]*/, '');
+        cur = { x: pts[pts.length - 1][0], y: y };
+      }
+      function swayAt(base, y, from) { return base + SWAY * Math.sin((y - from) / WAVE * Math.PI * 2); }
+      // Across to the other side, with a soft loop in the middle.
+      function crossTo(x2, y2) {
+        var x1 = cur.x, y1 = cur.y;
+        if (Math.abs(x2 - x1) < 40) { curveTo(x2, y2); return; }
+        var dir = x2 > x1 ? 1 : -1;
+        var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        var sweep = dir > 0 ? 0 : 1;
+        d += 'C' + f(x1) + ' ' + f(y1 + (my - y1) * 0.9) + ' ' + f(mx - dir * (Math.abs(x2 - x1) * 0.28)) + ' ' + f(my) + ' ' + f(mx) + ' ' + f(my);
+        d += 'a' + LOOP + ' ' + LOOP + ' 0 1 ' + sweep + ' 0 ' + (-2 * LOOP) + 'a' + LOOP + ' ' + LOOP + ' 0 1 ' + sweep + ' 0 ' + (2 * LOOP);
+        d += 'C' + f(mx + dir * (Math.abs(x2 - x1) * 0.28)) + ' ' + f(my) + ' ' + f(x2) + ' ' + f(y2 - (y2 - my) * 0.9) + ' ' + f(x2) + ' ' + f(y2);
+        cur = { x: x2, y: y2 };
+      }
 
       var stops = [];
       var sections = Array.prototype.slice.call(world.querySelectorAll('section.nx-s'));
@@ -526,11 +533,12 @@
         var r = rel(sec);
         var tone = sec.getAttribute('data-tone');
         stops.push({ y: r.y, tone: tone });
-        var x = sideX(sec.getAttribute('data-side') || 'l');
+        var base = sideX(sec.getAttribute('data-side') || 'l');
         var pad = parseFloat(getComputedStyle(sec).paddingTop) || 120;
-        // Ease across to this scene's margin in the gap before it.
-        if (si === 0) curveTo(x, Math.max(cur.y + 120, r.y + r.h * 0.9));
-        else curveTo(x, r.y + Math.max(90, pad * 0.9));
+        var from = r.y;
+        if (si === 0) curveTo(base, Math.max(cur.y + 140, r.y + r.h * 0.9));
+        // Cross in the empty space at the top of the scene, before its content.
+        else crossTo(base, r.y + Math.max(60, pad * 0.8));
 
         var events = [];
         Array.prototype.forEach.call(sec.querySelectorAll('[data-beat]'), function (el) {
@@ -553,35 +561,25 @@
         events.forEach(function (ev) {
           if (ended) return;
           if (ev.kind === 'beat') {
-            if (ev.y - 40 > cur.y) { lineTo(x, ev.y); knotPts.push({ x: x, y: ev.y, tone: tone }); }
+            if (ev.y - 40 > cur.y) {
+              runTo(base, ev.y, from);
+              knots.push({ x: cur.x, y: ev.y, tone: tone });
+            }
           } else if (ev.kind === 'hand') {
-            // Into the emotion curve at its start, out of it at its end.
+            // Into the emotion curve at its first point, out of it at its last.
             curveTo(ev.a.cx, ev.a.cy);
             d += 'M' + f(ev.b.cx) + ' ' + f(ev.b.cy);
             cur = { x: ev.b.cx, y: ev.b.cy };
-            x = sideX('r');
-            curveTo(x, ev.b.cy + 160);
+            base = sideX('r');
+            curveTo(swayAt(base, ev.b.cy + 180, from), ev.b.cy + 180);
           } else if (ev.kind === 'end') {
             curveTo(ev.el.cx, ev.el.cy);
             ended = true;
           }
         });
-        if (!ended) lineTo(x, r.y + r.h);
-        cut(tone);
+        if (!ended) runTo(base, r.y + r.h, from);
       });
-
-      // The scenes' colours, painted once into a layer behind the thread: each
-      // scene is its tone, easing in from the one before over the top of its
-      // padding, so crossing between scenes changes nothing while scrolling.
-      var tonesBox = world.querySelector('.nx-tones');
-      tonesBox.innerHTML = sections.map(function (sec, i) {
-        var r = rel(sec);
-        var t = sec.getAttribute('data-tone') || 'paper';
-        var pv = i ? sections[i - 1].getAttribute('data-tone') || 'paper' : t;
-        var band = pv === t ? 0 : Math.min(260, (parseFloat(getComputedStyle(sec).paddingTop) || 120) * 0.85);
-        var h = i === sections.length - 1 ? H - r.y : r.h + 1;
-        return '<div class="nx-tone" style="top:' + f(r.y) + 'px;height:' + f(h) + 'px;--t:var(--cs-' + t + ');--p:var(--cs-' + pv + ');--band:' + f(band) + 'px"></div>';
-      }).join('');
+      path.setAttribute('d', d);
 
       // Ink: orange, deep indigo over the orange scenes.
       grad.innerHTML = stops.map(function (st, i) {
@@ -590,125 +588,14 @@
         var a = (st.y / H * 100).toFixed(3), b = ((next ? next.y : H) / H * 100).toFixed(3);
         return '<stop offset="' + a + '%" style="stop-color:' + col + '" /><stop offset="' + b + '%" style="stop-color:' + col + '" />';
       }).join('');
-      T.tones = stops;
-
-      ghost.setAttribute('d', parts.map(function (pt) { return pt.d; }).join(''));
-      linesG.innerHTML = parts.map(function () { return '<path class="nx-thread__line" stroke="url(#nx-thread-ink)" />'; }).join('');
-      var els = linesG.querySelectorAll('path');
-
-      // Sample the whole route once: positions, lengths, and a running-max y
-      // so "how far has the reader got" is a binary search, not a path lookup.
-      var xs = [], ys = [], ls = [];
-      var offset = 0;
-      T.segs = parts.map(function (pt, i) {
-        var el = els[i];
-        el.setAttribute('d', pt.d);
-        var len = el.getTotalLength();
-        var n = Math.max(8, Math.round(len / 5));
-        for (var k = 0; k <= n; k++) {
-          var at = len * k / n;
-          var q = el.getPointAtLength(at);
-          xs.push(q.x); ys.push(q.y); ls.push(offset + at);
-        }
-        el.style.strokeDasharray = len + ' ' + len;
-        el.style.strokeDashoffset = len;
-        var seg = { el: el, start: offset, len: len, shown: -1 };
-        offset += len;
-        return seg;
-      });
-      T.total = offset;
-      T.n = xs.length;
-      T.xs = Float32Array.from(xs); T.ys = Float32Array.from(ys); T.ls = Float32Array.from(ls);
-      T.ymax = new Float32Array(T.n);
-      var mx = -Infinity;
-      for (var i = 0; i < T.n; i++) { mx = Math.max(mx, T.ys[i]); T.ymax[i] = mx; }
-
-      // Knots, placed on the route.
-      knotsG.innerHTML = knotPts.map(function (kp) {
-        return '<g class="nx-knot' + (kp.tone === 'orange' ? ' is-deep' : '') + '" style="--kt:var(--cs-' + kp.tone + ')" transform="translate(' + f(kp.x) + ' ' + f(kp.y) + ')"><circle class="nx-knot__ring" r="9" /><circle class="nx-knot__dot" r="4.5" /></g>';
+      knotsG.innerHTML = knots.map(function (kp) {
+        return '<circle class="nx-knot' + (kp.tone === 'orange' ? ' is-deep' : '') + '" cx="' + f(kp.x) + '" cy="' + f(kp.y) + '" r="5" />';
       }).join('');
-      var kEls = knotsG.querySelectorAll('.nx-knot');
-      T.knots = knotPts.map(function (kp, i) { return { el: kEls[i], len: lenAt(kp.y), lit: false }; });
-
-      T.built = true;
-      T.cur = T.target = motion ? lenAt(storyY()) : T.total;
-      draw(true);
     }
-    function lenAt(y) {
-      var lo = 0, hi = T.n - 1;
-      if (y <= T.ymax[0]) return 0;
-      if (y >= T.ymax[hi]) return T.total;
-      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (T.ymax[mid] <= y) lo = mid; else hi = mid; }
-      return T.ls[lo];
-    }
-    function indexAt(len) {
-      var lo = 0, hi = T.n - 1;
-      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (T.ls[mid] <= len) lo = mid; else hi = mid; }
-      return lo;
-    }
-    // The reading line, in story space: only scroll sums, no layout reads.
+    // The reading line, in story space (for the dock): scroll sums only.
     function storyY() { return scroller.scrollTop + M.view * READ - M.worldTop; }
-
-    function draw(force) {
-      var L = T.cur;
-      for (var i = 0; i < T.segs.length; i++) {
-        var sg = T.segs[i];
-        var shown = Math.max(0, Math.min(sg.len, L - sg.start));
-        if (force || Math.abs(shown - sg.shown) > 0.4) {
-          sg.shown = shown;
-          sg.el.style.strokeDashoffset = (sg.len - shown).toFixed(1);
-        }
-      }
-      if (!motion) return;
-      var k = indexAt(L);
-      var x = T.xs[k], y = T.ys[k];
-      tip.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
-      tip.classList.toggle('is-gone', L <= 1 || L >= T.total - 1);
-      var tn = 'paper';
-      for (var t = 0; t < T.tones.length; t++) { if (T.tones[t].y <= y) tn = T.tones[t].tone; }
-      if (tn !== T.tone) { T.tone = tn; tip.classList.toggle('is-deep', tn === 'orange'); }
-      for (var j = 0; j < T.knots.length; j++) {
-        var kn = T.knots[j];
-        var lit = L >= kn.len - 2;
-        if (lit !== kn.lit) { kn.lit = lit; kn.el.classList.toggle('is-lit', lit); }
-      }
-    }
-    // Every frame (on GSAP's ticker, after Lenis has moved the page): ease the
-    // drawn length towards the reading line. Cheap when nothing changes.
-    var lastT = 0;
-    function tick(time) {
-      if (!T.built || !motion) return;
-      T.target = lenAt(storyY());
-      var diff = T.target - T.cur;
-      if (Math.abs(diff) < 0.3) { if (T.cur !== T.target) { T.cur = T.target; draw(false); } lastT = time; return; }
-      var dt = lastT ? Math.min(0.05, time - lastT) : 0.016;
-      lastT = time;
-      T.cur += diff * (1 - Math.exp(-dt * 9));
-      draw(false);
-    }
-    // The bar and the dock take the colours of the scene being read: one small
-    // change as a new scene begins, not a blend on every frame.
-    var bar = sheet.querySelector('.cs-bar');
-    var chromeTone = null;
-    function chrome() {
-      if (!T.built) return;
-      var y = storyY();
-      var tn = 'paper';
-      for (var t = 0; t < T.tones.length; t++) { if (T.tones[t].y <= y) tn = T.tones[t].tone; }
-      if (tn === chromeTone) return;
-      chromeTone = tn;
-      if (bar) setTone(bar, tn);
-      if (dock) setTone(dock, tn);
-    }
-    cleanups.push(function () { if (bar) ['--cs-tint', '--cs-ink', '--cs-amber'].forEach(function (v) { bar.style.removeProperty(v); }); });
-
-    // A key moment in a scene: the tip sends out a soft ripple.
-    function pulse() {
-      if (!motion) return;
-      tip.classList.remove('is-pulse');
-      void tip.offsetWidth;
-      tip.classList.add('is-pulse');
-    }
+    // Key moments in the pinned scenes used to pulse the moving tip; the line is still now.
+    function pulse() {}
 
     /* ---------- 6. The phase dock ---------- */
     var dock = document.createElement('nav');
@@ -1136,8 +1023,7 @@
       if (!easeReady) { gsap.registerEase(EASE, function (t) { return cubic(BEZIER, t); }); easeReady = true; }
       buildMotion();
       gsap.ticker.add(breathe);
-      gsap.ticker.add(tick);
-      cleanups.push(function () { gsap.ticker.remove(breathe); gsap.ticker.remove(tick); });
+      cleanups.push(function () { gsap.ticker.remove(breathe); });
     } else {
       fitBoard();
       if (window.innerWidth < 1024) collapseClusters();
@@ -1146,7 +1032,7 @@
     var raf = 0;
     function onScroll() {
       if (raf) return;
-      raf = requestAnimationFrame(function () { raf = 0; updateDock(); chrome(); });
+      raf = requestAnimationFrame(function () { raf = 0; updateDock(); });
     }
     on(scroller, 'scroll', onScroll, { passive: true });
 
@@ -1163,8 +1049,6 @@
         drawCallouts();
         buildThread();
         updateDock();
-        chromeTone = null;
-        chrome();
       }, 120);
     }
     Array.prototype.forEach.call(world.querySelectorAll('img'), function (im) {
@@ -1178,7 +1062,6 @@
     drawCallouts();
     buildThread();
     updateDock();
-    chrome();
     if (motion) ST.refresh();
 
     // Decode every picture quietly in idle time, so a scene's images are ready

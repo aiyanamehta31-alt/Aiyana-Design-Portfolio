@@ -4,7 +4,7 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
-## 2026-11-23 · New cards in the hero wheel: Nexo, sketching and prototyping, the STATIC. flat lay, the KOMA box, the Meridian emblem
+## 2026-11-23 · New cards in the hero wheel: Nexo, a 3D render, sketching and prototyping, the STATIC. flat lay, the KOMA box, the Meridian emblem
 
 **Why:** Aiyana asked to replace the Pebble & Co. bag in the circling wheel with her Futurist Lounge Pod sketch sheet, labelled "Sketching and prototyping".
 
@@ -12,6 +12,7 @@ A dated entry for every change to the portfolio: what changed, why, which source
 - New image: `assets/images/projects/sketching/lounge-pod-sheet.webp` (and `-sm`), from "subjects/sketching and prototyping/Screenshot 2025-12-17 at 5.17.31 AM.pdf" (one page, rendered and copied to `content/sketching/`; `node tools/brand-images.mjs --project sketching`).
 - The STATIC. card in the wheel now shows the merch flat lay (lanyard, zine, holographic stickers: `static-flat-lay-sm.webp`) instead of the model on the street.
 - The Maggi store-display card is replaced by the KOMA takeout box, labelled "Branding": Aiyana's cut-out (kept in `content/wheel/`) set on a soft spotlight like the Nexo card, so the black box doesn't vanish on black (`assets/images/projects/wheel/koma-box.webp`, `node tools/brand-images.mjs --project wheel`). The Maggi beret poster stays.
+- The Maggi beret card is replaced by a 3D render of the pod (blue and pink shading), labelled "3D modelling", uncropped: it's portrait, so it sits whole in the middle and its grey studio background is extended to 16:10 (`assets/images/projects/wheel/pod-render.webp`; original in `content/wheel/`).
 - The Nexo card shows the three companions in front of the NEXO wordmark, the whole picture uncut: it was wider than the cards (1.83:1), so white was added above and below to make 16:10 (`assets/images/projects/wheel/nexo-companions.webp`; original in `content/wheel/`).
 - The Meridian card shows the gold emblem on contour paper (`meridian-icon-texture-sm.webp`) instead of the trail runner. It moved up to 6th place so it shows on every screen; the KOMA bao picture moved to 10th (desktop only), which also keeps the two KOMA cards apart.
 - `WHEEL_IMAGES` in `js/main.js`: the Pebble & Co. bag is out; the sketch sheet is in with the label "Sketching and prototyping". It sits 8th so it also shows on tablets and phones, which show only the first 8 cards; Meridian moved to 10th.

@@ -4,6 +4,33 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-23 · New cards in the hero wheel: sketching and prototyping, the STATIC. flat lay, the KOMA box, the Meridian emblem
+
+**Why:** Aiyana asked to replace the Pebble & Co. bag in the circling wheel with her Futurist Lounge Pod sketch sheet, labelled "Sketching and prototyping".
+
+**What changed**
+- New image: `assets/images/projects/sketching/lounge-pod-sheet.webp` (and `-sm`), from "subjects/sketching and prototyping/Screenshot 2025-12-17 at 5.17.31 AM.pdf" (one page, rendered and copied to `content/sketching/`; `node tools/brand-images.mjs --project sketching`).
+- The STATIC. card in the wheel now shows the merch flat lay (lanyard, zine, holographic stickers: `static-flat-lay-sm.webp`) instead of the model on the street.
+- The Maggi store-display card is replaced by the KOMA takeout box, labelled "Branding": Aiyana's cut-out (kept in `content/wheel/`) set on a soft spotlight like the Nexo card, so the black box doesn't vanish on black (`assets/images/projects/wheel/koma-box.webp`, `node tools/brand-images.mjs --project wheel`). The Maggi beret poster stays.
+- The Meridian card shows the gold emblem on contour paper (`meridian-icon-texture-sm.webp`) instead of the trail runner.
+- `WHEEL_IMAGES` in `js/main.js`: the Pebble & Co. bag is out; the sketch sheet is in with the label "Sketching and prototyping". It sits 8th so it also shows on tablets and phones, which show only the first 8 cards; Meridian moved to 10th.
+
+---
+
+## 2026-11-23 · The Branding card is a 3D book that keeps turning; no amber hover edge
+
+**Why:** Aiyana disliked the three-brand strip on the Branding card and asked for a book, the same size as the other cards, that keeps flipping through her branding work.
+
+**What changed**
+- The Branding card's picture is now a small open book (`index.html`, `js/home/minibook.js`, "Branding: a small open book" in `css/style.css`): five spreads, logo on the left and the brand in use on the right: Velvet Vine, STATIC., KOMA, Meridian, Pebble & Co. (the existing page images in `assets/images/projects/branding/`).
+- **In 3D:** it lies tilted back on a table, each page rising from the spine over a stack of paper edges, on a thick cover with a cast shadow; it lifts a little on hover.
+- **Turning like paper:** the turning page is built from ten thin strips hinged edge to edge. Every 3.4 s it turns over 1.6 s, driven frame by frame: it lifts by its outer edge and curls as it rises, crosses the spine, and settles spine-first with the edge floating down last, each strip shaded by its angle. Pictures are decoded before use and the page floats a hair above the paper, so nothing flashes or flickers. (A first version, one flat page on a CSS animation with a floating book, felt stiff and stuttered.)
+- **No glitch on the pages underneath:** the turning page now floats 1.5px above the paper in world space (it used to sink under the left page as it landed), it curls up and away while landing instead of bending through the page, it carries the same spine shadow and sheen as the still pages with no extra shade at rest (so nothing changes brightness when it appears or goes), and each picture swap waits until the new picture has been drawn.
+- It turns only while the card is on screen and the tab is visible; with reduced motion it stays still, open on the first spread.
+- **Cards:** hovering a project no longer draws an amber edge round its picture (a faint white one instead). Keyboard focus keeps its amber outline.
+
+---
+
 ## 2026-11-23 · A fabric the cursor bends, instead of the guide light (branch `simplify`)
 
 **Why:** Aiyana didn't like the golden light following the scroll and wanted something fun to touch. We tried water ripples, colour clouds, a liquid-glass blob and a colour-smoke trail (after her friend's site). She then asked for the cursor to look as if it warps and bends the very fabric of the background, softer and subtler, smooth while scrolling, in her projects' colours.

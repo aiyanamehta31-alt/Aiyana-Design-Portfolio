@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Caveat:wght@500;700&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
-  <link rel="stylesheet" href="css/style.css?v=12" />
+  <link rel="stylesheet" href="css/style.css?v=16" />
   <link rel="stylesheet" href="css/case-study.css?v=8" />
   <link rel="stylesheet" href="css/skills.css?v=2" />
 
@@ -164,13 +164,18 @@
         </article>
 
         <article class="project-card" data-card data-cloud="#B6E530 #B6E530 #FF4FA3 #DBB56B #F8716C #A77BA7">
-          <figure class="project-card__media project-card__media--strip">
-            <img src="assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp" width="720" height="900" loading="lazy"
-                 alt="Velvet Vine sparkling water cans in deep fig with a cream label." />
-            <img src="assets/images/projects/branding/static/static-product-shot-sm.webp" width="720" height="900" loading="lazy"
-                 alt="STATIC. streetwear in acid green, hot pink and chrome." />
-            <img src="assets/images/projects/branding/koma/koma-slide-6-packaging-sm.webp" width="720" height="900" loading="lazy"
-                 alt="A black KOMA takeout box with a green steam mark." />
+          <!-- A small open book that keeps turning: one spread per brand (logo | in use).
+               js/home/minibook.js turns the pages; the list is in data-pages, two per spread. -->
+          <figure class="project-card__media project-card__media--book" data-minibook role="img"
+                  aria-label="A small book turning its pages through the five brands: Velvet Vine, STATIC., KOMA, Meridian and Pebble &amp; Co."
+                  data-pages="assets/images/projects/branding/velvet-vine/page-book.webp|assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp|assets/images/projects/branding/static/static-logo-tile-sm.webp|assets/images/projects/branding/static/static-product-shot-sm.webp|assets/images/projects/branding/koma/koma-slide-1-logo-sm.webp|assets/images/projects/branding/koma/koma-slide-5-flatlay-sm.webp|assets/images/projects/branding/meridian/meridian-icon-texture-sm.webp|assets/images/projects/branding/meridian/meridian-lifestyle-action-sm.webp|assets/images/projects/branding/pebble-and-co/pebble-logo-tile-sm.webp|assets/images/projects/branding/pebble-and-co/pebble-product-shot-sm.webp">
+            <div class="minibook" aria-hidden="true">
+              <span class="minibook__cover"></span>
+              <div class="minibook__page minibook__page--left"><img src="assets/images/projects/branding/velvet-vine/page-book.webp" width="720" height="900" alt="" loading="lazy" /></div>
+              <div class="minibook__page minibook__page--right"><img src="assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp" width="720" height="900" alt="" loading="lazy" /></div>
+              <div class="minibook__leaf"></div>
+              <span class="minibook__spine"></span>
+            </div>
           </figure>
           <div class="project-card__body">
             <p class="project-card__meta"><span>Brand identity</span><span>Five brands</span></p>
@@ -539,9 +544,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-  <script src="js/main.js?v=6" defer></script>
+  <script src="js/main.js?v=10" defer></script>
   <!-- The homepage's own pieces: the colour smoke, the desktop, the storm mixer -->
   <script src="js/home/fluid.js?v=8" defer></script>
+  <script src="js/home/minibook.js?v=4" defer></script>
   <script src="js/home/desktop.js?v=1" defer></script>
   <script src="js/home/storm.js?v=2" defer></script>
   <!-- Hello: the intro's words light up as they scroll by -->

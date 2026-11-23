@@ -22,13 +22,13 @@ var WHEEL_IMAGES = [
   { src: 'assets/images/projects/nexo/card-cover.webp',                          alt: 'Three Nexo desk companions in orange, black and blue.',                  label: 'Nexo' },
   { src: 'assets/images/projects/maggi/poster-beret-sm.webp',                    alt: 'A fork of masala noodles wearing a black beret, on yellow.',             label: 'Maggi' },
   { src: 'assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp', alt: 'Velvet Vine sparkling water cans in deep fig.',                     label: 'Velvet Vine' },
-  { src: 'assets/images/projects/branding/static/static-lifestyle-action-sm.webp',   alt: 'STATIC. streetwear in acid green and hot pink.',                   label: 'STATIC.' },
+  { src: 'assets/images/projects/branding/static/static-flat-lay-sm.webp',        alt: 'STATIC. merch on brushed steel: a lanyard with a chrome ID tag, an acid-green zine and a holographic sticker sheet.', label: 'STATIC.' },
   { src: 'assets/images/projects/wiglet/card-cover.webp',                        alt: 'The Wiglet planner card with its blob mascot.',                         label: 'Wiglet' },
   { src: 'assets/images/projects/branding/koma/koma-slide-5-flatlay-sm.webp',    alt: 'A table of KOMA bao in bamboo steamers.',                               label: 'KOMA' },
-  { src: 'assets/images/projects/maggi/store-display-sm.webp',                   alt: 'A Maggi floor stand full of yellow noodle boxes in a supermarket.',     label: 'Maggi' },
-  { src: 'assets/images/projects/branding/meridian/meridian-lifestyle-action-sm.webp', alt: 'A Meridian trail runner in forest green and gold.',               label: 'Meridian' },
+  { src: 'assets/images/projects/wheel/koma-box.webp',                          alt: 'A black KOMA takeout box with a wire handle, a green steam mark and the KOMA wordmark.', label: 'Branding' },
+  { src: 'assets/images/projects/sketching/lounge-pod-sheet.webp',              alt: 'A sketch sheet for a futurist lounge pod inspired by a wasp: form studies, a charcoal render with a yellow glow, and structural ribs.', label: 'Sketching and prototyping' },
   { src: 'assets/images/projects/codes/card-cover.webp',                         alt: 'A spiral galaxy of blue and violet dust, from a coded sketch.',         label: 'Codes' },
-  { src: 'assets/images/projects/branding/pebble-and-co/pebble-product-shot-sm.webp', alt: 'Pebble & Co. products with the smiling pebble mascot.',          label: 'Pebble & Co.' }
+  { src: 'assets/images/projects/branding/meridian/meridian-icon-texture-sm.webp', alt: 'The Meridian emblem in gold foil, a runner on a winding trail below mountains and pines, on forest-green contour paper.', label: 'Meridian' }
 ];
 
 (function () {

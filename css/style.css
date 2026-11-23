@@ -537,16 +537,98 @@ html.js .site-header {
 /* Nexo: the three companions on a soft studio light */
 .project-card__media--stage { background: radial-gradient(70% 80% at 50% 60%, #2C2A28 0%, #161514 55%, #0A0A0A 100%); }
 .project-card__media--stage img { position: absolute; inset: 6% 0; height: 88%; object-fit: contain; filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.6)); }
-/* Branding: three brands side by side */
-.project-card__media--strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
-.project-card__media--strip img { min-width: 0; }
-.project-card__media--strip img:nth-child(2) { transition-delay: 60ms; }
-.project-card__media--strip img:nth-child(3) { transition-delay: 120ms; }
+/* Branding: a small open book that keeps turning (js/home/minibook.js).
+   It lies on a table, tilted back: the pages rise from the spine, paper
+   edges stack under them, the cover has thickness. The turning page is
+   built by the script from thin strips so it can bend like paper. */
+.project-card__media--book {
+  --minibook-lift: 9deg;          /* how far each page rises from the spine (LIFT_DEG in minibook.js) */
+  background: radial-gradient(70% 80% at 50% 62%, #2A2725 0%, #151413 55%, #0A0A0A 100%);
+  perspective: 1000px;
+  perspective-origin: 50% 15%;
+}
+/* The shadow it casts on the table */
+.project-card__media--book::before {
+  content: "";
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 56%;
+  height: 28%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  filter: blur(6px);
+}
+.minibook {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 78%;
+  aspect-ratio: 8 / 5;            /* two 4:5 pages */
+  transform: translate(-50%, -50%) rotateX(36deg) rotateZ(-7deg);
+  transform-style: preserve-3d;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+/* Hover: it lifts a little off the table */
+.project-card:hover .minibook { transform: translate(-50%, -53%) translateZ(16px) rotateX(32deg) rotateZ(-5deg); }
+/* The cover: a slab under the pages, with its edge showing as thickness */
+.minibook__cover {
+  position: absolute;
+  inset: -4% -3% -5%;
+  border-radius: 7px;
+  transform: translateZ(-7px);
+  background: linear-gradient(90deg, #1E1A17 0%, #2E2824 48.8%, #120F0D 50%, #2E2824 51.2%, #1E1A17 100%);
+  box-shadow: 0 1px 0 #3A332E inset, 0 8px 0 #0F0C0A, 0 9px 0 #241F1B, 0 30px 40px -12px rgba(0, 0, 0, 0.85);
+}
+.minibook__page, .minibook__leaf { position: absolute; top: 0; width: 50%; height: 100%; }
+.minibook__page { overflow: hidden; background: #EFE9DE; }
+/* Each page rises a little from the spine, with a stack of paper edges at its outer side */
+.minibook__page--left {
+  left: 0;
+  border-radius: 4px 1px 1px 4px;
+  transform-origin: 100% 50%;
+  transform: rotateY(var(--minibook-lift));
+  box-shadow: -1px 1px 0 #E3DBCC, -2px 2px 0 #D4CBBB, -3px 3px 0 #C6BCAB, -4px 4px 0 #B8AE9C, -5px 5px 0 #A99F8D;
+}
+.minibook__page--right {
+  left: 50%;
+  border-radius: 1px 4px 4px 1px;
+  transform-origin: 0 50%;
+  transform: rotateY(calc(var(--minibook-lift) * -1));
+  box-shadow: 1px 1px 0 #E3DBCC, 2px 2px 0 #D4CBBB, 3px 3px 0 #C6BCAB, 4px 4px 0 #B8AE9C, 5px 5px 0 #A99F8D;
+}
+.project-card__media--book img { width: 100%; height: 100%; object-fit: cover; transform: none !important; transition: none; }
+/* Shade where the paper curves into the spine, and a soft sheen on top */
+.minibook__page::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.minibook__page--left::after {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 20%), linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 45%);
+}
+.minibook__page--right::after {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 20%), linear-gradient(200deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 45%);
+}
+.minibook__spine { position: absolute; left: 50%; top: 0; bottom: 0; width: 8px; transform: translateX(-50%) translateZ(-3px); background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0)); }
+/* The page that turns: strips hinged edge to edge, each with a front and a back */
+.minibook__leaf { left: 50%; transform-style: preserve-3d; visibility: hidden; }
+.minibook.is-turning .minibook__leaf { visibility: visible; }
+.minibook__strip { position: absolute; top: 0; height: 100%; transform-origin: 0 50%; transform-style: preserve-3d; will-change: transform; }
+.minibook__side {
+  position: absolute;
+  inset: 0 -0.5px;                /* a hair of overlap so no seam shows between strips */
+  background-color: #EFE9DE;
+  background-repeat: no-repeat;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.minibook__side--back { transform: rotateY(180deg); }
+.minibook__side--front.is-edge { border-radius: 0 4px 4px 0; }
+.minibook__side--back.is-edge { border-radius: 4px 0 0 4px; }
+.minibook__shade { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .minibook { transition: none; } }
 .project-card__media--yellow { background: #F2C21B; }
 .project-card:hover,
 .project-card:focus-within { transform: translateY(-6px); }
 .project-card:hover .project-card__media,
-.project-card:focus-within .project-card__media { box-shadow: inset 0 0 0 1px rgba(226, 184, 119, 0.4), var(--shadow-soft); }
+.project-card:focus-within .project-card__media { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), var(--shadow-soft); }
 .project-card:hover .project-card__media img { transform: scale(1.04); }
 .project-card__body { display: grid; gap: 8px; padding-top: 20px; }
 .project-card__title {

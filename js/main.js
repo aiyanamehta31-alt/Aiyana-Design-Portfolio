@@ -24,11 +24,11 @@ var WHEEL_IMAGES = [
   { src: 'assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp', alt: 'Velvet Vine sparkling water cans in deep fig.',                     label: 'Velvet Vine' },
   { src: 'assets/images/projects/branding/static/static-flat-lay-sm.webp',        alt: 'STATIC. merch on brushed steel: a lanyard with a chrome ID tag, an acid-green zine and a holographic sticker sheet.', label: 'STATIC.' },
   { src: 'assets/images/projects/wiglet/card-cover.webp',                        alt: 'The Wiglet planner card with its blob mascot.',                         label: 'Wiglet' },
-  { src: 'assets/images/projects/branding/koma/koma-slide-5-flatlay-sm.webp',    alt: 'A table of KOMA bao in bamboo steamers.',                               label: 'KOMA' },
+  { src: 'assets/images/projects/branding/meridian/meridian-icon-texture-sm.webp', alt: 'The Meridian emblem in gold foil, a runner on a winding trail below mountains and pines, on forest-green contour paper.', label: 'Meridian' },
   { src: 'assets/images/projects/wheel/koma-box.webp',                          alt: 'A black KOMA takeout box with a wire handle, a green steam mark and the KOMA wordmark.', label: 'Branding' },
   { src: 'assets/images/projects/sketching/lounge-pod-sheet.webp',              alt: 'A sketch sheet for a futurist lounge pod inspired by a wasp: form studies, a charcoal render with a yellow glow, and structural ribs.', label: 'Sketching and prototyping' },
   { src: 'assets/images/projects/codes/card-cover.webp',                         alt: 'A spiral galaxy of blue and violet dust, from a coded sketch.',         label: 'Codes' },
-  { src: 'assets/images/projects/branding/meridian/meridian-icon-texture-sm.webp', alt: 'The Meridian emblem in gold foil, a runner on a winding trail below mountains and pines, on forest-green contour paper.', label: 'Meridian' }
+  { src: 'assets/images/projects/branding/koma/koma-slide-5-flatlay-sm.webp',    alt: 'A table of KOMA bao in bamboo steamers.',                               label: 'KOMA' }
 ];
 
 (function () {

@@ -19,7 +19,7 @@ var WHEEL_SECONDS_PER_TURN = 30;     // one full clockwise turn of the hero whee
    to hide it. Desktop shows the first 10, tablets and phones the first 8. */
 var WHEEL_IMAGES = [
   // Real work for now; Aiyana will send her own picks to swap in.
-  { src: 'assets/images/projects/nexo/card-cover.webp',                          alt: 'Three Nexo desk companions in orange, black and blue.',                  label: 'Nexo' },
+  { src: 'assets/images/projects/wheel/nexo-companions.webp',                  alt: 'Three Nexo desk companions in orange, blue and black, each with a round face showing a blue blob, in front of the NEXO wordmark.', label: 'Nexo' },
   { src: 'assets/images/projects/maggi/poster-beret-sm.webp',                    alt: 'A fork of masala noodles wearing a black beret, on yellow.',             label: 'Maggi' },
   { src: 'assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp', alt: 'Velvet Vine sparkling water cans in deep fig.',                     label: 'Velvet Vine' },
   { src: 'assets/images/projects/branding/static/static-flat-lay-sm.webp',        alt: 'STATIC. merch on brushed steel: a lanyard with a chrome ID tag, an acid-green zine and a holographic sticker sheet.', label: 'STATIC.' },

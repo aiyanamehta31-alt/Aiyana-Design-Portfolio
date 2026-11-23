@@ -317,5 +317,5 @@ window.CASE_STUDIES['nexo'] = {
   },
 
   /* Next project: { slug: 'other-project', title: 'Other project' }, or null */
-  next: { slug: 'codes', title: 'Codes' }
+  next: { slug: 'branding', title: 'Branding' }
 };

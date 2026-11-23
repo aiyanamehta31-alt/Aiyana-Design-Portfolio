@@ -202,5 +202,5 @@ window.CASE_STUDIES['wiglet'] = {
     ]
   },
 
-  next: { slug: 'nexo', title: 'Nexo' }
+  next: { slug: 'codes', title: 'Codes' }
 };

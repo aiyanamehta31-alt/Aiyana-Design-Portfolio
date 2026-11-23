@@ -86,5 +86,5 @@ window.CASE_STUDIES['codes'] = {
     }
   ],
 
-  next: { slug: 'branding', title: 'Branding' }
+  next: { slug: 'nexo', title: 'Nexo' }
 };

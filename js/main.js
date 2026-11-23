@@ -18,16 +18,17 @@ var WHEEL_SECONDS_PER_TURN = 30;     // one full clockwise turn of the hero whee
    fills its card. `label` is the small tag in the card's corner: set it to ''
    to hide it. Desktop shows the first 10, tablets and phones the first 8. */
 var WHEEL_IMAGES = [
-  { src: 'assets/images/wheel/blended-image.svg', alt: 'Placeholder: blended image of a figure against a sunset', label: 'Blended image' },
-  { src: 'assets/images/wheel/3d-model.svg',      alt: 'Placeholder: 3D model of a cube in a white studio',        label: '3D model' },
-  { src: 'assets/images/wheel/model-photo.svg',   alt: 'Placeholder: photo of a model on a desert ridge at sunset', label: 'Model photo' },
-  { src: 'assets/images/wheel/ui-screens.svg',    alt: 'Placeholder: three app screens on a sky-blue ground',      label: 'UI screens' },
-  { src: 'assets/images/wheel/blueprint.svg',     alt: 'Placeholder: blueprint floor plan on a blue grid',         label: 'Blueprint' },
-  { src: 'assets/images/wheel/poster.svg',        alt: 'Placeholder: terracotta poster with a large circle',       label: 'Poster' },
-  { src: 'assets/images/wheel/sketch.svg',        alt: 'Placeholder: pencil sketch on warm paper',                 label: 'Sketch' },
-  { src: 'assets/images/wheel/journey-map.svg',   alt: 'Placeholder: journey map with four stops on a dotted path', label: 'Journey map' },
-  { src: 'assets/images/wheel/prototype.svg',     alt: 'Placeholder: prototype on a glowing screen',               label: 'Prototype' },
-  { src: 'assets/images/wheel/render.svg',        alt: 'Placeholder: render of a lit sphere on deep teal',         label: 'Render' }
+  // Real work for now; Aiyana will send her own picks to swap in.
+  { src: 'assets/images/projects/nexo/card-cover.webp',                          alt: 'Three Nexo desk companions in orange, black and blue.',                  label: 'Nexo' },
+  { src: 'assets/images/projects/maggi/poster-beret-sm.webp',                    alt: 'A fork of masala noodles wearing a black beret, on yellow.',             label: 'Maggi' },
+  { src: 'assets/images/projects/branding/velvet-vine/vv-slide-4-packaging-sm.webp', alt: 'Velvet Vine sparkling water cans in deep fig.',                     label: 'Velvet Vine' },
+  { src: 'assets/images/projects/branding/static/static-lifestyle-action-sm.webp',   alt: 'STATIC. streetwear in acid green and hot pink.',                   label: 'STATIC.' },
+  { src: 'assets/images/projects/wiglet/card-cover.webp',                        alt: 'The Wiglet planner card with its blob mascot.',                         label: 'Wiglet' },
+  { src: 'assets/images/projects/branding/koma/koma-slide-5-flatlay-sm.webp',    alt: 'A table of KOMA bao in bamboo steamers.',                               label: 'KOMA' },
+  { src: 'assets/images/projects/maggi/store-display-sm.webp',                   alt: 'A Maggi floor stand full of yellow noodle boxes in a supermarket.',     label: 'Maggi' },
+  { src: 'assets/images/projects/branding/meridian/meridian-lifestyle-action-sm.webp', alt: 'A Meridian trail runner in forest green and gold.',               label: 'Meridian' },
+  { src: 'assets/images/projects/codes/card-cover.webp',                         alt: 'A spiral galaxy of blue and violet dust, from a coded sketch.',         label: 'Codes' },
+  { src: 'assets/images/projects/branding/pebble-and-co/pebble-product-shot-sm.webp', alt: 'Pebble & Co. products with the smiling pebble mascot.',          label: 'Pebble & Co.' }
 ];
 
 (function () {

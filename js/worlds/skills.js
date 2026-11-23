@@ -21,10 +21,10 @@
     if (!s) return '';
     var i = all.indexOf(s);
     return '<section class="cs-section sk-world" id="cs-cover" data-tone="skills" aria-labelledby="cs-title"><div class="sk-wrap">' +
-      '<p class="sk-label">Period ' + (i + 1) + '</p>' +
+      '<p class="sk-label">Skills</p>' +
       '<h2 class="sk-title" id="cs-title" tabindex="-1">' + esc(s.name) + '</h2>' +
       '<nav class="sk-tabs" aria-label="Other skills">' + all.map(function (o, k) {
-        return '<a class="sk-tab" href="#project/skills/' + esc(o.slug) + '"' + (o === s ? ' aria-current="page"' : '') + '><small>Period ' + (k + 1) + '</small>' + esc(o.name) + '</a>';
+        return '<a class="sk-tab" href="#project/skills/' + esc(o.slug) + '"' + (o === s ? ' aria-current="page"' : '') + '>' + esc(o.name) + '</a>';
       }).join('') + '</nav>' +
       '<ul class="sk-grid">' + s.pieces.map(function (p) {
         var title = p.title.replace(/\[NEEDS FROM AIYANA[^\]]*\]/g, 'Placeholder');
@@ -35,7 +35,7 @@
           '<h3>' + rich(p.title) + '</h3><p>' + rich(p.line) + '</p>' +
           '<ul class="sk-tools">' + (p.tools || []).map(function (t) { return '<li>' + rich(t) + '</li>'; }).join('') + '</ul></li>';
       }).join('') + '</ul>' +
-      '<p class="sk-note"><mark class="needs">[NEEDS FROM AIYANA: the work for this skill]</mark> Each piece also turns on the Skills stage on the homepage.</p>' +
+      '<p class="sk-note"><mark class="needs">[NEEDS FROM AIYANA: the work for this skill]</mark></p>' +
       '<a class="sk-back" href="#skills" data-cs-back>Back to Skills</a>' +
     '</div></section>';
   }

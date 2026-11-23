@@ -1,7 +1,7 @@
 # DESIGN.md — Aiyana's portfolio brief
 
 > The source of truth for this portfolio. Refer back to this in future prompts.
-> Last updated 2026-11-05: the homepage redesigned as one black world, with a calm type scale, a Skills placeholder, About as Aiyana's desktop and a wandering guide light (see "Homepage"). 2026-10-27: Wiglet added as the first project (see "Project worlds: Wiglet"). 2026-10-25: Nexo rebuilt as its own world inside the glass sheet (see "Project worlds: Nexo"). 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
+> Last updated 2026-11-23 (branch `simplify`): one pure black, a Hello section after the hero, a narrow two-column work grid (Nexo, Branding, Maggi, Wiglet), the journey world (the result first, then numbered chapters) for Maggi and Branding, the Skills stage removed, and the guide light replaced by a fabric the cursor bends (see "Homepage", "The fabric" and "Project worlds: Journey"). 2026-11-05: the homepage redesigned as one black world, with a calm type scale, a Skills placeholder, About as Aiyana's desktop and a wandering guide light (see "Homepage"). 2026-10-27: Wiglet added as the first project (see "Project worlds: Wiglet"). 2026-10-25: Nexo rebuilt as its own world inside the glass sheet (see "Project worlds: Nexo"). 2026-10-23: case studies added as a glass sheet over the homepage (first project: Nexo). 2026-10-22: hero rebuilt as a black stage with a constant, perspective wheel matching the Quadro reference frames.
 
 I'm Aiyana, a design student building my portfolio for summer design internships at companies like Google, Microsoft, and design agencies. It must feel creative, personal, and professional, not like a generic AI-made template.
 
@@ -21,7 +21,7 @@ I'm Aiyana, a design student building my portfolio for summer design internships
 
 - Plain HTML, CSS, and JavaScript. No framework, no build step (it will go on GitHub Pages later).
 - GSAP with ScrollTrigger (CDN) for scroll animation, Lenis (CDN) for smooth scrolling.
-- Files: `index.html`, `css/style.css`, `js/main.js`, `js/home/` (the guide light, the desktop, the storm mixer), `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `js/worlds/<world>.js` + `css/worlds/<world>.css` (a project's own world, loaded on demand), `assets/images/`, `content/` (original project files), `references/`, `BUILD_LOG.md` (a dated entry for every change).
+- Files: `index.html`, `css/style.css`, `js/main.js`, `js/home/` (the fabric, the intro, the locker, the desktop, the storm mixer), `css/case-study.css`, `js/case-study.js`, `projects/<slug>.js`, `js/worlds/<world>.js` + `css/worlds/<world>.css` (a project's own world, loaded on demand), `assets/images/`, `content/` (original project files), `references/`, `BUILD_LOG.md` (a dated entry for every change).
 - All colours, fonts, spacing, and animation timings are CSS variables at the top of `style.css`.
 - Animate with GPU-friendly properties only: translate, rotate, scale, opacity.
 
@@ -29,14 +29,14 @@ I'm Aiyana, a design student building my portfolio for summer design internships
 
 | Role | Hex | Use |
 | --- | --- | --- |
-| Black | `#0A0A0A` | The whole homepage, top to bottom |
+| Black | `#000000` | The whole homepage, top to bottom, the same as the hero |
 | Primary text | `#EDEDED` | Body text and titles (16.9:1) |
 | Secondary text | `#9A9A9A` | Descriptions, intros (7.0:1) |
 | Muted | `#7A7A7A` | Labels and quiet notes (4.6:1; the brief's `#6B6B6B` is only 3.7:1) |
-| Amber | `#E2B877` | Links, focus, active states, the guide light (10.7:1) |
+| Amber | `#E2B877` | Links, focus, active states (11.3:1) |
 
 - No light or beige sections on the homepage, and no colour blocks or hard cuts: sections are separated by space alone.
-- A very fine film grain over the black (`body::after`, one static noise tile at 3% opacity).
+- No film grain: the black is one continuous `#000` from the hero down.
 - **The hero** keeps its own black stage and type (`--hero-*` tokens).
 - **Frosted widgets** (About) sit over a photo, so inside them the greys are lighter (`#BDBDBD`, `#ADADAD`) and the glass denser (`rgba(16,16,18,0.72)`), which keeps AA (5.5:1 and 4.6:1 on the brightest wallpaper).
 - Case-study sheets keep their own worlds and colours (`css/case-study.css`, `css/worlds/`).
@@ -65,8 +65,8 @@ No full-screen chapters, no slides, no snapping: one long page.
 
 ### Layout
 
-- Content sits in one centred column, at most 1200px wide (`--page-max`), so on a laptop there is a clear margin either side: the guide light's lane.
-- Order: hero, Selected work, Skills, About, Contact, footer.
+- Content sits in one centred column, at most 1200px wide (`--page-max`); Hello, Selected work, Skills and Contact use the narrower 960px column (`--page-narrow`, `.wrap--narrow`).
+- Order: hero, Hello, Selected work, Skills, About, Contact, footer.
 
 ### Section 1: the hero (first screen)
 
@@ -134,29 +134,30 @@ Built to match the reference frames. The code lives in `index.html` (section `.h
 
 **Below the hero:** the black top bar (name, Work, Skills, About, Resume, Contact) stays tucked away while the hero is on screen and slides in once the visitor scrolls past it.
 
-### Section 2: Selected work
+### Section 2: Hello
 
-- Three large cards, in this order: **Nexo full width** (the three companions on a soft studio light, 21:9), then **Wiglet and Codes side by side**. One column on phones. Each card: cover, name, one line, category and year, and it opens the case study (`#project/<slug>`).
-- Hover: the cover zooms slightly inside its frame and the card lifts, with a faint amber edge.
-- Below them, **Explore more projects** opens the **All projects** view (`#work/all`): every project, Branding included, on the same black. "Back" (or Esc, or the browser's back button) returns to the homepage at the same scroll position. A project opened from this view closes back into it.
+- Straight after the hero, before the work: who I am. Label "Hello", then "I'm Aiyana, a design student who designs journeys, not just screens." in Funnel Display, whose words light from grey to white as they scroll by (`js/home/intro.js`, any `[data-light-words]` heading; shown lit with reduced motion).
+- Two short paragraphs side by side (one column on phones) and six pills for what I work on. School, course and year still to add.
 
-### Section 3: Skills, a locker then a show-and-tell stage
+### Section 3: Selected work
 
-Code: `index.html` (section `.skills`), `css/skills.css`, `js/home/locker.js`, `js/home/stage.js`; all content in **`js/skills-data.js`** (adding work means editing only this file and adding the files). Galleries: `projects/skills.js`, `js/worlds/skills.js`, `css/worlds/skills.css`. Reference: `references/locker-reference.png` (look and feel only; everything here is my own).
+- A narrow two-column grid (one column under 640px), in this order: **Nexo, Branding, Maggi, Wiglet**. Each card: picture (4:3), category and year, name, one line, tag pills; it opens the project (`#project/<slug>`). Branding's picture is three brands side by side.
+- Hover: the picture zooms slightly, the card lifts and the name turns amber.
+- Below them, **Explore more projects** opens the **All projects** view (`#work/all`): all five projects, Codes included, on the same black. "Back" (or Esc, or the browser's back button) returns to the same scroll position.
 
-- **The locker (closed):** one grey steel school locker centred on the black, lit softly from above (the only bright thing on screen). CSS 3D with layered-gradient brushed steel; vents, hinges, handle, the "AIYANA" nameplate and the padlock are SVG. Drawn at 380 × 620 and scaled to fit.
-- **The padlock** wiggles every few seconds and on hover, with "Open my locker" under it. It is a combination dial: drag it round, and any full turn opens it. A click, Enter or Space opens it too.
-- **Opening:** the door (hinged on the right) swings open in 900 ms with a small overshoot, the strip light flickers twice and stays on, and the halo, arrows and underline draw themselves stroke by stroke while the handwriting (Caveat) writes in with a wipe. A soft metal clunk plays only if the storm mixer's sound is already on. It stays open.
-- **Inside:** the pixel portrait taped up (placeholder silhouette until `portrait` is set), "Designer" with a halo, "About me…" and "I'm here to…" notes. On the door: a big "AIYANA" sticker and tool stickers (labelled name placeholders until the official logo files are in `assets/images/skills/logos/`; logos are used unaltered). Hover peels a corner; on desktop stickers drag about (or move with the arrow keys) and "Put back" returns them.
-- **The shelf:** six SVG objects (camera, sketchbook and pencils, tablet, 3D-printed figure, clapper, rolled poster). Hover wiggles and names them; a click glides down to the stage with that skill.
-- **The glide:** 1.5 s after the door opens, the page glides down to the stage once; any scroll, touch, key or click stops it. Never under reduced motion.
-- **The stage:** a dark stage with a spotlight, a small round plinth with a soft gloss and an amber rim light; the piece floats above it and turns slowly. Drag to spin (with momentum), pinch or Ctrl+scroll to zoom (plain scroll only after clicking the stage, so it never hijacks the page), double-click or the reset button to reset, arrow keys and buttons to rotate. "Drag to spin" shows once.
-- **Class schedule:** six tabs ("Period 1" … "Period 6": 3D modelling and animation, UI design, Graphic design, Product sketching, Video generation, Photography), a swipeable row on phones. Swapping sinks the old piece and raises the new one. Under them, thumbnails of every piece with arrows; the info card shows the title, one line, the tools and "See all … work" (`#project/skills/<skill>`, a gallery in the glass sheet with the lightbox).
-- **Object types** (one shared Three.js r158 scene): `model` (.glb, Draco), `phone` (tap for the next screen), `can` (label wrapped round the front), `box` (takeout box with its front and lid), `poster` (paper thickness, note on the back), `prints` (click deals the next), `sketchbook` (click opens), `screen` (video texture). Real pieces now: the Velvet Vine can and the KOMA takeout box (Graphic design), built from my brand files as they are.
-- **Loading:** the page stays classic scripts; `stage.js` imports Three.js and its loaders as modules (import map in `index.html`) only over http(s), and only when the stage is near the screen. From `file://` or without WebGL each piece shows its still image. The scene renders only while on screen and while something moves.
-- **Reduced motion:** the locker opens instantly with no flicker, wipe or glide; the piece stands still and "Rotate left / Rotate right" turn it in 45° steps.
+### Section 4: Skills, the locker
 
-### Section 4: About, as Aiyana's desktop
+Code: `index.html` (section `.skills`), `css/skills.css`, `js/home/locker.js`; all content in **`js/skills-data.js`**. Galleries: `projects/skills.js`, `js/worlds/skills.js`, `css/worlds/skills.css`. Reference: `references/locker-reference.png` (look and feel only).
+
+- **The locker (closed):** one grey steel school locker centred on the black, lit softly from above. CSS 3D with brushed-steel gradients; vents, hinges, handle, the "AIYANA" nameplate and the padlock are SVG.
+- **The padlock** wiggles every few seconds and on hover, with "Open my locker" under it. Drag the dial a full turn, or click, Enter or Space, to open it.
+- **Opening:** the door swings open in 900 ms with a small overshoot, the strip light flickers twice and stays on, and the doodles and handwriting (Caveat) write themselves in. A soft clunk plays only if the storm mixer's sound is already on.
+- **Inside:** the pixel portrait, "Designer" with a halo, "About me…" and "I'm here to…", and stickers on the door (drag them on desktop; "Put back" returns them).
+- **The shelf:** six objects (camera, sketchbook, tablet, 3D figure, clapper, rolled poster). Hover wiggles and names them; a click opens that skill's work in the glass sheet (`#project/skills/<skill>`).
+- The 3D show-and-tell stage and its Period 1–6 tabs were removed on 2026-11-23: there isn't enough 3D work to show yet.
+- **Reduced motion:** the locker opens instantly with no flicker or wipe.
+
+### Section 5: About, as Aiyana's desktop
 
 Code: `index.html` (section `.about`), `css/style.css` ("About: Aiyana's desktop"), `js/home/desktop.js`, `js/home/storm.js`.
 
@@ -172,18 +173,19 @@ Code: `index.html` (section `.about`), `css/style.css` ("About: Aiyana's desktop
 - Phones (≤ 860px): the widgets stack as a column of cards on the wallpaper, dragging is off, and the dock sits under them.
 - Names are my own, chosen not to echo a classmate's portfolio.
 
-### Section 5: Contact and footer
+### Section 6: Contact and footer
 
 - "Let's make something.", then Email, LinkedIn and Resume as clean rows with amber underlines that draw in on hover.
 - A quiet footer row: copyright, credits, back to the top.
 
-### The guide: a wandering light
+### The fabric: the cursor bends the page
 
-Code: `js/home/guide.js` (settings at its top).
-- A small glowing amber orb, a sibling of the bubble cursor, appears once the hero has gone by. It travels down with the scroll, weaving gently in the left margin, and leaves a soft trail that fades in under three seconds (a canvas, not a permanent line).
-- When a section title (Selected work, Skills, About, Contact; any `[data-guide]` title) passes, the light lands beside it and the title lights up for a moment.
-- It only moves in the margin, never over text or images. On phones it steps back to the very edge at 40% opacity with a shorter trail. It rests when nothing moves, and hides under the All projects view and the glass sheet.
-- Reduced motion: no light and no trail; section titles simply fade in.
+Code: `js/home/fluid.js` (settings at its top, the fabric under `S.fabric`), `.fluid` in `css/style.css`. Replaced the wandering guide light on 2026-11-23, after water ripples, colour clouds, a liquid-glass blob and a colour-smoke trail were tried the same day.
+- Behind the black there's a fine woven grid (threads every 30px, brighter knots where they cross). It stays dark except around the cursor, where it glows into view (about 190px round it), and wherever it's moving.
+- A small WebGL fluid simulation runs under it. Moving the mouse (or a finger) pushes the flow, and the threads are drawn through it: they stretch, bend and curl behind the hand, then spring back within a second or so. A tap or click gives it a push.
+- The grid is fixed to the page, so it scrolls with the content, and scrolling drags a soft elastic wave through it under the cursor.
+- Colour stays soft: a faint wash in the colours of what's under the cursor tints the threads (`data-cloud="#hex #hex"`: greys in the hero and Hello, each project's own colours beside its card, amber in Skills and Contact, sea grey in About).
+- It runs only while something moves (4.5 s after the last input), then keeps its last frame; it goes dark under a project sheet or All projects, and is off with reduced motion or without WebGL. The hero and body have no background of their own so the canvas shows through; `html` carries the black.
 
 ## Case studies: the glass sheet
 
@@ -225,15 +227,24 @@ Added 2026-10-25. `projects/codes.js` (words), `js/worlds/codes.js` + `css/world
 
 ## Project worlds: Wiglet
 
-Added 2026-10-27 (homepage order is now Nexo, Wiglet, Codes; "Next project" loops Wiglet → Nexo → Codes → Branding → Wiglet). `projects/wiglet.js` (words), `js/worlds/wiglet.js` + `css/worlds/wiglet.css` (the world), `js/wiglet/scheduler.js` (the real scheduler, ported; tests in `js/wiglet/scheduler.test.js`), `js/wiglet/demo-parser.js` (the labelled stand-in for Whisper + the LLM), `js/wiglet/scheduler-source.js` (generated by `tools/embed-wiglet-source.mjs`). Navy glass (`10, 14, 26` at 0.95; ink `#E8F0FF`, accent teal `#5EEAD4`), Space Grotesk + JetBrains Mono, the widget's own CSS inside the demo. Everything is a classic script, so it runs from `file://`, and the demo makes no network calls. The "Try the real Wiglet" section appears only once `real.liveUrl` is set.
+Added 2026-10-27. "Next project" now loops Nexo → Branding → Maggi → Wiglet → Codes → Nexo. `projects/wiglet.js` (words), `js/worlds/wiglet.js` + `css/worlds/wiglet.css` (the world), `js/wiglet/scheduler.js` (the real scheduler, ported; tests in `js/wiglet/scheduler.test.js`), `js/wiglet/demo-parser.js` (the labelled stand-in for Whisper + the LLM), `js/wiglet/scheduler-source.js` (generated by `tools/embed-wiglet-source.mjs`). Navy glass (`10, 14, 26` at 0.95; ink `#E8F0FF`, accent teal `#5EEAD4`), Space Grotesk + JetBrains Mono, the widget's own CSS inside the demo. Everything is a classic script, so it runs from `file://`, and the demo makes no network calls. The "Try the real Wiglet" section appears only once `real.liveUrl` is set.
 
-## Project worlds: Branding
+## Project worlds: Journey (Maggi, Branding)
 
-Added 2026-11-03 (replacing the first carousel draft, kept on the `branding-v1` branch). In "All projects" only, not Selected work. Five brand identities as **one book** on the site's black (`10, 10, 10` at 0.96; ink `#EEE9E1`, amber `#E2B877`): front cover, one page per brand (Velvet Vine, STATIC., KOMA, Meridian, Pebble & Co.), back cover. The motion follows the four journal frames in `references/branding-carousel-*.webp`: the current page flat in the middle with a slight bend at its crease, the rest as thin slices stacked on each side (turned 76°, smaller and darker outward, with paper edges), and a 700 ms turn in which the page folds at its crease so a two-page spread shows for a moment. Each page is two halves hinged at the crease (CSS 3D, transforms only). Auto-flip every 5 s, arrows, keys, wheel, drag and swipe, dots, and a card grid. Each brand page lands with its own small touch (sparkle, glitch, steam, contour ripple, bounce and stars). A page grows into its brand's story (`#project/branding/<brand>`, with its own history entry), told in that brand's colours and fonts: hero, the idea, the logo with other explorations, colour (click to copy), one signature interaction (vine and type tester, tune-in, steaming bun, contour map, the pebble mascot), applications, reflection. Data: `projects/branding.js` (book order) and one file per brand in `projects/branding/`; images: `node tools/brand-images.mjs <brand>`, crops in `tools/brand-crops/<brand>.json`.
+Added 2026-11-23. `world: 'journey'` loads `js/worlds/journey.js` and `css/worlds/journey.css`. The flow: **the finished work first, then the effort it took.**
+- **Opener:** the finished piece full screen on black (several side by side for Branding), with the name set large (Funnel Display), one line and "Scroll for the story". As you scroll, the work settles back and the words fade.
+- **Intro:** a sentence or two, tag pills and the facts (year, context, team and role, tools).
+- **Chapters:** numbered 01, 02 … beside a sticky index (hidden under 1024px) that follows the chapter on screen; click to jump. Each chapter has a title, one lead line, then steps: a small label with an amber dash, a line or two, then pictures (full, pair, trio or grid; every picture opens the lightbox), a video (plays only on screen, never with reduced motion), colour swatches, or a handwritten note (Caveat) in the margin.
+- **Colour:** one black (`0, 0, 0` at 0.97), ink `#EDEDED`, amber numbers; inside a brand's chapter its numbers, dashes and notes take the brand's own accent.
+- **Data:** `opener`, `intro`, `tags`, `facts`, `chapters` in `projects/<slug>.js`. Branding builds its chapters from `projects/branding/<brand>.js` (explorations → the mark → colour → in the world), and `#project/branding/<brand>` lands on that chapter.
+- **Maggi:** five chapters, from the Illustrator artboards and the dieline to the pack, the moustache character, the store scenes and the exhibition table. Images in `assets/images/projects/maggi/` (`node tools/brand-images.mjs --project maggi`); the team photo is left out until I say so.
+
+## Project worlds: Branding (the flip book, no longer in use)
+
+Added 2026-11-03, replaced by the journey world on 2026-11-23; the code stays in `js/worlds/branding.js` and `css/worlds/branding.css`. Five brand identities as **one book**: front cover, one page per brand, back cover, with page turns, auto-flip and a card grid. Each page grew into its brand's story, with one signature interaction per brand. Data: `projects/branding/<brand>.js`; images: `node tools/brand-images.mjs <brand>`, crops in `tools/brand-crops/<brand>.json`.
 
 ## Signature element: the line of light
 
-- On the black homepage the light is carried by the guide (above) rather than a drawn line.
 - Link underlines grow in amber from the left on hover and focus.
 - In case studies it draws across the top of Deliver, as if the light breaks through.
 
@@ -260,7 +271,7 @@ Added 2026-11-03 (replacing the first carousel draft, kept on the `branding-v1` 
 
 - Fully responsive. On tablets and phones the wheel has 8 cards and its own sizes (see Section 1), the phone nav becomes a MENU button, and touch devices skip hover zoom.
 - Accessible: semantic HTML, alt text, visible keyboard focus, keyboard navigation.
-- `prefers-reduced-motion`: no smooth scrolling, no wheel rotation or entrance (cards stay still in their ring), no hover zoom, no guide light, no rain animation or thunder flashes, no widget animations; everything shows in its final state.
+- `prefers-reduced-motion`: no smooth scrolling, no wheel rotation or entrance (cards stay still in their ring), no hover zoom, no fabric effect, no rain animation or thunder flashes, no widget animations; everything shows in its final state.
 - Audio never plays by itself. Every interaction has a keyboard path, and every control is labelled.
 - Fast: no heavy libraries beyond GSAP, ScrollTrigger, and Lenis.
 - Clearly marked placeholder text and images, to be replaced with real content.

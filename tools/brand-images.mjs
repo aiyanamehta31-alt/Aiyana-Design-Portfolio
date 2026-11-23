@@ -16,10 +16,12 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync, mkdtem
 import { join, extname, basename } from 'node:path';
 import { tmpdir } from 'node:os';
 
-const brand = process.argv[2];
-if (!brand || !/^[a-z0-9-]+$/.test(brand)) { console.error('usage: node tools/brand-images.mjs <brand-slug>'); process.exit(1); }
-const src = join('content', 'branding', brand);
-const out = join('assets', 'images', 'projects', 'branding', brand);
+// `--project <slug>` does the same for a whole project: content/<slug>/ → assets/images/projects/<slug>/.
+const asProject = process.argv[2] === '--project';
+const brand = asProject ? process.argv[3] : process.argv[2];
+if (!brand || !/^[a-z0-9-]+$/.test(brand)) { console.error('usage: node tools/brand-images.mjs <brand-slug> | --project <slug>'); process.exit(1); }
+const src = asProject ? join('content', brand) : join('content', 'branding', brand);
+const out = asProject ? join('assets', 'images', 'projects', brand) : join('assets', 'images', 'projects', 'branding', brand);
 const cropFile = join('tools', 'brand-crops', brand + '.json');
 if (!existsSync(src)) { console.error('No folder ' + src); process.exit(1); }
 mkdirSync(out, { recursive: true });

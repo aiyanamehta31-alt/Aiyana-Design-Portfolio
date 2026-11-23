@@ -4,6 +4,23 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-23 · Nexo: smoother scrolling, and a walking Nexo instead of the thread
+
+**Why:** Aiyana found the Nexo story abrupt and laggy to scroll, and wanted something more creative than the heartbeat line to guide people through it. She chose a walking Nexo companion.
+
+**What made it lag, and the fixes**
+- The sheet was frosted glass (a full-screen backdrop blur) whose tint changes between scenes, and the bar blurred the content scrolling under it: both re-rendered every frame. The Nexo sheet and bar are now solid (they were 90–96% opaque, so they look the same).
+- The heartbeat thread was one SVG as tall as the story (about 23,000px), redrawn on every scroll with path lookups. It's gone.
+- The thread and the dock measured every chapter head with `getBoundingClientRect` on every frame. Positions are now measured once on refresh; a scroll frame only does sums.
+- Scroll-linked timelines (the pinned scenes, the emotion curve, the word reveals) used `scrub: true` and jumped with each scroll step; they now use `scrub: 0.6` and catch up smoothly.
+
+**The walking guide** (`js/worlds/nexo.js` "5. The walking guide", `css/worlds/nexo.css`)
+- A small Nexo companion walks in the left margin at the reading line; paw prints land in the story under its feet and drift away behind it; scrolling up turns it round; it sits and wags when the scroll stops.
+- Each chapter gives it a mood and a prop (tear, sniff marks, "!", ball, leash, heart) and shows the chapter's name on a tag for a moment. Key moments that used to pulse the thread make it hop. It turns indigo over the orange scenes.
+- The story column is 1120px (was 1240px) so laptops have room for it; it hides under 72px of margin, on the cover and with reduced motion.
+
+---
+
 ## 2026-11-23 · New cards in the hero wheel: Nexo, a 3D render, sketching and prototyping, the STATIC. flat lay, the KOMA box, the Meridian emblem
 
 **Why:** Aiyana asked to replace the Pebble & Co. bag in the circling wheel with her Futurist Lounge Pod sketch sheet, labelled "Sketching and prototyping".

@@ -7,7 +7,7 @@
                   finished state, so it reads fine with no script/motion
      mount(ctx)   adds the motion on top, and returns { destroy }
 
-   1. Helpers           5. The heartbeat thread
+   1. Helpers           5. The walking guide
    2. Scenes → HTML     6. The phase dock
    3. Mount             7. Scene motion (GSAP + ScrollTrigger)
    4. Measuring         8. Small live parts (AEIOU tabs, form steps, face)
@@ -93,7 +93,7 @@
       '<h3 class="nx-phase__name" id="nx-h-' + id + '" tabindex="-1">' + esc(ph.name) + '</h3>' +
       '<p class="nx-phase__real">' + esc(ph.real) + '</p></header>';
   }
-  // A scene: tone = the glass tint, side = the margin the thread runs down.
+  // A scene: tone = the glass tint, side = the margin it leans to.
   function scene(o, inner) {
     return '<section class="cs-section nx-s nx-s--' + o.id + '" id="nx-' + o.id + '" data-tone="' + o.tone + '" data-side="' + o.side + '"' +
       (o.phase ? ' data-phase-id="' + o.phase + '"' : '') + ' aria-labelledby="' + o.label + '">' + inner + '</section>';
@@ -386,8 +386,7 @@
   function render(p) {
     P = p;
     var html = '<div class="nx-world" data-nx-world>' +
-      '<svg class="nx-thread" aria-hidden="true" focusable="false"><defs><linearGradient id="nx-thread-ink" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"></linearGradient></defs>' +
-        '<path class="nx-thread__line" stroke="url(#nx-thread-ink)" /><circle class="nx-thread__ring" r="10" /><circle class="nx-thread__halo" r="11" /><circle class="nx-thread__tip" r="4.5" /></svg>' +
+      '<div class="nx-prints" aria-hidden="true"></div>' +
       coverHTML(p) + openerHTML(p) + fieldHTML(p) + quotesHTML(p) + affinityHTML(p) + journeyHTML(p) + problemHTML(p) +
       ideationHTML(p) + formHTML(p) + deviceHTML(p) + appHTML(p) + outcomeHTML(p) + closeHTML(p) +
       '</div>';
@@ -447,176 +446,130 @@
       return top - barH() + prog * Math.max(0, extra) + scroller.clientHeight * READ;
     }
 
-    /* ---------- 5. The heartbeat thread ---------- */
+    var heads = Array.prototype.slice.call(world.querySelectorAll('[data-phase-head]'));
+
+    /* ---------- 5. The walking guide ----------
+       A little Nexo companion walks down the left margin at the reading line.
+       Paw prints land under its feet in the page and drift away behind it as
+       the story scrolls, so it seems to walk down through the project; scroll
+       back and it turns round. When the scroll stops it sits and wags. Each
+       chapter gives it a mood and a prop, and a tag with the chapter's name.
+       Everything is measured once (on refresh), so a scroll only does sums. */
     var READ = 0.62;   // the reading line, as a share of the sheet's height
-    var svg = world.querySelector('.nx-thread');
-    var line = svg.querySelector('.nx-thread__line');
-    var tip = svg.querySelector('.nx-thread__tip');
-    var halo = svg.querySelector('.nx-thread__halo');
-    var ring = svg.querySelector('.nx-thread__ring');
-    var grad = svg.querySelector('linearGradient');
-    var T = { total: 0, ys: [], ls: [], beats: [], lastLen: -1, built: false };
+    var PAW = '<svg viewBox="0 0 20 20" focusable="false"><ellipse cx="10" cy="13.4" rx="4.9" ry="4.1"/><circle cx="4.3" cy="7.8" r="1.9"/><circle cx="8" cy="4.8" r="1.9"/><circle cx="12" cy="4.8" r="1.9"/><circle cx="15.7" cy="7.8" r="1.9"/></svg>';
+    var guide = document.createElement('div');
+    guide.className = 'nx-guide';
+    guide.setAttribute('aria-hidden', 'true');
+    guide.innerHTML =
+      '<span class="nx-guide__tag"></span>' +
+      '<svg class="nx-guide__dog" viewBox="-6 -34 112 120" focusable="false">' +
+        '<path class="nx-guide__leash" d="M64 30 C 74 6, 86 -14, 106 -34" />' +
+        '<g class="nx-guide__props">' +
+          '<path class="nx-guide__heart" d="M70 -6 c -3 -6 -11 -4 -10 3 c 1 5 10 10 10 10 s 9 -5 10 -10 c 1 -7 -7 -9 -10 -3 z" />' +
+          '<text class="nx-guide__bang" x="66" y="2">!</text>' +
+          '<g class="nx-guide__sniff"><path d="M92 30 q 4 4 0 8" /><path d="M98 27 q 6 7 0 14" /></g>' +
+          '<path class="nx-guide__tear" d="M83 40 q 3 5 0 8 q -3 -3 0 -8 z" />' +
+        '</g>' +
+        '<path class="nx-guide__tail" d="M20 38 q -12 -4 -12 -20" />' +
+        '<g class="nx-guide__legs nx-guide__legs--back"><rect class="nx-guide__leg" x="22" y="50" width="9" height="20" rx="4.5" /><rect class="nx-guide__leg" x="33" y="50" width="9" height="20" rx="4.5" /></g>' +
+        '<g class="nx-guide__legs nx-guide__legs--front"><rect class="nx-guide__leg" x="54" y="50" width="9" height="20" rx="4.5" /><rect class="nx-guide__leg" x="65" y="50" width="9" height="20" rx="4.5" /></g>' +
+        '<g class="nx-guide__body">' +
+          '<ellipse class="nx-guide__torso" cx="46" cy="46" rx="30" ry="18" />' +
+          '<ellipse class="nx-guide__ear" cx="64" cy="19" rx="6.5" ry="8.5" transform="rotate(-28 64 19)" />' +
+          '<ellipse class="nx-guide__ear" cx="88" cy="17" rx="6.5" ry="8.5" transform="rotate(24 88 17)" />' +
+          '<circle class="nx-guide__head" cx="76" cy="36" r="20" />' +
+          '<circle class="nx-guide__screen" cx="78" cy="36" r="14.5" />' +
+          '<path class="nx-guide__blob" d="" />' +
+        '</g>' +
+        '<circle class="nx-guide__ball" cx="96" cy="64" r="6" />' +
+      '</svg>';
+    sheet.appendChild(guide);
+    cleanups.push(function () { guide.remove(); });
+    var guideBlob = guide.querySelector('.nx-guide__blob');
+    var tag = guide.querySelector('.nx-guide__tag');
+    var prints = world.querySelector('.nx-prints');
 
-    function sideX(side) {
+    // Measured on refresh: where the story starts in the scroller, the chapter
+    // heads and tones (in story space), and the margin the guide walks in.
+    var M = { ok: false, worldTop: 0, view: 0, x: 0, coverEnd: 0, heads: [], tones: [] };
+    function measureGuide() {
+      var sr = scroller.getBoundingClientRect(), wr = world.getBoundingClientRect(), shr = sheet.getBoundingClientRect();
+      M.worldTop = wr.top - sr.top + scroller.scrollTop;
+      M.view = scroller.clientHeight;
       var wrap = world.querySelector('.nx-cover .nx-wrap');
-      var w = world.clientWidth;
-      var inner = wrap ? wrap.getBoundingClientRect() : null;
-      var contentLeft = inner ? inner.left - world.getBoundingClientRect().left + parseFloat(getComputedStyle(wrap).paddingLeft) : 40;
-      var m = Math.max(10, Math.min(56, contentLeft / 2));
-      return side === 'l' ? m : w - m;
+      var room = wrap ? wrap.getBoundingClientRect().left - wr.left + parseFloat(getComputedStyle(wrap).paddingLeft) : 0;
+      M.x = room / 2;
+      M.ok = motion && room >= 72;
+      guide.style.setProperty('--g-size', Math.min(84, room - 10).toFixed(0) + 'px');
+      var cover = world.querySelector('section.nx-s');
+      M.coverEnd = cover ? rel(cover).y + cover.offsetHeight * 0.75 : 0;
+      M.heads = heads.map(function (h) { return { id: h.getAttribute('data-phase-head'), y: rel(h).y }; });
+      M.tones = Array.prototype.map.call(world.querySelectorAll('section.nx-s'), function (sec) { return { y: rel(sec).y, tone: sec.getAttribute('data-tone') }; });
+      guide.style.left = (wr.left - shr.left + M.x).toFixed(1) + 'px';
+      guide.classList.toggle('is-off', !M.ok);
+      lastY = null;
     }
-    function amp() { return world.clientWidth < 700 ? 9 : 20; }
+    // The reading line, in story space: only scroll sums, no layout reads.
+    function storyY() { return scroller.scrollTop + M.view * READ - M.worldTop; }
 
-    function buildThread() {
-      var W = world.clientWidth, H = world.scrollHeight;
-      svg.setAttribute('width', W);
-      svg.setAttribute('height', H);
-      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-      grad.setAttribute('y2', H);
-
-      var startEl = world.querySelector('[data-thread-start]');
-      var s = rel(startEl);
-      var d = 'M' + f(s.cx) + ' ' + f(s.cy);
-      var cur = { x: s.cx, y: s.cy };
-      var beatYs = [];
-      function curveTo(x, y) {
-        var dy = (y - cur.y) * 0.5;
-        d += 'C' + f(cur.x) + ' ' + f(cur.y + dy) + ' ' + f(x) + ' ' + f(y - dy) + ' ' + f(x) + ' ' + f(y);
-        cur = { x: x, y: y };
+    var lastY = null, lastPrintY = 0, foot = 1, dir = 1, mood = null, tone = 'paper', sitTimer = 0, tagTimer = 0;
+    function setMood(id) {
+      mood = id;
+      if (id) guide.setAttribute('data-mood', id); else guide.removeAttribute('data-mood');
+      var ph = id && p.phases.filter(function (x) { return x.id === id; })[0];
+      if (!ph) return;
+      tag.textContent = ph.name;
+      guide.classList.add('is-tagged');
+      clearTimeout(tagTimer);
+      tagTimer = setTimeout(function () { guide.classList.remove('is-tagged'); }, 2200);
+    }
+    function stamp(y) {
+      var el = document.createElement('span');
+      el.className = 'nx-print' + (tone === 'orange' ? ' is-deep' : '');
+      foot = -foot;
+      // Toes point the way it walks; left and right feet a little apart.
+      el.style.transform = 'translate3d(' + (M.x - 8 + foot * 6).toFixed(1) + 'px,' + (y + 22).toFixed(1) + 'px,0) rotate(' + (dir > 0 ? 180 : 0) + 'deg)';
+      el.innerHTML = PAW;
+      prints.appendChild(el);
+      setTimeout(function () { el.remove(); }, 2600);
+      while (prints.childElementCount > 36) prints.firstChild.remove();
+    }
+    function walk() {
+      if (!M.ok) return;
+      var y = storyY();
+      var here = y > M.coverEnd;
+      guide.classList.toggle('is-here', here);
+      if (lastY === null) { lastY = y; lastPrintY = y; }
+      var dy = y - lastY;
+      lastY = y;
+      if (Math.abs(dy) > 0.5) {
+        var d = dy > 0 ? 1 : -1;
+        if (d !== dir) { dir = d; guide.classList.toggle('is-back', dir < 0); }
+        guide.classList.add('is-walking');
+        guide.classList.remove('is-sitting');
+        clearTimeout(sitTimer);
+        sitTimer = setTimeout(function () { guide.classList.remove('is-walking'); guide.classList.add('is-sitting'); }, 360);
       }
-      function lineTo(x, y) { d += 'L' + f(x) + ' ' + f(y); cur = { x: x, y: y }; }
-      function spike(x, y, out) {
-        var A = amp();
-        lineTo(x, y - 22);
-        d += 'l' + f(out * 4) + ' 5l' + f(-out * 4) + ' 5' +       // a small bump
-          'l0 4l' + f(-out * A * 0.3) + ' 3' +                         // dip
-          'l' + f(out * A * 1.3) + ' 5' +                              // the spike
-          'l' + f(-out * A * 1.4) + ' 6' +                             // back past the line
-          'l' + f(out * A * 0.4) + ' 4' +                              // settle
-          'l0 4l' + f(out * 5) + ' 6l' + f(-out * 5) + ' 6';           // a soft tail
-        cur = { x: x, y: y + 26 };
-        beatYs.push(y);
-      }
-
-      var stops = [];
-      var sections = Array.prototype.slice.call(world.querySelectorAll('section.nx-s'));
-      var endEl = world.querySelector('[data-thread-end]');
-      var ended = false;
-      sections.forEach(function (sec, si) {
-        if (ended) return;
-        var r = rel(sec);
-        var tone = sec.getAttribute('data-tone');
-        stops.push({ y: r.y, tone: tone });
-        var side = sec.getAttribute('data-side') || 'l';
-        var x = sideX(side);
-        var out = side === 'l' ? -1 : 1;
-        var pad = parseFloat(getComputedStyle(sec).paddingTop) || 120;
-        if (si === 0) {
-          curveTo(x, Math.max(cur.y + 80, r.y + r.h * 0.9));
-        } else {
-          curveTo(x, r.y + Math.max(60, pad * 0.85));
-        }
-
-        // Events inside this scene, top to bottom.
-        var events = [];
-        Array.prototype.forEach.call(sec.querySelectorAll('[data-beat]'), function (el) {
-          var pinEl = el.closest('.nx-pin');
-          var pin = pinEl && pins.filter(function (x) { return x.el === pinEl; })[0];
-          var y = pin && pinEl.classList.contains('is-pinned') && el.hasAttribute('data-beat-p')
-            ? pinReadY(pin, parseFloat(el.getAttribute('data-beat-p')))
-            : rel(el).cy;
-          if (el.closest('.nx-aeiou__panel') && el.closest('.nx-aeiou__panel').hidden) y = rel(el.closest('[data-aeiou]')).cy;
-          events.push({ kind: 'beat', y: y });
-        });
-        var hand = sec.querySelector('[data-thread-handoff]');
-        if (hand) {
-          var a = rel(hand.querySelector('[data-thread-in]')), b = rel(hand.querySelector('[data-thread-out]'));
-          events.push({ kind: 'hand', y: a.cy, a: a, b: b });
-        }
-        if (endEl && sec.contains(endEl)) events.push({ kind: 'end', y: rel(endEl).cy, el: rel(endEl) });
-        events.sort(function (m, n) { return m.y - n.y; });
-
-        events.forEach(function (ev) {
-          if (ended) return;
-          if (ev.kind === 'beat') {
-            if (ev.y - 30 > cur.y) spike(x, ev.y, out);
-          } else if (ev.kind === 'hand') {
-            curveTo(ev.a.cx, ev.a.cy);
-            d += 'M' + f(ev.b.cx) + ' ' + f(ev.b.cy);
-            cur = { x: ev.b.cx, y: ev.b.cy };
-            // Out of the chart, the thread carries on down the right margin.
-            x = sideX('r'); out = 1;
-            curveTo(x, ev.b.cy + 140);
-          } else if (ev.kind === 'end') {
-            curveTo(ev.el.cx, ev.el.cy);
-            ended = true;
-          }
-        });
-        if (!ended) lineTo(x, r.y + r.h);
-      });
-
-      line.setAttribute('d', d);
-      // The thread's ink follows the tone: orange, but deep indigo on the orange scenes.
-      grad.innerHTML = stops.map(function (st, i) {
-        var col = st.tone === 'orange' ? 'var(--nx-deep)' : 'var(--nx-orange)';
-        var next = stops[i + 1];
-        var a = (st.y / H * 100).toFixed(3), b = ((next ? next.y : H) / H * 100).toFixed(3);
-        return '<stop offset="' + a + '%" style="stop-color:' + col + '" /><stop offset="' + b + '%" style="stop-color:' + col + '" />';
-      }).join('');
-
-      T.total = line.getTotalLength();
-      var n = Math.max(240, Math.min(2400, Math.round(T.total / 6)));
-      T.ys = new Float32Array(n + 1);
-      T.ls = new Float32Array(n + 1);
-      var maxY = -Infinity;
-      for (var i = 0; i <= n; i++) {
-        var len = T.total * i / n;
-        var pt = line.getPointAtLength(len);
-        maxY = Math.max(maxY, pt.y);
-        T.ys[i] = maxY;       // running max, so the lookup stays monotonic
-        T.ls[i] = len;
-      }
-      T.beats = beatYs.map(function (y) { return { y: y, len: lenAt(y + 2), fired: false }; });
-      line.style.strokeDasharray = T.total + ' ' + T.total;
-      T.built = true;
-      T.lastLen = -1;
-      drawThread(true);
+      var t = 'paper';
+      for (var i = 0; i < M.tones.length; i++) { if (M.tones[i].y <= y) t = M.tones[i].tone; }
+      if (t !== tone) { tone = t; guide.classList.toggle('is-deep', tone === 'orange'); }
+      if (here && Math.abs(y - lastPrintY) >= 40) { lastPrintY = y; stamp(y); }
+      var id = null;
+      for (var k = 0; k < M.heads.length; k++) { if (M.heads[k].y <= y) id = M.heads[k].id; }
+      if (id !== mood) setMood(id);
     }
-    function lenAt(y) {
-      var lo = 0, hi = T.ys.length - 1;
-      if (y <= T.ys[0]) return 0;
-      if (y >= T.ys[hi]) return T.total;
-      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (T.ys[mid] <= y) lo = mid; else hi = mid; }
-      return T.ls[lo];
-    }
-    function readY() {
-      return scroller.getBoundingClientRect().top + scroller.clientHeight * READ - world.getBoundingClientRect().top;
-    }
-    function drawThread(silent) {
-      if (!T.built) return;
-      if (!motion) {
-        line.style.strokeDashoffset = 0;
-        return;
-      }
-      var len = lenAt(readY());
-      if (Math.abs(len - T.lastLen) < 0.5) return;
-      var rising = len > T.lastLen;
-      T.lastLen = len;
-      line.style.strokeDashoffset = (T.total - len).toFixed(1);
-      var pt = line.getPointAtLength(Math.max(0.01, len));
-      tip.setAttribute('cx', f(pt.x)); tip.setAttribute('cy', f(pt.y));
-      halo.setAttribute('cx', f(pt.x)); halo.setAttribute('cy', f(pt.y));
-      ring.setAttribute('cx', f(pt.x)); ring.setAttribute('cy', f(pt.y));
-      T.beats.forEach(function (b) {
-        if (len >= b.len && !b.fired) { b.fired = true; if (rising && !silent) pulse(); }
-        else if (len < b.len - 40) b.fired = false;
-      });
-    }
+    // A key moment in a scene: the guide does a little happy hop.
+    var hopTimer = 0;
     function pulse() {
-      if (!motion) return;
-      gsap.fromTo(ring, { attr: { r: 6 }, opacity: 0.9 }, { attr: { r: 34 }, opacity: 0, duration: 0.9, ease: 'power2.out', overwrite: true });
-      gsap.fromTo(tip, { attr: { r: 8 } }, { attr: { r: 4.5 }, duration: 0.5, ease: EASE, overwrite: true });
+      if (!M.ok) return;
+      guide.classList.remove('is-hop');
+      void guide.offsetWidth;
+      guide.classList.add('is-hop');
+      clearTimeout(hopTimer);
+      hopTimer = setTimeout(function () { guide.classList.remove('is-hop'); }, 700);
     }
+    cleanups.push(function () { clearTimeout(sitTimer); clearTimeout(tagTimer); clearTimeout(hopTimer); });
+    guide.classList.add('is-sitting');
 
     /* ---------- 6. The phase dock ---------- */
     var dock = document.createElement('nav');
@@ -629,7 +582,6 @@
     sheet.appendChild(dock);
     cleanups.push(function () { dock.remove(); });
 
-    var heads = Array.prototype.slice.call(world.querySelectorAll('[data-phase-head]'));
     var foldTimer = 0;
     var showing = new Set();
     var io = new IntersectionObserver(function (entries) {
@@ -646,9 +598,9 @@
 
     var currentPhase = null;
     function updateDock() {
-      var y = readY();
+      var y = storyY();
       var id = null;
-      heads.forEach(function (h) { if (rel(h).y <= y) id = h.getAttribute('data-phase-head'); });
+      M.heads.forEach(function (h) { if (h.y <= y) id = h.id; });
       if (id === currentPhase) return;
       currentPhase = id;
       dock.classList.toggle('is-away', !id);
@@ -737,8 +689,13 @@
     }, { root: scroller });
     faces.forEach(function (fc) { faceIO.observe(fc.el); });
     cleanups.push(function () { faceIO.disconnect(); });
+    var MOOD_R = { whine: 5.6, sniff: 7, scent: 7.6, fetch: 8, walkies: 7.6, treat: 8.6 };
     function breathe(time) {
       faces.forEach(function (fc) { if (fc.live) fc.blob.setAttribute('d', blob(time * 1.4, 60, 60, 24 + Math.sin(time * 1.6) * 1.6)); });
+      if (M.ok && guide.classList.contains('is-here')) {
+        var r = (MOOD_R[mood] || 7) + Math.sin(time * 2) * 0.4;
+        guideBlob.setAttribute('d', blob(time * 1.6, 78, mood === 'whine' ? 38.5 : 36, r));
+      }
     }
 
     // Device callouts: lines from each label to its point on the render.
@@ -762,6 +719,8 @@
     }
 
     /* ---------- 7. Scene motion ---------- */
+    // Scroll-linked motion catches up over a moment instead of jumping with every scroll step.
+    var SCRUB = 0.6;
     function sc(o) { o.scroller = scroller; return o; }
     function playOnce(trigger, fn, start) {
       ST.create(sc({ trigger: trigger, start: start || 'top 85%', once: true, onEnter: fn }));
@@ -771,7 +730,7 @@
         trigger: pin.el,
         start: function () { return 'top top+=' + barH(); },
         end: 'bottom bottom',
-        scrub: true,
+        scrub: SCRUB,
         animation: anim,
         invalidateOnRefresh: true
       }));
@@ -786,7 +745,7 @@
         gsap.fromTo(cover.querySelector('.nx-cover__render'), { opacity: 0, y: 70, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 1.4, ease: EASE, delay: 0.45 });
         gsap.fromTo(cover.querySelectorAll('.nx-cover__meta > *'), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.9, ease: EASE, stagger: 0.08, delay: 0.6 });
         gsap.fromTo(cover.querySelector('.nx-cover__pulse-ring'), { scale: 0.6, opacity: 0.9 }, { scale: 2.6, opacity: 0, duration: 1.2, ease: 'power2.out', delay: 1.4 });
-        gsap.to(cover.querySelector('.nx-cover__img'), { yPercent: -8, ease: 'none', scrollTrigger: sc({ trigger: cover, start: 'top top', end: 'bottom top', scrub: true }) });
+        gsap.to(cover.querySelector('.nx-cover__img'), { yPercent: -8, ease: 'none', scrollTrigger: sc({ trigger: cover, start: 'top top', end: 'bottom top', scrub: SCRUB }) });
 
         // Generic entrances for small parts (staggered by the order they appear).
         Array.prototype.forEach.call(world.querySelectorAll('.nx-head, .nx-phase, .nx-originals, .nx-sketches > .nx-source, .nx-collars > .nx-source'), function (el) {
@@ -881,7 +840,7 @@
         var slots = chart.querySelectorAll('.nx-chart__slot');
         gsap.set(curves, { strokeDasharray: 1, attr: { pathLength: 1 } });
         ST.create(sc({
-          trigger: chart, start: 'top 75%', end: 'bottom 45%', scrub: true,
+          trigger: chart, start: 'top 75%', end: 'bottom 45%', scrub: SCRUB,
           onUpdate: function (self) {
             var pr = self.progress;
             gsap.set(curves, { strokeDashoffset: 1 - pr });
@@ -895,7 +854,7 @@
         // The problem and the question: words light up as they're read.
         Array.prototype.forEach.call(world.querySelectorAll('.nx-scrub'), function (el) {
           gsap.fromTo(el.querySelectorAll('.nx-word'), { opacity: 0.2 }, { opacity: 1, ease: 'none', stagger: 0.1,
-            scrollTrigger: sc({ trigger: el, start: 'top 82%', end: 'bottom 50%', scrub: true }) });
+            scrollTrigger: sc({ trigger: el, start: 'top 82%', end: 'bottom 50%', scrub: SCRUB }) });
         });
 
         // Fetch: concepts fly in, scores count up, two are crossed out, two merge.
@@ -924,7 +883,7 @@
         // The form: the frame steps through the build as you scroll.
         if (formPin && formPin.el.classList.contains('is-pinned')) {
           ST.create(sc({
-            trigger: formPin.el, start: function () { return 'top top+=' + barH(); }, end: 'bottom bottom', scrub: true,
+            trigger: formPin.el, start: function () { return 'top top+=' + barH(); }, end: 'bottom bottom', scrub: SCRUB,
             onUpdate: function (self) { showStep(Math.min(steps.length - 1, Math.floor(self.progress * steps.length))); }
           }));
         }
@@ -978,7 +937,7 @@
           var w = reunion.getBoundingClientRect().width;
           return sign * w * 0.22;
         };
-        gsap.timeline({ scrollTrigger: sc({ trigger: reunion, start: 'top 85%', end: 'center 55%', scrub: true }) })
+        gsap.timeline({ scrollTrigger: sc({ trigger: reunion, start: 'top 85%', end: 'center 55%', scrub: SCRUB }) })
           .fromTo(reunion.querySelector('.nx-reunion__owner'), { x: function () { return rgap(-1); } }, { x: 0, ease: 'none' }, 0)
           .fromTo(reunion.querySelector('.nx-reunion__dog'), { x: function () { return rgap(1); } }, { x: 0, ease: 'none' }, 0);
         groupIn('.nx-point', { y: 30, stagger: 0.1 });
@@ -1052,7 +1011,7 @@
     var raf = 0;
     function onScroll() {
       if (raf) return;
-      raf = requestAnimationFrame(function () { raf = 0; drawThread(false); updateDock(); });
+      raf = requestAnimationFrame(function () { raf = 0; walk(); updateDock(); });
     }
     on(scroller, 'scroll', onScroll, { passive: true });
 
@@ -1067,7 +1026,8 @@
         fitBoard();
         if (motion) ST.refresh();
         drawCallouts();
-        buildThread();
+        measureGuide();
+        walk();
         updateDock();
       }, 120);
     }
@@ -1080,7 +1040,8 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
 
     drawCallouts();
-    buildThread();
+    measureGuide();
+    walk();
     updateDock();
     if (motion) ST.refresh();
 

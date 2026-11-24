@@ -4,6 +4,22 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-24 · Hero title: "Aiyana's portfolio" in two fonts
+
+**What changed**
+- The hero headline "Welcome to Aiyana's portfolio." is now just "Aiyana's portfolio". "Aiyana's" is in Instrument Serif italic, "portfolio" in Geist 500 (the hero's own font) at 0.82× the size, letter-spacing -0.045em.
+- It's bigger now that it's two words: clamp(40px, 4.4vw, 64px), phones clamp(34px, 10vw, 44px).
+- The paragraph underneath ("A design student who designs journeys…") is removed, as Aiyana asked.
+- Instrument Serif (italic) added to the Google Fonts link; new token `--font-hero-name`. `main.js` now keeps the wheel's upper cards clear of the title only (no paragraph left to measure).
+
+**Why**
+- Aiyana wanted only "Aiyana's portfolio", with her name and the word "portfolio" in two different fonts that go together. She picked pairing A (Editorial) from four options: Instrument Serif + Geist, Fraunces + Geist Mono, Bricolage Grotesque + Instrument Serif, Reenie Beanie + Geist Mono.
+
+**Checked**
+- Local server at desktop size and at 375×812: the title sits centred in the wheel, and no card overlaps it.
+
+---
+
 ## 2026-11-24 · Nexo: a still, flowing line, and the colour fades back
 
 **Why:** Aiyana felt the scene crossings still stuttered and asked for a line that simply sits in the page and guides, with no movement of its own, flowy and good-looking. She also pointed out that the last change broke Nexo's smooth colour fades between scenes, and asked for them back exactly.

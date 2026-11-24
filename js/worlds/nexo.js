@@ -469,7 +469,8 @@
       var w = world.clientWidth;
       var inner = wrap ? wrap.getBoundingClientRect() : null;
       var contentLeft = inner ? inner.left - world.getBoundingClientRect().left + parseFloat(getComputedStyle(wrap).paddingLeft) : 40;
-      var m = Math.max(14, Math.min(64, contentLeft / 2));
+      // Close beside the column, so the far left stays free for the index.
+      var m = Math.max(10, contentLeft - Math.min(40, contentLeft / 2));
       return side === 'l' ? m : w - m;
     }
 
@@ -648,6 +649,123 @@
       var heading = h.querySelector('h3');
       if (heading) heading.focus({ preventScroll: true });
     });
+
+    /* ---------- 7. The index and its glider ----------
+       Like Branding's chapter list: every part of Nexo, from the finished
+       product to the last phase, in the left margin (wide screens; smaller
+       screens keep the dock). A rail runs beside it with a glider that
+       follows the reading position from part to part. Click a part to fly
+       there; drag the glider (or press anywhere on the rail) to scrub
+       through the whole project. */
+    var items = [{ id: 'cover', name: 'The result', real: 'Nexo, finished' }].concat(p.phases.map(function (ph) {
+      return { id: ph.id, name: ph.name, real: ph.real };
+    }));
+    var index = document.createElement('nav');
+    index.className = 'nx-index';
+    index.setAttribute('aria-label', 'Nexo, part by part');
+    index.innerHTML = '<div class="nx-index__rail" aria-hidden="true"><span class="nx-index__line"></span><span class="nx-index__fill"></span><span class="nx-index__glider"></span></div>' +
+      '<ol>' + items.map(function (it, i) {
+        return '<li><a href="#project/nexo" data-nx-go="' + it.id + '"><span class="nx-index__n">' + (i < 9 ? '0' : '') + (i + 1) + '</span>' +
+          '<span class="nx-index__t">' + esc(it.name) + '<small>' + esc(it.real) + '</small></span></a></li>';
+      }).join('') + '</ol>';
+    sheet.appendChild(index);
+    cleanups.push(function () { index.remove(); });
+    var rail = index.querySelector('.nx-index__rail');
+    var glider = index.querySelector('.nx-index__glider');
+    var fill = index.querySelector('.nx-index__fill');
+    var links = Array.prototype.slice.call(index.querySelectorAll('[data-nx-go]'));
+    var IX = { on: false, S: [], go: [], Y: [], top: 0, len: 1, cur: -1 };
+
+    function targetOf(id) { return id === 'cover' ? world.querySelector('#cs-cover') : world.querySelector('[data-phase-head="' + id + '"]'); }
+    function measureIndex() {
+      IX.on = index.offsetParent !== null;
+      if (!IX.on) return;
+      var base = scroller.scrollTop, top = scroller.getBoundingClientRect().top;
+      var max = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+      var last = 0;
+      IX.go = []; IX.S = [];
+      items.forEach(function (it, i) {
+        var el = targetOf(it.id);
+        var abs = el ? base + el.getBoundingClientRect().top - top : 0;
+        IX.go.push(i === 0 ? 0 : Math.min(max, Math.max(0, abs - barH() - 24)));
+        // A part counts as reached once its heading crosses the reading line.
+        last = i === 0 ? 0 : Math.min(max, Math.max(last + 1, abs - scroller.clientHeight * READ));
+        IX.S.push(last);
+      });
+      IX.S.push(Math.max(max, last + 1));
+      var railTop = rail.getBoundingClientRect().top;
+      IX.Y = links.map(function (a) { var r = a.querySelector('.nx-index__n').getBoundingClientRect(); return r.top + r.height / 2 - railTop; });
+      var tail = IX.Y.length > 1 ? (IX.Y[IX.Y.length - 1] - IX.Y[IX.Y.length - 2]) * 0.6 : 24;
+      IX.Y.push(IX.Y[IX.Y.length - 1] + tail);
+      IX.top = IX.Y[0];
+      IX.len = Math.max(1, IX.Y[IX.Y.length - 1] - IX.top);
+      rail.style.setProperty('--rail-top', IX.top.toFixed(1) + 'px');
+      rail.style.setProperty('--rail-len', IX.len.toFixed(1) + 'px');
+      IX.cur = -1;
+      updateIndex();
+    }
+    // Scroll position <-> place on the rail, part by part.
+    function railY(s) {
+      var S = IX.S, Y = IX.Y;
+      for (var i = 0; i < S.length - 1; i++) {
+        if (s < S[i + 1] || i === S.length - 2) {
+          var t = Math.min(1, Math.max(0, (s - S[i]) / ((S[i + 1] - S[i]) || 1)));
+          return Y[i] + t * (Y[i + 1] - Y[i]);
+        }
+      }
+      return Y[0];
+    }
+    function scrollAt(y) {
+      var S = IX.S, Y = IX.Y;
+      if (y <= Y[0]) return 0;
+      for (var i = 0; i < Y.length - 1; i++) {
+        if (y < Y[i + 1] || i === Y.length - 2) {
+          var t = Math.min(1, Math.max(0, (y - Y[i]) / ((Y[i + 1] - Y[i]) || 1)));
+          return S[i] + t * (S[i + 1] - S[i]);
+        }
+      }
+      return 0;
+    }
+    function updateIndex() {
+      if (!IX.on) return;
+      var s = scroller.scrollTop;
+      var y = railY(s);
+      glider.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0)';
+      fill.style.transform = 'scaleY(' + Math.min(1, Math.max(0, (y - IX.top) / IX.len)).toFixed(4) + ')';
+      var cur = 0;
+      for (var i = 0; i < items.length; i++) if (s >= IX.S[i] - 1) cur = i;
+      if (cur === IX.cur) return;
+      IX.cur = cur;
+      links.forEach(function (a, k) { if (k === cur) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current'); });
+    }
+    on(index, 'click', function (e) {
+      var a = e.target.closest('[data-nx-go]');
+      if (!a) return;
+      e.preventDefault();
+      var i = links.indexOf(a);
+      scrollToY(IX.go[i]);
+      var h = i === 0 ? world.querySelector('#cs-title') : targetOf(items[i].id).querySelector('h3');
+      if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    });
+    // Dragging the glider scrubs straight through the story.
+    var dragging = false;
+    function scrubTo(clientY) {
+      var s = scrollAt(clientY - rail.getBoundingClientRect().top);
+      if (ctx.lenis) ctx.lenis.scrollTo(s, { immediate: true, force: true });
+      else scroller.scrollTop = s;
+    }
+    on(rail, 'pointerdown', function (e) {
+      if (e.button !== 0) return;
+      dragging = true;
+      index.classList.add('is-dragging');
+      rail.setPointerCapture(e.pointerId);
+      scrubTo(e.clientY);
+      e.preventDefault();
+    });
+    on(rail, 'pointermove', function (e) { if (dragging) scrubTo(e.clientY); });
+    function endDrag() { dragging = false; index.classList.remove('is-dragging'); }
+    on(rail, 'pointerup', endDrag);
+    on(rail, 'pointercancel', endDrag);
 
     /* ---------- 8. Small live parts ---------- */
     // AEIOU: five letters as tabs; each shows what we found.
@@ -1032,7 +1150,7 @@
     var raf = 0;
     function onScroll() {
       if (raf) return;
-      raf = requestAnimationFrame(function () { raf = 0; updateDock(); });
+      raf = requestAnimationFrame(function () { raf = 0; updateDock(); updateIndex(); });
     }
     on(scroller, 'scroll', onScroll, { passive: true });
 
@@ -1049,6 +1167,7 @@
         drawCallouts();
         buildThread();
         updateDock();
+        measureIndex();
       }, 120);
     }
     Array.prototype.forEach.call(world.querySelectorAll('img'), function (im) {
@@ -1063,6 +1182,7 @@
     buildThread();
     updateDock();
     if (motion) ST.refresh();
+    measureIndex();
 
     // Decode every picture quietly in idle time, so a scene's images are ready
     // before it scrolls in (no decode hitch at the start of a scene).

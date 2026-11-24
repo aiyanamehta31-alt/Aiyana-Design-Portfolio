@@ -4,6 +4,22 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-24 · Nexo: a calmer 60% column, and an index with a glider
+
+**What changed**
+- On screens 1100px and wider, Nexo's story is a centred column at most 60% of the screen (`--nx-max: min(60vw, 1120px)`), and everything inside is smaller to match: all 60 screen-width sizes in `css/worlds/nexo.css` now use `--nx-vw` (0.6vw on wide screens, 1vw below), and the biggest type has lower caps (phase names 136→96px, headings 68→52px, lead 30→26px, the MODERN LIFE wedge, the problem words, the shifts, the key quote and the next-project link). The opener's silhouettes are shorter (max 360→280px). The app's four phones now slide past inside the column, at most 520px tall, instead of across the whole sheet.
+- New **index with a glider** (screens 1200px and wider), like Branding's chapter list: 01 The result, then the six phases, down the left margin. A rail beside it fills as you read, and a glider moves along it from part to part. Click a part to glide there; drag the glider or press the rail to scrub through the whole project. The bottom dock stays for smaller screens.
+- The thread now runs about 40px beside the column instead of out in the margins, so it never crosses the index.
+- `DATA_VERSION` and `case-study.js` bumped to 21 so browsers fetch the new files.
+
+**Why**
+- Aiyana found Nexo took up too much of the screen and came on too strongly, and asked for a way to move through it quickly, like the brand list in Branding: to the final product, to the process, to any part.
+
+**Checked**
+- Local server at 1440×900 and 1280×800: the column is 60% wide; clicking The whine, Picking up the scent, Fetch and Walkies glides to each and highlights it; dragging the glider from Fetch lands in Walkies; the index ends 16px before the thread at 1280. At 375×812 the dock shows and the index is hidden; nothing else changed on phones. Smoothness of the glide can only be judged in a real window (the preview pane throttles animation).
+
+---
+
 ## 2026-11-24 · Hero title back to the original
 
 **What changed**

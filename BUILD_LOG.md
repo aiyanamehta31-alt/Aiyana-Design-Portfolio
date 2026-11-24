@@ -4,6 +4,22 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-24 · Hero title, take two: a warm signature that pops
+
+**What changed**
+- "Aiyana's" is now in **Agbalumo**, in the site's amber (`--c-amber`), much bigger: clamp(72px, 10.5vw, 164px), phones clamp(60px, 19vw, 84px).
+- "portfolio" sits under it, centred, in **Funnel Display 700** (the font the rest of the homepage already uses for titles), white, clamp(22px, 2.2vw, 34px), 18px below.
+- Instrument Serif is removed from the Google Fonts link; Agbalumo is added. `style.css?v=18`.
+
+**Why**
+- Aiyana found the Instrument Serif italic + Geist version "really Claude-y". That's fair: an elegant serif italic word beside a clean grotesk word is the most common headline pairing on AI-made landing pages right now. It was also too small and too polite (64px, centred like a caption, all white) to hold the first screen against the wheel of images.
+- She picked direction C from four shown in the real homepage: A, Shrikhand tilted with Funnel Sans; B, a huge condensed Big Shoulders Display poster; C, Agbalumo in amber with Funnel Display; D, Bowlby One with the Nexo render inside the letters.
+
+**Checked**
+- Local server, desktop and 375×812: the name fits (53–322px of 375 on a phone), no overlap between the two lines, Agbalumo loads. The bigger title makes the wheel's ring a little wider, so the top cards sit further out, half off the edges on phones.
+
+---
+
 ## 2026-11-24 · Hero title: "Aiyana's portfolio" in two fonts
 
 **What changed**

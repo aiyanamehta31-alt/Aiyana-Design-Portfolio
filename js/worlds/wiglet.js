@@ -738,8 +738,23 @@
 
     draw(false, null);
 
+    // The glider (wide screens): the widget, the five parts of the day and
+    // the live demo, down the left margin like a day planner.
+    var glider = window.CaseGlider ? window.CaseGlider({
+      sheet: sheet, scroller: scroller, content: content, lenis: ctx.lenis, reduceMotion: reduce,
+      cls: 'wg-glider', label: 'Wiglet, part by part',
+      offset: function () { return 84; },
+      items: [{ name: 'The widget', sub: 'Wiglet, finished', el: world.querySelector('#cs-cover'), focus: world.querySelector('#cs-title') }]
+        .concat(p.phases.map(function (ph) {
+          return { name: ph.name, sub: ph.real, el: world.querySelector('[data-phase-head="' + ph.id + '"]'), focus: world.querySelector('#wg-h-' + ph.id) };
+        }))
+        .concat([{ name: 'Try the live demo', sub: 'Plan a day', el: world.querySelector('#wg-demo'), focus: world.querySelector('#wg-h-demo') }])
+        .sort(function (a, b) { return a.el && b.el ? (a.el.compareDocumentPosition(b.el) & 4 ? -1 : 1) : 0; })
+    }) : null;
+    if (glider) cleanups.push(glider.destroy);
+
     return {
-      refresh: function () { updateDock(); },
+      refresh: function () { updateDock(); if (glider) glider.refresh(); },
       destroy: function () {
         timers.forEach(clearTimeout);
         if (raf) cancelAnimationFrame(raf);

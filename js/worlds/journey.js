@@ -263,6 +263,28 @@
       cleanups.push(stopLanding);
     }
 
+    // The glider (wide screens): the finished work, the intro, every chapter
+    // and the next project down the left margin. In Branding the glider takes
+    // each brand's own accent as it passes through that brand.
+    if (window.CaseGlider) {
+      var p = ctx.project;
+      var x = parts(p);
+      var bar = function () { return parseFloat(getComputedStyle(ctx.sheet).getPropertyValue('--cs-bar-h')) || 60; };
+      var glider = window.CaseGlider({
+        sheet: ctx.sheet, scroller: scroller, content: ctx.content, lenis: ctx.lenis, reduceMotion: ctx.reduceMotion,
+        cls: 'jr-glider jr-glider--' + (p.slug || 'journey'),
+        label: p.title + ', part by part',
+        offset: function () { return bar() + 12; },
+        items: [
+          { name: p.brands ? 'All five, finished' : 'The finished work', sub: p.title, el: box.querySelector('#cs-cover'), focus: box.querySelector('#cs-title') },
+          { name: 'About the project', el: box.querySelector('.jr-intro') }
+        ].concat(x.chapters.map(function (c) {
+          return { name: c.title.replace(/\[[^\]]*\]/g, '…'), sub: c.kicker || '', colour: c.accent, el: box.querySelector('#jr-' + c.id), focus: box.querySelector('#jr-t-' + c.id) };
+        })).concat([{ name: 'Next project', sub: p.next ? p.next.title : '', el: box.querySelector('#cs-next') }])
+      });
+      cleanups.push(glider.destroy);
+    }
+
     return {
       route: function (page) { if (page) jump(page, true); else scroller.scrollTo({ top: 0 }); },
       destroy: function () { cleanups.forEach(function (fn) { fn(); }); }

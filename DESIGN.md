@@ -205,6 +205,14 @@ Built 2026-10-23. Code: `css/case-study.css` (tokens at its top), `js/case-study
 
 **Fallbacks:** no `backdrop-filter` or `prefers-reduced-transparency` → solid tones. `prefers-reduced-motion` → fades instead of the grow, tones change in steps, no scrubbing, parallax or reveals.
 
+**Every project: a 60% column and a glider (2026-11-24).** On screens 1100px and wider, every project world (Nexo, Branding, Maggi, Wiglet, Codes) is a centred column at most 60% of the screen, the opening piece included; each world writes its screen-width sizes in its own unit (`--nx-vw`, `--jr-vw`, `--wg-vw`, `--cd-vw`: 1vw on small screens, 0.6vw from 1100px) so everything inside shrinks with the column, and the biggest titles have lower caps. On screens 1200px and wider each project has a **glider** in the left margin of the sheet: its important parts, numbered, with a rail beside them that fills as you read and a glider that moves along it from part to part. Click a part to glide there (1.2 s) and focus its heading; drag the glider, or press anywhere on the rail, to scrub through the whole project. The shared frame is `js/glider.js` and section 8 of `css/case-study.css` (Nexo keeps its own copy in `nexo.js`); each world dresses it in its own look:
+- **Nexo:** Inter Tight, a round dot in the tone's accent (orange on paper, peach on indigo, deep indigo on orange). Parts: The result, then the six dog-day phases.
+- **Branding:** Funnel Sans names, Geist Mono numbers, and the glider is a **bookmark ribbon** that takes each brand's own accent while you're in that brand. Parts: All five finished, About, the five brands (with their category), Next project.
+- **Maggi:** the same journey type, with a **Maggi-yellow dot ringed in Maggi red**. Parts: The finished work, About, the five chapters, Next project.
+- **Wiglet:** a **day planner**: JetBrains Mono, a rail with hour ticks, the read part filled in the blue-to-teal gradient, and a small **time block** gliding down the day. Parts: The widget, the five parts of the day, and Try the live demo.
+- **Codes:** a **code editor's file tree**: Geist Mono throughout, a dotted rail, and a **blinking amber text cursor** (it stops blinking while dragged, and with reduced motion). Parts: Codes, the four sketches (with their file names), Next project.
+Below 1200px the worlds keep their own navigation (Nexo's and Wiglet's docks, the journey's sticky index from 1024px); phones are unchanged.
+
 ## Project worlds: Nexo
 
 Rebuilt 2026-10-25. A project can have its own world: `world: 'nexo'` in `projects/nexo.js` loads `js/worlds/nexo.js` (renders the scenes, adds the motion) and `css/worlds/nexo.css`. The shared sheet, lightbox (any `data-zoom` image), `#project/nexo` URL, focus trap and Esc/back behaviour are unchanged. `projects/nexo.js` holds only words and pictures, each traced to `content/nexo/` (deck page numbers in comments).

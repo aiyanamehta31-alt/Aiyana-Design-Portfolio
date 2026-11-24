@@ -825,3 +825,76 @@ html.cs-motion .cs-horizon.cs-reveal.is-in { transform: scaleX(1); transition-du
   .cs-zoom:hover .cs-zoom__core img, .cs-video:hover img, .cs-video:hover .cs-video__play { transform: none; }
   .cs-next__link:hover .cs-next__title { transform: none; }
 }
+
+/* ---------------------------------------------------------------------
+   8. THE GLIDER (js/glider.js)
+   A project's parts down the left margin of the sheet, a rail beside them
+   and a glider that follows the story. This is the shared frame; each
+   world dresses it in its own look (.jr-glider, .wg-glider, .cd-glider).
+   Wide screens only: below 1200px the worlds keep their own navigation.
+   --------------------------------------------------------------------- */
+.glider { display: none; }
+@media (min-width: 1200px) {
+  .glider {
+    --glider-c: var(--cs-amber);
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    z-index: 4;
+    display: flex;
+    gap: 12px;
+    width: 148px;
+    transform: translateY(-50%);
+    color: var(--cs-ink);
+  }
+  .glider ol { display: grid; gap: 2px; flex: 1; min-width: 0; }
+  .glider a {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 6px;
+    padding: 7px 0;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.5;
+    transition: opacity 300ms ease;
+  }
+  .glider__n { font-size: 0.6875rem; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; padding-top: 2px; }
+  .glider__t { font-size: 0.8125rem; line-height: 1.3; }
+  .glider__t small { display: block; margin-top: 2px; font-size: 0.6875rem; opacity: 0.75; max-height: 0; overflow: hidden; transition: max-height 450ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .glider a:hover, .glider a:focus-visible { opacity: 0.9; }
+  .glider a[aria-current] { opacity: 1; }
+  .glider a[aria-current] .glider__n { color: var(--glider-c); }
+  .glider a[aria-current] small { max-height: 2.8em; }
+  .glider a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 4px; }
+
+  .glider__rail { position: relative; flex: none; width: 14px; cursor: grab; touch-action: none; }
+  .glider.is-dragging .glider__rail { cursor: grabbing; }
+  .glider__line,
+  .glider__fill {
+    position: absolute;
+    left: 6px;
+    top: var(--rail-top, 0);
+    width: 2px;
+    height: var(--rail-len, 0);
+    border-radius: 2px;
+    background: currentColor;
+  }
+  .glider__line { opacity: 0.16; }
+  .glider__fill { opacity: 0.5; transform-origin: 50% 0; transform: scaleY(0); }
+  .glider__knob {
+    position: absolute;
+    left: 1px;
+    top: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--glider-c);
+    box-shadow: 0 0 0 3px rgb(var(--cs-tint));
+    transition: scale 250ms cubic-bezier(0.22, 1, 0.36, 1), background-color 450ms ease;
+  }
+  .glider__rail:hover .glider__knob,
+  .glider.is-dragging .glider__knob { scale: 1.3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glider *, .glider__knob { transition: none !important; }
+}

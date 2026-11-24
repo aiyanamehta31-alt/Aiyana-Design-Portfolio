@@ -4,6 +4,25 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-24 · Every project: a 60% column and its own glider
+
+**What changed**
+- New `js/glider.js` (and section 8 of `css/case-study.css`): the Nexo index and glider as a shared piece any project world can use. It lists a project's important parts down the left margin of the sheet (1200px and wider), with a rail and a glider that follows the story; click to glide, drag to scrub.
+- **Branding and Maggi** (`js/worlds/journey.js`, `css/worlds/journey.css`): the glider replaces the sticky chapter index on wide screens and the chapters centre in one column. Branding's glider is a bookmark ribbon in each brand's own accent; Maggi's is a yellow dot ringed in Maggi red. The opener now sits in the 60% column too.
+- **Wiglet** (`js/worlds/wiglet.js`, `css/worlds/wiglet.css`): a day-planner glider (hour ticks, a blue-to-teal time block), with the live demo as its own stop. The dock stays below 1200px.
+- **Codes** (`js/worlds/codes.js`, `css/worlds/codes.css`): a file-tree glider in Geist Mono with a blinking amber text cursor; each sketch shows its file name.
+- Branding, Maggi, Wiglet and Codes now get the same 60% column as Nexo from 1100px, with their screen-width sizes scaled by 0.6 (`--jr-vw`, `--wg-vw`, `--cd-vw`) and the biggest titles capped lower (Wiglet 13→9rem, Codes 15→10rem).
+- `DATA_VERSION` 22, `case-study.js?v=22`, `case-study.css?v=9`, `glider.js?v=1`.
+
+**Why**
+- Aiyana asked for the Nexo treatment on every project: a navigation that lets you move through any important part quickly, in each project's own look.
+
+**Checked**
+- Local server at 1440×900: each project opens with its glider; Branding (KOMA, ribbon turns STATIC green on the way), Maggi (On the shelf), Wiglet (Try the live demo, demo fits the column) and Codes (Wave) glide when clicked. At 375×812 the gliders are hidden, Wiglet's dock shows and the Branding opener is as before. The glide's smoothness can only be judged in a real browser window (the preview pane throttles animation).
+- The detector's gradient-text warnings in `wiglet.css` are Wiglet's existing gradient wordmark and numbers (its own identity, noted in the file), not new.
+
+---
+
 ## 2026-11-24 · Nexo: a calmer 60% column, and an index with a glider
 
 **What changed**

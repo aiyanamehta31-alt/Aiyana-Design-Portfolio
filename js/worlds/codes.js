@@ -438,6 +438,22 @@
       Object.keys(items).forEach(function (k) { if (items[k].ctrl) items[k].ctrl.resize(); });
     }
 
+    // The glider (wide screens): the cover, the four sketches and what's next,
+    // down the left margin like a file tree, with a blinking text cursor.
+    if (window.CaseGlider) {
+      var glider = window.CaseGlider({
+        sheet: sheet, scroller: scroller, content: content, lenis: ctx.lenis, reduceMotion: reduce,
+        cls: 'cd-glider', label: 'Codes, sketch by sketch',
+        offset: function () { return 84; },
+        items: [{ name: 'Codes', sub: 'Four sketches', el: world.querySelector('#cs-cover'), focus: world.querySelector('#cs-title') }]
+          .concat(p.sketches.map(function (s) {
+            return { name: s.title, sub: s.file || s.stage, el: world.querySelector('#cd-' + s.id), focus: world.querySelector('#cd-h-' + s.id) };
+          }))
+          .concat([{ name: 'Next project', sub: p.next ? p.next.title : '', el: world.querySelector('#cs-next') }])
+      });
+      cleanups.push(glider.destroy);
+    }
+
     return {
       refresh: refresh,
       destroy: function () {

@@ -43,7 +43,7 @@ I'm Aiyana, a design student building my portfolio for summer design internships
 
 ## Typography
 
-- **Hero:** **Agbalumo** ("Aiyana's" in the headline only), **Funnel Display** ("portfolio" in the headline), **Geist** (name, "Scroll to explore") and **Geist Mono** (nav links, "Let's talk" corner, card labels).
+- **Hero:** **Geist** (headline, paragraph, name, "Scroll to explore") and **Geist Mono** (nav links, "Let's talk" corner, card labels), unchanged.
 - **Rest of the homepage:** **Funnel Display** (section titles, project names), **Funnel Sans** (body) and **Geist Mono** (small labels).
 
 ### Type scale (homepage, strict)
@@ -111,7 +111,8 @@ Built to match the reference frames. The code lives in `index.html` (section `.h
 - The `label` shows as a small, quiet tag in the card's corner (set to `''` to hide).
 
 **Centre text** (centred, vertical centre at 69%)
-- Headline "Aiyana's portfolio" (2026-11-24), a warm signature in two fonts, stacked and centred: "Aiyana's" in **Agbalumo** (`--font-hero-name`), amber `--c-amber`, clamp(72px, 10.5vw, 164px) (phones clamp(60px, 19vw, 84px)), letter-spacing -0.01em, line-height 0.95; under it "portfolio" in **Funnel Display 700**, white, clamp(22px, 2.2vw, 34px) (phones 22px), letter-spacing -0.035em, 18px below (phones 12px). The block is up to 900px wide. No paragraph underneath. Being this big, it pushes the wheel's ring a little wider (main.js keeps the upper cards clear of it).
+- Headline "Welcome to Aiyana's portfolio.": Geist 600, `#FFFFFF`, clamp(20px, 1.6vw, 26px) (phones clamp(18px, 5vw, 22px)), letter-spacing -0.03em, line-height 1.15. Small and confident, not a huge hero headline.
+- Paragraph, 14px below: "A design student who designs journeys, not just screens. Fun on the outside, focused underneath." Geist 400, `#8A8A8A`, clamp(14px, 1.05vw, 16px), line-height 1.45, max-width 380px.
 
 **Top bar** (over the hero, transparent, padding 34px 32px)
 - Left: my own monogram mark (a white circle with an "A", 28px), then "Aiyana Mehta" (`#FFFFFF`) over "Design portfolio" (`#8A8A8A`), Geist 14px.

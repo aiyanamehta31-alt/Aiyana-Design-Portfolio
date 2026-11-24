@@ -194,7 +194,7 @@ var WHEEL_IMAGES = [
     function keepTextClear() {
       var heroBox = hero.getBoundingClientRect();
       var range = document.createRange();
-      var boxes = ['.hero-copy__title'].map(function (sel) {
+      var boxes = ['.hero-copy__title', '.hero-copy__text'].map(function (sel) {
         range.selectNodeContents(document.querySelector(sel));   // the words, not the block
         var r = range.getBoundingClientRect();
         return { l: r.left - heroBox.left - 16, r: r.right - heroBox.left + 16, t: r.top - heroBox.top - 16, b: r.bottom - heroBox.top + 16 };

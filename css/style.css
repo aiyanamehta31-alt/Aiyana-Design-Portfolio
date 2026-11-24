@@ -81,7 +81,6 @@
   --hero-muted: #8A8A8A;        /* 6.0:1 on black */
   --hero-nav: #EDEDED;
   --font-hero: "Geist", "Funnel Sans", system-ui, sans-serif;
-  --font-hero-name: "Agbalumo", "Funnel Display", system-ui, sans-serif;
   --font-hero-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace; /* taste-skill-ignore: Geist Mono labels requested in DESIGN.md (hero) */
   --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --hero-zoom: 1.08;            /* picture zoom inside a hovered card */
@@ -389,28 +388,12 @@ html.motion-ok [data-card] { opacity: 0; }
   transform: translate(-50%, -50%);
   text-align: center;
 }
-/* A warm signature: "Aiyana's" big in Agbalumo and the site's amber,
-   a bold "portfolio" in Funnel Display underneath. */
-.hero-copy:has(.hero-copy__name) { width: min(94%, 900px); }
 .hero-copy__title {
-  display: grid;
-  justify-items: center;
-  font-weight: 400;
-  line-height: 0.95;
+  font-size: clamp(20px, 1.6vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   color: var(--hero-text);
-}
-.hero-copy__name {
-  font-family: var(--font-hero-name);
-  font-size: clamp(72px, 10.5vw, 164px);
-  letter-spacing: -0.01em;
-  color: var(--c-amber);
-}
-.hero-copy__word {
-  margin-top: 18px;
-  font-family: var(--font-display);
-  font-size: clamp(22px, 2.2vw, 34px);
-  font-weight: 700;
-  letter-spacing: -0.035em;
 }
 .hero-copy__text {
   max-width: 380px;
@@ -460,7 +443,8 @@ html.motion-ok [data-card] { opacity: 0; }
 .hero-explore__icon { width: 14px; height: 14px; flex: none; }
 
 /* Entrance (motion allowed only; the cards' entrance is in main.js) */
-html.motion-ok .hero-copy__title {
+html.motion-ok .hero-copy__title,
+html.motion-ok .hero-copy__text {
   animation: hero-rise var(--hero-text-in-ms) var(--hero-ease) var(--hero-text-delay) both;
 }
 html.motion-ok .hero-bar,
@@ -1048,8 +1032,7 @@ html.has-cursor * { cursor: none !important; }
     border-radius: 14px;
     background: #0E0E0E;
   }
-  .hero-copy__name { font-size: clamp(60px, 19vw, 84px); }
-  .hero-copy__word { margin-top: 12px; font-size: 22px; }
+  .hero-copy__title { font-size: clamp(18px, 5vw, 22px); }
   .hero-talk { left: 20px; bottom: 24px; }
   .hero-explore { bottom: 88px; }
 }

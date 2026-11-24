@@ -1,12 +1,13 @@
 /* =====================================================================
    CASE STUDY DATA · Nexo
-   Nexo has its own world (js/worlds/nexo.js + css/worlds/nexo.css): its
-   own colours, type, the heartbeat thread and the phase dock. This file
-   holds only the words and pictures; the world lays them out as scenes.
+   Laid out by js/worlds/nexo.js + css/worlds/nexo.css: one calm paper
+   page that tells the project in order, in plain words, with the real
+   photos, sketches, CAD and prototype videos as proof.
 
-   Sources (all in content/nexo/):
-     deck   Nexo Final Presentation (1).pdf, page numbers given as p.N
-     miro   PLAY_for_Gen_Alpha.pdf, page 1 (AEIOU field notes)
+   Sources:
+     content/nexo/            the deck (Nexo Final Presentation), PLAY_for_Gen_Alpha.pdf
+     content/nexo-process/    Aiyana's process photos and the three prototype videos (2025-12)
+     Aiyana's written brief   (project title, brief, HMW, users, how it works), 2026-11-24
    Rule: nothing here is invented. Anything we don't know yet is written
    [NEEDS FROM AIYANA: ...] and shown marked on the page.
    ===================================================================== */
@@ -17,57 +18,82 @@ window.CASE_STUDIES['nexo'] = {
   world: 'nexo',
   images: 'assets/images/projects/nexo/',
 
-  /* The six phases, as a dog's day. The dock and the phase heads use these. */
-  phases: [
-    { id: 'whine', name: 'The whine', real: 'The problem' },
-    { id: 'sniff', name: 'Sniffing around', real: 'Discover' },
-    { id: 'scent', name: 'Picking up the scent', real: 'Define' },
-    { id: 'fetch', name: 'Fetch', real: 'Develop' },
-    { id: 'walkies', name: 'Walkies', real: 'Deliver' },
-    { id: 'treat', name: 'Treat', real: 'Outcome and reflection' }
+  /* The parts of the page, in order. The glider lists these. */
+  parts: [
+    { id: 'overview', name: 'Overview' },
+    { id: 'problem', name: 'The problem' },
+    { id: 'research', name: 'Research' },
+    { id: 'insights', name: 'Insights' },
+    { id: 'ideas', name: 'Ideas' },
+    { id: 'shape', name: 'Shaping it' },
+    { id: 'prototype', name: 'Prototyping' },
+    { id: 'how', name: 'How it works' },
+    { id: 'final', name: 'Final design' },
+    { id: 'reflect', name: 'What it changes' }
   ],
 
-  /* 1. Cover (deck p2, p19) */
-  cover: {
+  /* Top of the page: the name, one line, the concept video, the facts */
+  intro: {
     logo: { src: 'nexo-logo.webp', width: 1800, height: 748 },
-    tagline: 'A living bridge between you and your dog.',
-    summary: 'A desk companion, a smart collar and an app that make room for shared play.',
-    render: { src: 'cover-colourways-cutout.webp', width: 1800, height: 1944,
-      alt: 'Three Nexo desk companions in orange, blue and black, each with a round face showing a blue blob.' },
+    line: 'A desk companion and a smart collar that help busy owners and their dogs play together, even when they are apart.',
+    tags: ['Product design', 'User research', '3D modelling', 'Prototyping'],
+    video: { src: 'video/concept.mp4', caption: 'The concept video',
+      poster: { src: 'video-still.webp', width: 1280, height: 720, alt: 'A man cups a labrador’s face in a sunlit living room.' },
+      missing: '[NEEDS FROM AIYANA: export the concept video from Canva (slide 26) as an MP4]' },
     facts: [
       { label: 'My role', value: '[NEEDS FROM AIYANA: your role and the parts you personally did]' },
       { label: 'Team', value: '[NEEDS FROM AIYANA: team size and everyone on it]' },
-      { label: 'App screens', value: 'Designed by [NEEDS FROM AIYANA: name(s)]' },
       { label: 'Project', value: 'Design thinking, 2025' },
-      { label: 'Methods', value: 'Field observation, AEIOU, affinity mapping, personas, journey map, DVF scoring, CAD, 3D printing' }
+      { label: 'Tools', value: 'Miro, Fusion 360, 3D printing, an LED matrix and code' }
     ]
   },
 
-  /* 2. The whine: the opener (deck p3, p4, p9, p13) */
-  opener: {
-    owner: { src: 'sil-owner.webp', width: 648, height: 942, alt: '' },
-    dog: { src: 'sil-dog.webp', width: 692, height: 819, alt: '' },
-    wedge: 'Modern life',
-    beats: [
-      { time: '6 AM', text: 'A rushed walk, then work.' },
-      { time: '3 PM', text: 'The dog waits by the door.' },
-      { time: '6 PM', text: 'Reunited, but rushed.' }
+  /* 1. Overview: the brief, who it's for */
+  overview: {
+    render: { src: 'cover-colourways-cutout.webp', width: 1800, height: 1944,
+      alt: 'Three Nexo desk companions in orange, blue and black, each with a round face showing a blue blob.' },
+    heading: 'The brief',
+    text: [
+      'When owners are at work, their dogs spend long hours alone, and owners feel guilty about it. Most pet tech only watches the dog through a camera or tracks numbers.',
+      'Nexo turns that time apart into a chance to play. It notices when the dog needs attention and gently invites the owner to play, instead of just reporting data.'
     ],
-    beatsSource: 'From our user journey map',
-    heading: 'Play connects them. Busy lives interrupt it.',
-    text: 'Both sides want more shared play, but have no way to sustain it.'
+    hmw: 'How might we help dogs and their owners stay connected, comfortable and playing together through the day, even when they are apart?',
+    users: [
+      { who: 'Owners', text: 'Aged 20 to 45, working full-time, hybrid or long hours, and away from home for long stretches.' },
+      { who: 'Dogs', text: 'From 6 months to 10 years old, often in city apartments with little to do during the day.' },
+      { who: 'Also', text: 'Family, dog walkers and carers who look after the dog, and vets and trainers who guide healthy play.' }
+    ]
   },
 
-  /* 3. Sniffing around: field research (deck p8, p12; miro p1) */
-  field: {
-    heading: 'We watched dogs where they actually live',
-    text: 'Field observations at five sites, logged with the AEIOU framework: activities, environments, interactions, objects and users.',
-    sites: [
-      { name: 'Apartments', dog: 'Poligar Hound', note: 'Small spaces frustrate high-energy breeds.' },
-      { name: 'Bakery', dog: 'Lhasa Apso (Prince)', note: 'New smells, sounds and people.' },
-      { name: 'Café', dog: 'Lhasa Apso (Prince)', note: 'Calm, low-energy company.' },
-      { name: 'Supermarket', dog: 'Terrier', note: 'Constant stimulation, not focused interaction.' },
-      { name: 'College campus', dog: 'Campus dogs', note: 'Dogs find their own “certain spots” for security.' }
+  /* 2. The problem (deck p3, p4, p13; the process poster) */
+  problem: {
+    heading: 'The problem',
+    text: 'We followed one owner and her dog through a normal day. Both of them want more time to play, but the day keeps getting in the way.',
+    day: [
+      { time: '6 AM', text: 'A rushed walk, then work.' },
+      { time: '3 PM', text: 'The dog waits by the door. Both are at their lowest point.' },
+      { time: '6 PM', text: 'Together again, but tired and rushed.' }
+    ],
+    insight: 'Play is the strongest link between dogs and their owners, but busy lives interrupt it.'
+  },
+
+  /* 3. Research (deck p5–p8, p12; miro p1; process photos) */
+  research: {
+    heading: 'Research',
+    text: 'We started by mapping what play means, then went out to watch dogs where they actually spend their day, and talked to their owners.',
+    proof: [
+      { src: 'process/team-research.webp', width: 1600, height: 1200, note: 'sorting our photos and notes',
+        alt: 'Two students sit on a bed covered in printed dog photos and notes, writing on them, with a laptop open on Miro in front.' },
+      { src: 'process/miro-play.webp', width: 1600, height: 918, note: 'our first mind map: what is play?',
+        alt: 'A Miro board with coloured sticky notes mapped around the word PLAY, joined by lines.' },
+      { src: 'process/research-wall.webp', width: 1600, height: 900, note: 'the research wall',
+        alt: 'A wall of research: a research plan, observation photos of dogs, an empathy map and many sticky notes grouped into clusters.' }
+    ],
+    places: ['Apartments', 'A bakery', 'A café', 'A supermarket', 'A college campus'],
+    methods: [
+      { name: 'Watching', text: 'Observing dogs and owners in five places, noted with the AEIOU method: activities, environments, interactions, objects and users.' },
+      { name: 'Talking', text: 'Asking owners how they play with their dogs, and what gets in the way.' },
+      { name: 'Photos', text: 'Photographing what we saw, to sort and compare later.' }
     ],
     photos: [
       { src: 'field-1.webp', width: 660, height: 777, alt: 'A spotted grey and white dog looks up with its mouth open, on a paved path.' },
@@ -79,236 +105,174 @@ window.CASE_STUDIES['nexo'] = {
       { src: 'field-7.webp', width: 660, height: 777, alt: 'A tan dog in a collar stands on a tiled floor with its mouth open.' },
       { src: 'field-8.webp', width: 657, height: 777, alt: 'A smiling young woman hugs a tan puppy at a café table.' }
     ],
-    photosCaption: 'Field observation photos',
-    types: [
-      { name: 'The Athlete', dogs: 'Poligar Hound', text: 'High physical and mental drive. Needs intense, purposeful activity.' },
-      { name: 'The Socialite', dogs: 'Terrier, Indie', text: 'Thrives on human interaction and new things. Play is social.' },
-      { name: 'The Companion', dogs: 'Lhasa Apso, Prince', text: 'Values calm closeness over vigorous activity. Play is bonding.' },
-      { name: 'The Environmentalist', dogs: 'Campus dogs', text: 'Adapts to a large environment and regulates itself.' }
-    ],
-    owner: { name: 'The Guilty 9-to-5er', text: 'Loves their pet but is short on time and energy. Primary need: efficient ways to engage.' },
-    aeiou: [
-      { letter: 'A', name: 'Activities', tags: ['High-energy play', 'Routines', 'Destructive behaviours', 'Exploration'],
-        finding: 'Ripping, chewing, pacing and whining show needs for activity that aren’t being met.' },
-      { letter: 'E', name: 'Environments', tags: ['Apartments', 'Bakery and café', 'Supermarket', 'Campus'],
-        finding: 'Dogs seek out “certain spots”: a specific bed, a corner, under a bench.' },
-      { letter: 'I', name: 'Interactions', tags: ['Human and dog', 'Dogs and guests', 'Dog and objects', 'Dog and dog'],
-        finding: 'Dogs demand interaction, barking and nudging to keep a good moment going.', beat: true },
-      { letter: 'O', name: 'Objects', tags: ['Food and water', 'Leash', 'Play objects', 'Security spots'],
-        finding: 'Food and treats are the strongest motivators. Play objects only work when a human joins in.' },
-      { letter: 'U', name: 'Users', tags: ['The Athlete', 'The Socialite', 'The Companion', 'The Environmentalist'],
-        finding: 'Four kinds of dog, and one kind of owner: the Guilty 9-to-5er.' }
-    ],
-    aeiouSource: 'From our AEIOU field notes'
-  },
-
-  /* 4. Sniffing around: quotes (deck p5–p6; affinity map Quotes cluster) */
-  quotes: {
-    heading: 'Guilty owners, and dogs who can’t ask',
-    source: 'From our field research with dog owners',
-    items: [
-      { text: 'I wish I had more time to play with them.' },
-      { text: 'I feel guilty when I can’t give them enough attention.' },
-      { text: 'She is always super excited to see me come back home.' },
-      { text: 'I play with him indoors rather than outdoors.' },
-      { text: 'I want to spend more time with him, but I am usually so busy.' },
-      { text: 'I think he prefers playing with me or humans in general.' },
-      { text: 'I wished my dog could nudge me saying ‘I want to do this.’', key: true }
+    quotes: [
+      'I wish I had more time to play with them.',
+      'I feel guilty when I can’t give them enough attention.',
+      'I want to spend more time with him, but I am usually so busy.',
+      'I wished my dog could nudge me saying ‘I want to do this.’'
     ]
   },
 
-  /* 5. Picking up the scent: affinity map (deck p7). Notes as written on
-     the board; three we couldn't read clearly are left out. */
-  affinity: {
-    heading: 'Every sticky note, sorted into five clusters',
-    text: 'Our observations and quotes, grouped on an affinity map. Two themes explained the rest.',
-    original: { src: 'affinity-map.webp', width: 2400, height: 1350, caption: 'The original affinity map',
+  /* 4. Insights (deck p7, p9, p11, p14, p15) */
+  insights: {
+    heading: 'Insights',
+    text: 'We put every note and quote on an affinity map and sorted them into groups. Two groups explained most of what we saw.',
+    map: { src: 'affinity-map.webp', width: 2400, height: 1350, note: 'the affinity map',
       alt: 'Affinity map with sticky notes grouped under Moments of Joy, Emotions, Behaviours, Quotes and Pain Points.' },
-    clusters: [
-      { name: 'Moments of joy', theme: 'Pets feel joy when interacting with objects or humans.', notes: [
-        'Pets simulate outdoor activities inside the house: zoomies', 'Public places can be stimuli for dogs',
-        'Gentle wagging when they see familiar humans', 'Love to be a part of human activities (walks, games, runs)',
-        'Pet owners cuddle their pets instead of playing when they are tired', 'Play satisfies hunting drives in hounds',
-        'Wag their tails when a human walks towards them', 'Enjoy playing with any basic physical items (rope, plastic)',
-        'Open, tongue lolling when running', 'Owners do not have time to play with their dogs',
-        'Pets get lazy too and less excited about things over time'] },
-      { name: 'Emotions', theme: 'A communication barrier between pets and humans stops better interactions.', key: true, notes: [
-        'People are guilty, but not enough to change their behaviour', 'Excited on seeing the human (wags tail)',
-        'Wander around aimlessly a lot in the day (boredom)', 'Anticipation as food scraps around lunch, dinner or snack timings',
-        'Dogs are very curious', 'Pets love physical attention', 'Food is a way to calm dogs down',
-        'After finishing playing, dogs are happy (lay down, relaxed posture)', 'A second dog for the first one (companion)',
-        'Pets feel lonely when not around other pets or humans', 'Patrons feel stressed about balancing pet time and other time',
-        'Patrons feel guilty about not playing with their pets enough', 'Pet owners are constantly worried about their pets’ health',
-        'Play reinforces trust in dogs', 'Humans feel guilty for not being able to give enough attention to pets',
-        'Pets enjoy being next to their owners, even if not playing'] },
-      { name: 'Behaviours', theme: 'Owners’ schedules come before pets’ preferences.', key: true, notes: [
-        'Start whining for attention', 'Engagement play in an aggressive way, such as biting and pouncing',
-        'Patrons relaxed after coming home instead of playing with their pet', 'Dogs bark when they see unfamiliar faces',
-        'Territorial disputes amongst dogs towards night time', 'Designated spaces in the house for the pets',
-        'Loud sounds tend to gain the attention of dogs', 'Understand your body language and respond to it, e.g. a high-pitched voice',
-        'Lounge alone, most of the day, especially in the shade', 'Some lick between toes to cool off', 'Dogs play with their toys',
-        'Circling around people, playful nips and mock chases with other dogs',
-        'Patrons leave pets alone for long stretches of time while they are at work', 'Morning and evening walks are ritualistic',
-        'Dogs like belly rubs and head pats', 'Retreat to shady spots under trees, benches or parked vehicles',
-        'Kick slightly during short naps', 'Respond promptly to movement or motion', 'Ears swivel at distant sounds',
-        'Pet owners try to make as much time for the pets as possible', 'Lounging in the sun',
-        'Pets prefer interactive play with people rather than solo toys', 'If one dog runs and barks, others join in',
-        'Only friendly with familiar faces', 'Highly reactive to sound', 'Dogs beg for attention',
-        'Kids get scared of dogs in public places', 'Dogs tend to mark their spots',
-        'Dogs get sleepy when they don’t get attention or take rest', 'Humans are unwilling to compromise on their lives for their pets'] },
-      { name: 'Quotes', theme: '“I want to spend more time with him, but I am usually so busy.”', notes: [
-        '“I wouldn’t say she enjoys it, but it’s the best option I have”', '“She enjoys bubble wrap more than puzzle toys”',
-        '“It was about keep me engaged, but now it’s about give me toys”',
-        '“My kids can come and nudge me to do things. I wished my dog nudge me saying ‘I want to do this.’”',
-        '“Train your mind and train your nose”', '“I play with him indoors rather than outdoors”',
-        '“I want to spend more time with him, but I am usually so busy”', '“She goes crazy from time to time running around the house”',
-        '“I miss agility training. I don’t find proper equipment to do agility training”',
-        '“How do you sensitize dogs to things that are necessary but also painful”', '“She starts digging into the tiles and keeps going”',
-        '“Make it more engaging”', '“I got a dog behaviourist”', '“She is excited to see me come back home”',
-        '“She wants to find a cat and every day I need to find her one at any cost”', '“I think he prefers playing with me or humans in general”'] },
-      { name: 'Pain points', theme: 'Owners want to spend time with their pets but can’t, due to obligations.', notes: [
-        'Pet owners are aware that their pets are bored when they are not around', 'Pet owners want to play but are too tired by daily responsibilities',
-        'Owners are too tired to spend time with their pets', 'Pet owners have to control their pets in public',
-        'Inconsistent engagement can erode progress', 'Quality play time heavily depends on family time schedules',
-        'Coexistence ≠ attention and care', 'Pets don’t have a specific sleep schedule', 'Leashes can harm pets',
-        'Reduced play = increased stress', 'Pets don’t understand why their owners are gone the whole day',
-        'Lack of enough outdoor activity leads to pent-up energy, showing as minor destruction'] }
-    ]
+    groups: [
+      { name: 'Moments of joy', text: 'Dogs are happiest playing with people or simple objects.' },
+      { name: 'Emotions', text: 'Dogs can’t tell owners what they need, and owners feel guilty.', key: true },
+      { name: 'Behaviours', text: 'The owner’s schedule always comes before the dog’s.', key: true },
+      { name: 'Quotes', text: '“I want to spend more time with him, but I am usually so busy.”' },
+      { name: 'Pain points', text: 'Owners want to spend time with their dogs, but work and chores come first.' }
+    ],
+    tools: [
+      { src: 'personas.webp', width: 2400, height: 1350, caption: 'Personas: Aisha, 32, and her dog Luna, 4',
+        alt: 'Two personas: Aisha Sharma, 32, who works hybrid in Mumbai, and Luna, her 4-year-old golden retriever.' },
+      { src: 'user-journey.webp', width: 2275, height: 1221, caption: 'Their day, hour by hour',
+        alt: 'User journey map from 6 AM to 9 PM for both Aisha and Luna, with an emotion curve.' },
+      { src: 'empathy-map.webp', width: 1522, height: 1187, caption: 'What the owner says, does, thinks and feels',
+        alt: 'Empathy map with four quadrants, Say, Do, Think and Feel.' },
+      { src: 'stakeholder-map.webp', width: 2400, height: 1349, caption: 'Everyone around the dog',
+        alt: 'Stakeholder map with core users at the centre and other users around them.' }
+    ],
+    hmw: 'How might we design experiences that allow connection, comfort and shared play for dogs and their owners?'
   },
 
-  /* 6. Picking up the scent: personas and journey (deck p9, p11, p14, p15) */
-  journey: {
-    heading: 'Owner and dog hit their low point together, apart',
-    text: 'Our persona Aisha and her dog Luna, followed from 6 AM to 9 PM. Both bottom out at 3 PM, in different places.',
-    personas: [
-      { name: 'Aisha Sharma', age: '32', lines: ['Works hybrid in Mumbai, long hours.', 'Lives in a small Bandra 1BHK with Luna.', 'Goal: effortless, meaningful bonding moments.'],
-        quote: 'Luna’s my chaos cure, but I feel like her absent sidekick.', quoteLabel: 'Persona quote' },
-      { name: 'Luna', age: '4', lines: ['Golden retriever; energetic, easily stimulated.', 'Needs regular activity and stimulation when alone.', 'Evenings: high-intensity play bursts.'] }
-    ],
-    /* Redrawn from the deck's emotion curve: 0 = low, 1 = high */
-    slots: [
-      { time: '6 AM', aisha: 'Stress and guilt', luna: 'Curious, slightly uneasy', a: 0.78, l: 0.52, pain: true },
-      { time: '9 AM', aisha: 'Neutral, mild concern', luna: 'Calm, secure', a: 0.6, l: 0.7 },
-      { time: '12 PM', aisha: 'Guilt and helplessness', luna: 'Mild boredom, restless', a: 0.38, l: 0.45, pain: true },
-      { time: '3 PM', aisha: 'Emotional low point', luna: 'Bored, frustrated, lonely', a: 0.08, l: 0.12, pain: true, low: true,
-        opportunity: 'Opportunity: micro-interactions during work.' },
-      { time: '6 PM', aisha: 'Joy, with pressure', luna: 'Joy, relief', a: 0.92, l: 0.96 },
-      { time: '9 PM', aisha: 'Calm, mild guilt', luna: 'Calm, secure', a: 0.6, l: 0.8 }
-    ],
-    originals: [
-      { src: 'user-journey.webp', width: 2275, height: 1221, caption: 'Full user journey map',
-        alt: 'User journey map from 6 AM to 9 PM with rows for action, touchpoints, emotion, an emotion curve, experience and opportunity, for both Aisha and Luna.' },
-      { src: 'personas.webp', width: 2400, height: 1350, caption: 'Personas: Aisha and Luna',
-        alt: 'Two personas: Aisha Sharma, 32, who works hybrid in Mumbai, and Luna, her 4-year-old golden retriever, with profile, goals, needs and behaviours.' },
-      { src: 'empathy-map.webp', width: 1522, height: 1187, caption: 'Empathy map',
-        alt: 'Empathy map with four quadrants, Say, Do, Think and Feel, filled with the owner’s words and feelings.' },
-      { src: 'stakeholder-map.webp', width: 2400, height: 1349, caption: 'Stakeholder map',
-        alt: 'Stakeholder map drawn as a bell curve, with core users at the centre, extended users and influencers around them, and extreme users at the edges.' }
-    ]
-  },
-
-  /* 7. Picking up the scent: problem and HMW (deck p10, p13) */
-  problem: {
-    label: 'Problem statement',
-    statement: 'It’s a lack of timely, shared play.',
-    hmwLabel: 'How might we',
-    hmw: 'How might we design experiences that allow connection, comfort and shared play for dogs and their owners?',
-    keys: ['connection,', 'comfort', 'shared', 'play']
-  },
-
-  /* 8. Fetch: ideation and DVF (deck p16, p18) */
-  ideation: {
-    heading: 'Four concepts scored. Two joined into one.',
-    text: 'Each concept was scored for desirability, viability and feasibility (DVF).',
-    concepts: [
-      { id: 'cube', name: 'Rubik’s Cube Play Unit', d: 3, v: 3, f: 4, src: 'concept-1.webp', width: 809, height: 806,
-        alt: 'Sketch of a cube-shaped play unit with nine compartments, annotated furniture and storage.',
-        fate: 'cut', reason: '[NEEDS FROM AIYANA: why the top-scoring concept was set aside]' },
-      { id: 'breath', name: 'Breath-Powered Fetch', d: 1, v: 2, f: 4, src: 'concept-2.webp', width: 806, height: 806,
-        alt: 'Sketch of two upright tubes, annotated blow and scent.',
-        fate: 'cut', reason: 'Cut for its low score.' },
-      { id: 'collar', name: 'Smart Collar', d: 4, v: 3, f: 1, src: 'concept-3.webp', width: 806, height: 806,
-        alt: 'Sketch of a collar ring with a heartbeat trace, a happy and sad face, and paw prints around it.', fate: 'kept' },
-      { id: 'ferro', name: 'Ferro Fluid Desk Companion', d: 4, v: 3, f: 2, src: 'concept-4.webp', width: 806, height: 806,
-        alt: 'Sketch of a dog-like figure with floppy ears and a round face holding a ferrofluid blob.', fate: 'kept' }
-    ],
-    merge: { title: 'Desk companion + smart collar', reason: '[NEEDS FROM AIYANA: why these two were combined]' },
+  /* 5. Ideas (deck p16, p18; the process poster) */
+  ideas: {
+    heading: 'Ideas',
+    text: 'We sketched lots of ideas, then scored our top four on three questions: do people want it, could it work as a product, and can we build it?',
     sketches: [
       { src: 'idea-1.webp', width: 284, height: 281, alt: 'Sketch of a tall stacked play unit with a paw button.' },
       { src: 'idea-2.webp', width: 284, height: 281, alt: 'Sketch of a bone projected as a hologram.' },
       { src: 'idea-3.webp', width: 281, height: 281, alt: 'Sketch of an armchair joined to a dog house.' },
       { src: 'idea-4.webp', width: 281, height: 281, alt: 'Sketch of a dog’s face beside a bowl.' },
       { src: 'idea-5.webp', width: 281, height: 281, alt: 'Sketch of a dog, annotated tail mapping.' },
-      { src: 'idea-6.webp', width: 284, height: 284, alt: 'Sketch of a spring launcher throwing balls for a dog, annotated spring fetch.' },
+      { src: 'idea-6.webp', width: 284, height: 284, alt: 'Sketch of a spring launcher throwing balls for a dog.' },
       { src: 'idea-7.webp', width: 284, height: 284, alt: 'Sketch of a grid-shaped mat.' },
       { src: 'idea-8.webp', width: 281, height: 284, alt: 'Sketch of a mat with circles, annotated twister for dogs.' },
       { src: 'idea-9.webp', width: 281, height: 284, alt: 'Sketch of a person walking a dog, annotated smart leash.' },
-      { src: 'idea-10.webp', width: 281, height: 284, alt: 'Sketch of a dog with three buttons, annotated way to communicate.' },
+      { src: 'idea-10.webp', width: 281, height: 284, alt: 'Sketch of a dog with three buttons, annotated way to communicate.' }
+    ],
+    scored: [
+      { name: 'Rubik’s Cube play unit', want: 3, product: 3, build: 4, src: 'concept-1.webp', width: 809, height: 806,
+        alt: 'Sketch of a cube-shaped play unit with nine compartments.', kept: false,
+        why: '[NEEDS FROM AIYANA: why the top-scoring idea was set aside]' },
+      { name: 'Breath-powered fetch', want: 1, product: 2, build: 4, src: 'concept-2.webp', width: 806, height: 806,
+        alt: 'Sketch of two upright tubes, annotated blow and scent.', kept: false, why: 'Set aside for its low score.' },
+      { name: 'Smart collar', want: 4, product: 3, build: 1, src: 'concept-3.webp', width: 806, height: 806,
+        alt: 'Sketch of a collar ring with a heartbeat trace and paw prints around it.', kept: true },
+      { name: 'Desk companion', want: 4, product: 3, build: 2, src: 'concept-4.webp', width: 806, height: 806,
+        alt: 'Sketch of a dog-like figure with floppy ears and a round face holding a ferrofluid blob.', kept: true }
+    ],
+    merge: 'The desk companion and the smart collar became one system: Nexo.',
+    mergeWhy: '[NEEDS FROM AIYANA: why these two were combined]',
+    poster: { src: 'process/process-poster.webp', width: 900, height: 1600, note: 'our process poster',
+      alt: 'A printed poster titled The Creative Process, with field photos, personas, AEIOU, the affinity map, the final insight and HMW, ideation sketches and dog sketches.' },
+    session: [
       { src: 'ideation-session-1.webp', width: 808, height: 676, alt: 'Our team gathered round a table of prototypes during the ideation session.' },
       { src: 'ideation-session-2.webp', width: 811, height: 652, alt: 'Laptops and paper models on a table during the ideation session.' }
-    ],
-    sketchesCaption: 'Earlier ideas and the ideation session'
-  },
-
-  /* 9. Fetch: the form and the face (deck p20, p22) */
-  form: {
-    heading: 'From pencil to a printed, glowing face',
-    text: 'Sketches became CAD, a foam mock-up, then a 3D print. An LED matrix and code gave it a face.',
-    steps: [
-      { label: 'Sketches', src: 'form-step-sketch.webp', width: 918, height: 1656, alt: 'Pencil sketches of a small dog-like body with a round face, from several angles.' },
-      { label: 'CAD: the shell', src: 'form-step-cad-1.webp', width: 615, height: 720, alt: 'CAD render of a curved shell with a mesh surface.' },
-      { label: 'CAD: the body', src: 'form-step-cad-2.webp', width: 615, height: 720, alt: 'CAD render of a rounded grey body with a ball head and a tail.' },
-      { label: 'CAD: the face', src: 'form-step-cad-4.webp', width: 510, height: 720, alt: 'CAD render of the dark body with ears and a round face panel.' },
-      { label: 'Foam mock-up', src: 'form-step-foam.webp', width: 850, height: 853, alt: 'A blue foam body with a yellow ball as the head, on a table.' },
-      { label: '3D printing', src: 'form-step-printing.webp', width: 853, height: 853, alt: 'Three students watch a 3D printer at work.' },
-      { label: 'The print', src: 'form-step-print.webp', width: 853, height: 853, alt: 'The blue 3D-printed Nexo body with a round face panel.', beat: true },
-      { label: 'LED matrix', src: 'proto-led-circuit.webp', width: 1588, height: 1344, alt: 'A breadboard circuit with a microcontroller wired to an LED matrix on a desk.' },
-      { label: 'The face, in code', src: 'proto-face-ui.webp', width: 716, height: 576, alt: 'The Nexo face interface: a blue blob inside a circle, with the readout IBI 692 ms, variability 21 percent.' }
     ]
   },
 
-  /* 10. Walkies: the device (deck p19, p21) */
-  device: {
-    heading: 'Desk companion, smart collar, one app',
-    text: 'Nexo sits on the owner’s desk. The collar stays with the dog, and the app brings the two together.',
+  /* 6. Shaping it: sketch to CAD (deck p20; process photos) */
+  shape: {
+    heading: 'Shaping it',
+    text: 'We wanted something small and friendly that looks like a dog. It started as loose sketches, then was built up in CAD one step at a time.',
+    sketches: [
+      { src: 'process/first-sketch.webp', width: 720, height: 1280, note: 'the first loose shape',
+        alt: 'A loose pencil sketch of a round dog shape with ears and a tail.' },
+      { src: 'form-step-sketch.webp', width: 918, height: 1656, note: 'finding the form',
+        alt: 'Pencil sketches of a small dog-like body with a round face, from several angles.' }
+    ],
+    cad: [
+      { src: 'process/cad-first.webp', width: 1280, height: 720, label: 'A ball for a head',
+        alt: 'CAD model: a ball head on an oval body with four short legs and a tail.' },
+      { src: 'process/cad-body.webp', width: 1280, height: 720, label: 'A rounder body',
+        alt: 'CAD model from the side: a rounded body, ball head and tail.' },
+      { src: 'process/cad-ears.webp', width: 1280, height: 720, label: 'Ears',
+        alt: 'CAD model with floppy ears added to the head.' },
+      { src: 'process/cad-face.webp', width: 900, height: 1600, label: 'The round face',
+        alt: 'CAD model with a round screen set into the front of the head.' }
+    ]
+  },
+
+  /* 7. Prototyping (deck p20, p22; process photos and videos) */
+  prototype: {
+    heading: 'Prototyping',
+    text: 'We tested the shape in foam, 3D printed it, and built the face: an LED light that reacts, and a coded blob that moves on screen.',
+    steps: [
+      { title: 'Foam model', text: 'A quick foam version to check the size and shape.',
+        media: [{ src: 'form-step-foam.webp', width: 850, height: 853, alt: 'A blue foam body with a yellow ball as the head, on a table.' }] },
+      { title: '3D printing', text: 'Printing the body in the lab, then holding the first print.',
+        media: [
+          { src: 'process/printing.webp', width: 1600, height: 1200, alt: 'Three students watch a 3D printer at work in the lab.' },
+          { video: 'video/print-turn.mp4', poster: 'process/poster-print-turn.webp', width: 464, height: 832, alt: 'A hand turns the white 3D-printed Nexo body to show it from every side.' },
+          { src: 'process/print-in-hand.webp', width: 900, height: 1600, alt: 'The white 3D-printed Nexo beside an open hand, to show its size.' }
+        ] },
+      { title: 'The light', text: 'An LED panel that glows as a hand moves over it.',
+        media: [
+          { video: 'video/led-test.mp4', poster: 'process/poster-led-test.webp', width: 832, height: 464, alt: 'A hand moves over a white panel and a red LED glows through it.' },
+          { src: 'proto-led-circuit.webp', width: 1588, height: 1344, alt: 'A breadboard circuit with a microcontroller wired to an LED matrix.' }
+        ] },
+      { title: 'The face, in code', text: 'The blob that lives on Nexo’s face, running on a laptop.',
+        media: [
+          { video: 'video/face-test.mp4', poster: 'process/poster-face-test.webp', width: 464, height: 832, alt: 'On a laptop screen, a dark blob inside a circle changes shape.' },
+          { src: 'proto-face-ui.webp', width: 716, height: 576, alt: 'The Nexo face interface: a blue blob inside a circle, with a heart rate readout.' }
+        ] },
+      { title: 'The print', text: 'The finished body with its round face.',
+        media: [{ src: 'form-step-print.webp', width: 853, height: 853, alt: 'The blue 3D-printed Nexo body with a round face panel.' }] }
+    ]
+  },
+
+  /* 8. How it works (Aiyana's brief) */
+  how: {
+    heading: 'How it works',
+    text: 'Nexo is two objects and an app that work together.',
+    steps: [
+      { title: 'The collar senses', text: 'A light collar that feels like a normal one. It measures the dog’s heart rate and movement to tell when the dog is resting, active or needs attention.',
+        src: 'collar-2.webp', width: 585, height: 561, alt: 'Orange smart collar with a metal clasp.' },
+      { title: 'The desk companion shows it', text: 'A small dog on the owner’s desk. Its face shows the dog’s energy as soft moving shapes, calm when the dog rests and livelier as it gets active.',
+        src: 'cover-colourways-cutout.webp', width: 1800, height: 1944, alt: 'Three Nexo desk companions in orange, blue and black.' },
+      { title: 'The app invites you to play', text: 'When the dog is restless for a while, Nexo gently suggests a play break, and the app finds the time of day when you are both most active.',
+        src: 'app-4.webp', width: 792, height: 1614, alt: 'App screen showing the dog’s and your activity, with 5 to 6 PM as the best time to play.' }
+    ],
+    loop: 'The dog’s energy reaches the owner’s desk, and the owner’s play reaches the dog.'
+  },
+
+  /* 9. Final design (deck p19, p21, p23, p25) */
+  final: {
+    heading: 'Final design',
     render: { src: 'cover-colourways-cutout.webp', width: 1800, height: 1944,
       alt: 'Three Nexo desk companions in orange, blue and black, each with a round face showing a blue blob.' },
-    callouts: [
-      { x: 0.82, y: 0.6, side: 'right', title: 'Round face screen', text: 'An animated blob, from the ferrofluid concept.' },
-      { x: 0.6, y: 0.16, side: 'right', title: 'Dog-like form', text: 'Ears, a tail and four legs.' },
-      { x: 0.2, y: 0.66, side: 'left', title: 'Three colours', text: 'Orange, blue and black.' }
+    points: [
+      { title: 'A round face screen', text: 'Shows a moving blob, from the ferrofluid idea.' },
+      { title: 'A dog-like shape', text: 'Ears, a tail and four legs, small enough for a desk.' },
+      { title: 'Three colours', text: 'Orange, blue and black.' }
     ],
     collars: [
-      { src: 'collar-1.webp', width: 591, height: 561, alt: 'Cream smart collar with a metal clasp.' },
-      { src: 'collar-2.webp', width: 585, height: 561, alt: 'Orange smart collar with a metal clasp.' },
-      { src: 'collar-3.webp', width: 594, height: 561, alt: 'Green smart collar with a metal clasp.' },
-      { src: 'collar-4.webp', width: 591, height: 561, alt: 'Navy smart collar with a metal clasp.' },
-      { src: 'collar-5.webp', width: 591, height: 561, alt: 'Black smart collar with a metal clasp.' }
+      { src: 'collar-1.webp', width: 591, height: 561, alt: 'Cream smart collar.' },
+      { src: 'collar-2.webp', width: 585, height: 561, alt: 'Orange smart collar.' },
+      { src: 'collar-3.webp', width: 594, height: 561, alt: 'Green smart collar.' },
+      { src: 'collar-4.webp', width: 591, height: 561, alt: 'Navy smart collar.' },
+      { src: 'collar-5.webp', width: 591, height: 561, alt: 'Black smart collar.' }
     ],
-    collarsCaption: 'The smart collar in five colours'
-  },
-
-  /* 11. Walkies: the app (deck p23, p25, p26) */
-  app: {
-    heading: 'The app finds your best hour to play',
-    text: 'It compares the dog’s activity with yours and suggests when you’re both most active.',
-    credit: 'App screens designed by [NEEDS FROM AIYANA: name(s)]',
+    collarsNote: 'the collar, in five colours',
+    appNote: 'App screens designed by [NEEDS FROM AIYANA: name(s)]',
     screens: [
-      { caption: 'Set a play goal', src: 'app-1.webp', width: 795, height: 1614, alt: 'App screen: adjust daily goal, set to 90 minutes of play per day, with quick presets.' },
-      { caption: 'Remind at the best time', src: 'app-2.webp', width: 789, height: 1614, alt: 'App screen: reminder time of 5:00 PM, suggested from activity patterns, repeating Monday to Friday.' },
-      { caption: 'Today’s play', src: 'app-3.webp', width: 789, height: 1614, alt: 'App screen: today’s play goal at 67 percent, 60 of 90 minutes, with heart rate, oxygen and activity readings.' },
-      { caption: 'Best time together', src: 'app-4.webp', width: 792, height: 1614, alt: 'App screen: the dog’s and your activity through the day, with 5 to 6 PM highlighted as the best time to play together.', beat: true }
+      { caption: 'Set a play goal', src: 'app-1.webp', width: 795, height: 1614, alt: 'App screen: a daily goal of 90 minutes of play.' },
+      { caption: 'Get reminded at the best time', src: 'app-2.webp', width: 789, height: 1614, alt: 'App screen: a reminder at 5:00 PM, suggested from activity patterns.' },
+      { caption: 'See today’s play', src: 'app-3.webp', width: 789, height: 1614, alt: 'App screen: today’s play goal at 67 percent, with heart rate and activity readings.' },
+      { caption: 'Find your best time together', src: 'app-4.webp', width: 792, height: 1614, alt: 'App screen: 5 to 6 PM highlighted as the best time to play together.' }
     ],
-    prototype: { link: '', note: '[NEEDS FROM AIYANA: Figma prototype link, or “none”]' },
-    video: { href: 'https://drive.google.com/file/d/1Sapj4Wv--YntSFVPO1xLCRfFYbcEdTJZ/view?usp=sharing',
-      label: 'Watch the concept video', caption: 'Opens in Google Drive',
-      poster: { src: 'video-still.webp', width: 1280, height: 720, alt: 'Video still: a man cups a labrador’s face in a sunlit living room.' } }
+    prototype: '[NEEDS FROM AIYANA: Figma prototype link, or “none”]'
   },
 
-  /* 12. Treat: outcome and reflection (deck p24, p3) */
-  outcome: {
-    heading: 'Designed to turn absence into presence',
-    shifts: [['Guilt', 'Gentle invitations'], ['Absence', 'Presence'], ['One-sided awareness', 'Shared play']],
+  /* 10. What it changes (deck p24) */
+  reflect: {
+    heading: 'What it changes',
+    shifts: [['Guilt', 'Gentle invitations'], ['Absence', 'Presence'], ['Just watching', 'Playing together']],
     points: [
       { title: 'Testing and feedback', text: '[NEEDS FROM AIYANA: what you got, or “none, leave it out”]' },
       { title: 'What I learned', text: '[NEEDS FROM AIYANA: one line, in your own words]' },
@@ -316,6 +280,5 @@ window.CASE_STUDIES['nexo'] = {
     ]
   },
 
-  /* Next project: { slug: 'other-project', title: 'Other project' }, or null */
   next: { slug: 'branding', title: 'Branding' }
 };

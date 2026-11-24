@@ -4,6 +4,33 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-25 · Nexo rebuilt as one clean, plain-worded page
+
+**What changed**
+- `projects/nexo.js`, `js/worlds/nexo.js` and `css/worlds/nexo.css` rewritten. Nexo is now one calm paper page that tells the project in order: the concept video first, then Overview, The problem, Research, Insights, Ideas, Shaping it, Prototyping, How it works, Final design and What it changes. The dog's-day phase names, the thread, the dock, the pinned and scrubbed scenes and the colour fades are gone.
+- Plain words throughout ("Research", "Insights", "Ideas"…), short paragraphs, one accent colour, Chewy only for section titles.
+- New proof, from Aiyana's own photos and videos (`assets/images/projects/nexo/process/`, `.../video/`): the team sorting notes, the Miro mind map of play, the research wall, the process poster, a first sketch, four CAD steps, 3D printing in the lab, the print in hand, and three silent prototype clips (the print turned in a hand, the LED panel lighting up under a hand, the coded face moving).
+- The brief, HMW, target users and how it works are from Aiyana's written brief (2026-11-24), in simpler words.
+- Nexo now uses the shared glider (`js/glider.js`) with its ten parts. `DATA_VERSION` 23.
+
+**Why**
+- Aiyana felt Nexo had "a lot going on", everything too big and not clear to a new visitor. She pointed to Prapti Digge's Scout page as the kind of clean, neat flow she wants (a reference for clarity only), and asked for simpler words, the video at the start, and lots of proof of the work.
+
+**Sources and privacy**
+- The Miro screenshot was cropped to remove the browser bar, which showed a classmate's email address.
+- Not used: the class photo with "VitaTail" on the table (it may show another team's project), and the second phone photo of the CAD face (a near-duplicate).
+- The concept video: the old Google Drive link is dead (page not found), and the PDF sent on 2026-11-25 holds only a still frame. The page plays `assets/images/projects/nexo/video/concept.mp4` once it exists; until then the still shows with a [NEEDS FROM AIYANA] note.
+- "Fusion 360" in Tools is read from the CAD screenshots' interface.
+
+**Checked**
+- Local server at 1440×900: every part renders in the 60% column, the glider lists all ten parts, the prototype rows line up. At 375×812: one column, nothing wider than the screen except the clips' own frames, glider hidden.
+
+**Still needed from Aiyana**
+1. The concept video as an MP4 (Canva: open the deck, select slide 26, Share → Download → MP4 Video, "Selected pages": 26).
+2. Your role, the team, who designed the app screens, why the cube idea was set aside, why the collar and companion were merged, the Figma link, testing, a learning and a next step (all marked on the page).
+
+---
+
 ## 2026-11-24 · Every project: a 60% column and its own glider
 
 **What changed**

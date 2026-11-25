@@ -4,6 +4,13 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-25 · Maggi: the walkthrough video cut to 7 seconds
+
+- `assets/images/projects/maggi/show-walkthrough.mp4` now runs 0:00–0:07 (was 15 s): the table and the Maggi wall, stopping before the camera pans to other groups' work. Re-encoded (H.264, no sound, 1.1 MB); referenced as `show-walkthrough.mp4?v=2` so browsers fetch the new one. `DATA_VERSION` 26.
+- Asked by Aiyana: "crop the first video at 00.07 seconds".
+
+---
+
 ## 2026-11-25 · Maggi rebuilt as a clean, detailed workflow
 
 **What changed**

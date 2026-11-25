@@ -28,7 +28,7 @@ window.CASE_STUDIES['maggi'] = {
     title: 'Maggi in France',
     line: 'Bringing Maggi’s masala noodles into French supermarkets, as something that already feels at home there.',
     tags: ['Brand campaign', 'Packaging', 'Retail', 'AI workflow'],
-    film: { src: 'show-walkthrough.mp4', caption: 'a walk past our final display',
+    film: { src: 'show-walkthrough.mp4?v=2', caption: 'a walk past our final display',
       poster: { src: 'show-walkthrough-poster.webp', width: 1280, height: 720, alt: 'Our final display: three yellow Maggi posters, the boxes and a red pot on a table.' } },
     facts: [
       { label: 'Course', value: 'DESG261 Special Topics in Design, FLAME University' },

@@ -4,6 +4,28 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-25 · Maggi rebuilt as a clean, detailed workflow
+
+**What changed**
+- New reusable `story` world (`js/worlds/story.js`, `css/worlds/story.css`): the Nexo approach as blocks, so any project can be told the same calm way. Maggi is the first (`projects/maggi.js` rewritten, `world: 'story'`).
+- Maggi now tells the whole project in order, in plain words: the walkthrough video, the brief, research, insights, the idea, look and feel (palette and type from the Campaign Platform), how we made it (Flora AI boards, Illustrator), what didn't work, the posters, the pack, the store, the launch plan, and the display with the team.
+- New images in `assets/images/projects/maggi/story/`: the course brief, the three final posters (1600px copies from the team Drive "Final Posters"), four Flora AI workflow boards (from the Drive "Failed Output" doc), the dropped Épuisé packs, the London metro attempts, four other directions (Paris tag, noodle tower, Paris bowl, bowl balloon), the pack in Illustrator, and the team photo (Aiyana's own photo from her Maggi folder; she offered it 2026-11-25).
+- `DATA_VERSION` 25. Branding still uses the journey world.
+
+**Sources**
+- The course brief (DESG261 Brief 02/10), and the team's Drive folder "Final Group Assignment 3": Research Document, Research Insights, Campaign Platform, Packaging Design Rationale, Marketing Strategy Document, The 6 Hard Questions, Failed Output. Read in the browser; only the posters and the Flora screenshots were copied.
+- The team (Akshath Pissay, Aiyana Mehta, Divyanshi Jain, Sourajeet Das) is from the Research Document's cover. Research numbers are quoted with the sources the document gives.
+- The "What didn't work" text follows the team's Failed Output doc; the misspelled "Maggie" and London setting of the metro images, and the garbled AI back of pack, are described from the images.
+
+**Checked**
+- Local server at 1440×900: every part renders, the glider lists all 13 parts, nothing broken. At 375×812: one column, nothing wider than the screen.
+
+**Still needed from Aiyana**
+1. Your role: which parts you made.
+2. One learning and one next step, in your own words.
+
+---
+
 ## 2026-11-25 · Nexo rebuilt as one clean, plain-worded page
 
 **What changed**

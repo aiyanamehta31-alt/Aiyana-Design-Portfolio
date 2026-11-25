@@ -16,6 +16,16 @@
      world     the photos for "In the world" (first is the big one)
      pack      the packaging net: { type: wrap|box|stickers|tag, … }
                a tag's front is her image, or frontArt { sym, text } drawn
+
+   BRAND_PAGES (below) makes each page its own world, not one template:
+     look      the page's language (book | signal | menu | field | play)
+     cover     the picture on the Branding shelf
+     layout    the parts, in order; `alt` the parts on the alternate ground
+     names     each part's heading where it differs from the default
+     numerals  how parts are numbered: roman | bracket | no | marker | plain
+     logo      which logo pieces show: grid (construction), sizes
+     + each look's extra: book (brand book pages), drop (merch list),
+       menu (the brand as a menu), tagline, mascot (facts from the drawing)
    ===================================================================== */
 (function () {
   'use strict';
@@ -165,6 +175,66 @@
         lines: ['Play', 'more.'],
         photos: ['pebble-flat-lay.webp', 'pebble-product-shot.webp']
       }
+    }
+  };
+
+  window.BRAND_PAGES = {
+    'velvet-vine': {
+      look: 'book', numerals: 'roman', cover: 'vv-slide-4-packaging.webp',
+      layout: ['top', 'idea', 'book', 'logo', 'colour', 'type', 'elements', 'pack', 'world', 'final', 'notes'],
+      alt: ['logo', 'elements'],
+      names: { idea: 'The idea', book: 'The brand book', elements: 'Botanicals', stickers: 'Seals' },
+      logo: { grid: true, sizes: true },
+      book: ['vv-brandbook-p1-cover.webp', 'vv-brandbook-p3-logo.webp', 'vv-brandbook-p4-colors-typo.webp', 'vv-brandbook-p5-illustrations.webp', 'vv-brandbook-p6-applications.webp']
+    },
+    'static': {
+      look: 'signal', numerals: 'bracket', cover: 'static-lifestyle-action.webp',
+      layout: ['top', 'signal', 'idea', 'logo', 'colour', 'drop', 'elements', 'pack', 'type', 'world', 'final', 'notes'],
+      alt: ['logo', 'drop'],
+      names: { idea: 'The brief', signal: 'Tune in', drop: 'The drop', elements: 'Glyphs', stickers: 'Stickers', world: 'On the street' },
+      logo: { grid: false, sizes: false },
+      // Read from her own merch photos.
+      drop: [
+        { name: 'Lanyard and ID tag', what: 'Black strap, metal tag with the globe badge', src: 'static-flat-lay.webp', pos: '12% 30%' },
+        { name: 'Zine', what: 'Acid-green cover, the blocky wordmark', src: 'static-flat-lay.webp', pos: '80% 22%' },
+        { name: 'Sticker sheet', what: 'Holographic, every mark of the identity', src: 'static-flat-lay.webp', pos: '70% 85%' },
+        { name: 'Bucket hat', what: 'Black, chrome S. monogram, hot-pink tag', src: 'static-product-shot.webp' },
+        { name: 'Can', what: 'Chrome, the wordmark running down it', src: 'static-lifestyle-detail.webp' },
+        { name: 'Jacket and tee', what: 'Black shell over an acid-green tee', src: 'static-lifestyle-action.webp' }
+      ]
+    },
+    'koma': {
+      look: 'menu', numerals: 'no', cover: 'koma-slide-6-packaging.webp',
+      layout: ['top', 'menu', 'logo', 'colour', 'type', 'elements', 'pack', 'world', 'final', 'notes'],
+      alt: ['logo'],
+      names: { menu: 'On the menu', elements: 'Icons and badges', stickers: 'Badges', world: 'At the table' },
+      logo: { grid: true, sizes: true },
+      // The identity, read from her work, set as a menu.
+      menu: [
+        { name: 'The wordmark', what: 'Chunky green letters, a white offset shadow, コマ beside them' },
+        { name: 'The steam', what: 'Three curls rising over the letters' },
+        { name: 'The bun', what: 'A pleated bao, drawn in one green line' },
+        { name: 'The badges', what: 'Slow steamed. Bold flavor, soft bite.' },
+        { name: 'The box', what: 'A black takeout carton with one green mark' },
+        { name: 'The pattern', what: 'Steam curls, repeated on black' }
+      ]
+    },
+    'meridian': {
+      look: 'field', numerals: 'marker', cover: 'meridian-lifestyle-action.webp',
+      layout: ['top', 'idea', 'tagline', 'logo', 'colour', 'type', 'elements', 'pack', 'world', 'final', 'notes'],
+      alt: ['logo', 'elements'],
+      names: { idea: 'The idea', tagline: 'Trail. Pace. Purpose.', elements: 'Map legend', stickers: 'Patches', world: 'Out on the trail' },
+      logo: { grid: true, sizes: false },
+      tagline: ['Trail.', 'Pace.', 'Purpose.']
+    },
+    'pebble-and-co': {
+      look: 'play', numerals: 'plain', cover: 'pebble-product-shot.webp',
+      layout: ['top', 'idea', 'mascot', 'logo', 'colour', 'elements', 'type', 'pack', 'world', 'final', 'notes'],
+      alt: ['mascot', 'elements'],
+      names: { idea: 'The idea', mascot: 'Meet the pebble', elements: 'Little friends', stickers: 'Stickers', world: 'Out to play' },
+      logo: { grid: false, sizes: true },
+      // From her mascot drawing.
+      mascot: ['Drawn in one coral line', 'Rosy cheeks and a big smile', 'Waving arms and little feet']
     }
   };
 })();

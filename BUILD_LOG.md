@@ -4,6 +4,24 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-26 · Branding, second pass: an editorial shelf, five different pages
+
+**What changed**
+- The shelf is now five tall photo covers side by side: closed covers show the name as a vertical spine, the one under the pointer opens wide with its name, line and "View the brand". The rounded bands, fanned photos, pills and wallpaper pattern are gone.
+- Each brand page is built from its own plan (`BRAND_PAGES` in `js/worlds/brand-kits.js`), with its own order, numbering, headings, colour display, photo layout and an extra of its own: Velvet Vine (brand book: growing vine, a brand book to page through, fabric-strip colours), STATIC. (terminal: Tune in, the brief as a terminal, a colour readout, The drop), KOMA (menu: a menu card with a steaming bun), Meridian (field guide: a route down the page, a contour map that bends, Trail. Pace. Purpose., a filmstrip), Pebble & Co. (playroom: Meet the pebble, a mascot that watches and waves, pebble colours).
+- `js/worlds/brands.js` rewritten around those plans; `css/worlds/brands.css` gained the five looks. `DATA_VERSION` 29.
+
+**Why**
+- Aiyana: every brand looked like the same format, and the shelf looked "a bit kiddish". She asked for each brand to be very different, with something extra in places.
+
+**Checked**
+- Local server at 1440×900: shelf (hover opens a cover), all five pages part by part, the wipe, tune-in, the book arrows, the map bend, the mascot. At 375×812: shelf and pages, nothing scrolls sideways.
+
+**Still needed from Aiyana**
+- Same as before: real sketches if she has them, and per brand the context, tools and credits, what she learned and what she'd do next. Menu, drop and mascot notes are read from her images and marked as drafts in code.
+
+---
+
 ## 2026-11-26 · Branding: five separate brand projects, each with its own page
 
 **What changed**

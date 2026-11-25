@@ -4,6 +4,23 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-25 · Wiglet rebuilt: clearly an agentic AI project
+
+**What changed**
+- `projects/wiglet.js` rewritten for the story world (theme `wiglet`), like Nexo and Maggi: one calm light page, in order, in plain words. The first section explains what makes it an AI agent (look, think, act, check: Perceive, Reason, Act, Observe), then the problem, the idea and rules, how it works (each step marked "AI model" or "Plain code"), the live demo, building it with Claude Code, what broke and the fix, what shipped, and what's next.
+- The live demo moved into a reusable story block: `js/widgets/wiglet-demo.js` (the same scheduler, parser and code tab as before) and `css/widgets/wiglet-demo.css`. The card keeps the real app's dark look; the steps, examples, tabs and notes around it are now light. The em dash in "Didn't fit today" lines became a colon.
+- `js/worlds/story.js` gained the `loop`, `pipeline`, `fixes` and `widget` blocks, a hero image, and a project's own `scripts`; `css/worlds/story.css` gained the Wiglet theme (cool white, Wiglet blue, teal only for code) and those blocks' styles.
+- The old Wiglet world (`js/worlds/wiglet.js`, `css/worlds/wiglet.css`) is no longer loaded. `DATA_VERSION` 27.
+- Left out: the "≈785k tokens" figure and the card-flip, counter and looping animations. All words come from the existing Wiglet data (deck, codebase, build log).
+
+**Why**
+- Aiyana felt the Wiglet page looked "pretty AI" and asked for the Nexo and Maggi treatment, making it clear it is an agentic AI project.
+
+**Checked**
+- Local server at 1440×900: every part renders, the glider lists all ten parts, the demo places "gym for an hour, priority one" as Gym, priority #1 at 10:40, and the code tab fills with the scheduler source. At 375×812: one column, nothing wider than the screen.
+
+---
+
 ## 2026-11-25 · Maggi: the walkthrough video cut to 7 seconds
 
 - `assets/images/projects/maggi/show-walkthrough.mp4` now runs 0:00–0:07 (was 15 s): the table and the Maggi wall, stopping before the camera pans to other groups' work. Re-encoded (H.264, no sound, 1.1 MB); referenced as `show-walkthrough.mp4?v=2` so browsers fetch the new one. `DATA_VERSION` 26.

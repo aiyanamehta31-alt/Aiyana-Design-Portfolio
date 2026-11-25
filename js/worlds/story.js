@@ -20,7 +20,13 @@
      fonts    { items: [{ family, name, use, sample }] }
      pics     { layout: 2|3|4|wide|narrow, label, items: [img] }
      fails    { items: [{ title, what, learned, images }] }
-     timeline { items: [{ when, title, text }] }
+     timeline { label, items: [{ when, title, text }] }
+     loop     { label, items: [{ name, plain, text }], note }   a cycle of steps
+     pipeline { label, example, items: [{ step, what, by, ai, out }] }
+     fixes    { label, items: [{ title, broke, fix }] }
+     widget   { name, ... }   a live piece from window.STORY_WIDGETS[name]
+                              (its script goes in the project's `scripts`)
+   top can also carry `image` (a hero picture) instead of `film`.
    img = { src, width, height, alt, caption (shown under it), note (handwritten) }
    Nothing moves except a gentle rise as blocks come in, and the glider.
    ===================================================================== */
@@ -105,9 +111,33 @@
       }).join('') + '</ol>';
     },
     timeline: function (b) {
-      return '<ol class="st-timeline">' + b.items.map(function (t) {
-        return '<li><span class="st-timeline__when">' + esc(t.when) + '</span><strong>' + esc(t.title) + '</strong><span>' + rich(t.text) + '</span></li>';
-      }).join('') + '</ol>';
+      return '<div>' + label(b.label) + '<ol class="st-timeline">' + b.items.map(function (t) {
+        return '<li><span class="st-timeline__when">' + esc(t.when) + '</span>' + (t.title ? '<strong>' + esc(t.title) + '</strong>' : '') + '<span>' + rich(t.text) + '</span></li>';
+      }).join('') + '</ol></div>';
+    },
+    // A loop of steps that comes back to the start.
+    loop: function (b) {
+      return '<div>' + label(b.label) + '<ol class="st-loop">' + b.items.map(function (s, k) {
+        return '<li><span class="st-loop__n">' + (k + 1) + '</span><strong>' + esc(s.name) + '</strong>' + (s.plain ? '<em>' + esc(s.plain) + '</em>' : '') + '<span>' + rich(s.text) + '</span></li>';
+      }).join('') + '</ol>' + (b.note ? '<p class="st-loop__back"><span aria-hidden="true">↺</span> ' + rich(b.note) + '</p>' : '') + '</div>';
+    },
+    // Steps in a row, each marked as done by an AI model or by plain code.
+    pipeline: function (b) {
+      return '<div>' + label(b.label) + (b.example ? '<p class="st-pipe__ex">“' + esc(b.example) + '”</p>' : '') + '<ol class="st-pipe">' + b.items.map(function (s) {
+        return '<li class="' + (s.ai ? 'is-ai' : 'is-code') + '"><span class="st-pipe__by">' + (s.ai ? 'AI model' : 'Plain code') + '</span><strong>' + esc(s.step) + '</strong><span>' + rich(s.what) + '</span>' +
+          '<code>' + esc(s.by) + '</code>' + (s.out ? '<span class="st-pipe__out">' + esc(s.out) + '</span>' : '') + '</li>';
+      }).join('') + '</ol></div>';
+    },
+    // What broke, and the fix.
+    fixes: function (b) {
+      return '<div>' + label(b.label) + '<ul class="st-fixes">' + b.items.map(function (f) {
+        return '<li><strong>' + esc(f.title) + '</strong><p class="st-fixes__broke"><span>What broke</span>' + rich(f.broke) + '</p><p class="st-fixes__fix"><span>The fix</span>' + rich(f.fix) + '</p></li>';
+      }).join('') + '</ul></div>';
+    },
+    // A live piece of a project, from window.STORY_WIDGETS (loaded by the project's scripts).
+    widget: function (b) {
+      var w = window.STORY_WIDGETS && window.STORY_WIDGETS[b.name];
+      return '<div data-widget="' + esc(b.name) + '">' + (w ? w.html(b) : '') + '</div>';
     }
   };
 
@@ -121,6 +151,7 @@
       (f ? '<figure class="st-film" data-st-film data-src="' + src(f.src) + '"><div class="st-film__frame">' + img(f.poster, true) +
         '<button type="button" class="st-film__play" data-st-play><span class="st-film__icon" aria-hidden="true"></span><span>Play the video</span></button></div>' +
         (f.caption ? '<figcaption class="st-note">' + esc(f.caption) + '</figcaption>' : '') + '</figure>' : '') +
+      (t.image ? '<figure class="st-hero">' + img(t.image, true) + (t.image.note ? '<figcaption class="st-note">' + rich(t.image.note) + '</figcaption>' : '') + '</figure>' : '') +
       '<dl class="st-facts">' + t.facts.map(function (x) { return '<div><dt>' + esc(x.label) + '</dt><dd>' + rich(x.value) + '</dd></div>'; }).join('') + '</dl>' +
     '</div></section>';
   }
@@ -184,6 +215,17 @@
       });
     }
 
+    // Live pieces (the Wiglet demo), each given its block's settings.
+    var blocks = [];
+    p.sections.forEach(function (s) { (s.blocks || []).forEach(function (b) { if (b.type === 'widget') blocks.push(b); }); });
+    var refreshGlider = function () { if (glider) glider.refresh(); };
+    Array.prototype.forEach.call(box.querySelectorAll('[data-widget]'), function (el, k) {
+      var w = window.STORY_WIDGETS && window.STORY_WIDGETS[el.getAttribute('data-widget')];
+      if (!w || !blocks[k]) return;
+      var inst = w.mount(el, blocks[k], { scroller: scroller, reduceMotion: reduce, refresh: function () { refreshGlider(); } });
+      if (inst && inst.destroy) cleanups.push(inst.destroy);
+    });
+
     var glider = window.CaseGlider ? window.CaseGlider({
       sheet: sheet, scroller: scroller, content: ctx.content, lenis: ctx.lenis, reduceMotion: reduce,
       cls: 'st-glider ' + (p.theme.glider || ''), label: p.title + ', part by part',
@@ -203,6 +245,8 @@
   worlds.story = {
     css: 'css/worlds/story.css',
     fonts: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@500;600&display=swap',
+    // A project's own classic scripts (the Wiglet demo and its scheduler), in order.
+    scripts: function (p) { return p.scripts || []; },
     render: render,
     mount: mount,
     ownTones: true

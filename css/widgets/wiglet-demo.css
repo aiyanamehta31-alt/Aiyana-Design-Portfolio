@@ -1,0 +1,145 @@
+/* =====================================================================
+   WIGLET DEMO (js/widgets/wiglet-demo.js), 2026-11-25
+   The card is the real Wiglet widget (static/styles.css in the app),
+   scoped under .wg-app, so it keeps the app's own dark look. Everything
+   around it (the loop steps, examples, tabs, code) sits calmly on the
+   light story page.
+   taste-skill-ignore: the dark glass card and its glowing dots are the
+   real app's own UI, shown as it is.
+   ===================================================================== */
+.wgd {
+  --wg-card: #0F172A;
+  --wg-card-line: rgba(147, 197, 253, 0.15);
+  --wg-ink: #E8F0FF;
+  --wg-ink-dim: #8FA3C0;
+  --wg-fixed: #3B82F6;
+  --wg-flexible: #2DD4BF;
+  --wg-open-ring: rgba(143, 163, 192, 0.55);
+  --wg-accent: #CFE4FF;
+  --wg-warn: #FFB27A;
+  --wgd-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Tabs */
+.wgd__tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--st-tint); }
+.wgd__tabs [role="tab"] { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--st-ink); font: 600 0.875rem var(--st-body); cursor: pointer; }
+.wgd__tabs [aria-selected="true"] { background: var(--st-accent); color: var(--st-on-accent); }
+.wgd__tabs [role="tab"]:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+
+/* Try it: the loop steps on top, the card and the examples side by side */
+.wgd__try { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 18px clamp(20px, 3vw, 36px); margin-top: 20px; align-items: start; }
+.wgd__steps { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.wgd__steps li {
+  position: relative;
+  padding: 7px 14px 7px 30px;
+  border-radius: 999px;
+  background: var(--st-card);
+  box-shadow: inset 0 0 0 1px var(--st-line);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--st-soft);
+  transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+}
+.wgd__steps li::before { content: ""; position: absolute; left: 13px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--st-line); }
+.wgd__steps li.is-on { background: var(--st-accent); box-shadow: none; color: var(--st-on-accent); }
+.wgd__steps li.is-on::before { background: var(--st-on-accent); }
+.wgd__steps li.is-done::before { background: var(--st-accent); }
+.wgd__side { display: grid; gap: 14px; }
+.wgd__label { font-size: 0.875rem; font-weight: 700; color: var(--st-head); }
+.wgd__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.wgd__chip {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--st-card);
+  box-shadow: inset 0 0 0 1px var(--st-line);
+  color: var(--st-ink);
+  font: 500 0.875rem var(--st-body);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 200ms var(--wgd-ease), box-shadow 200ms ease;
+}
+.wgd__chip:active { transform: scale(0.96); }
+.wgd__chip:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .wgd__chip:hover { box-shadow: inset 0 0 0 1.5px var(--st-accent); } }
+.wgd__note { font-size: 0.875rem; line-height: 1.55; color: var(--st-soft); }
+
+/* The code tab: the original next to the port */
+.wgd__code { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.wgd__pane { min-width: 0; overflow: hidden; border-radius: 14px; background: #0F172A; }
+.wgd__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 10px 10px 16px; background: rgba(255, 255, 255, 0.05); font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.75rem; color: #8FA3C0; }
+.wgd__copy { min-height: 32px; padding: 0 12px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.1); color: #E8F0FF; font: 600 0.75rem var(--st-body); cursor: pointer; }
+.wgd__code pre { max-height: min(70vh, 640px); overflow: auto; padding: 16px 18px 22px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.75rem; line-height: 1.6; color: #E8F0FF; overscroll-behavior: contain; }
+.wgd .tok-c { color: #8193B2; font-style: italic; }
+.wgd .tok-s { color: #8EF0D8; }
+.wgd .tok-n { color: #FFB27A; }
+.wgd .tok-k { color: #93BBFF; }
+.wgd .tok-f { color: #FFFFFF; font-weight: 600; }
+
+/* The real widget's card, rows and footer (static/styles.css), scoped */
+.wg-app { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: var(--wg-ink); -webkit-font-smoothing: antialiased; }
+.wg-app .card { position: relative; display: flex; flex-direction: column; padding: 24px; border-radius: 24px; background: var(--wg-card); box-shadow: 0 24px 60px -24px rgba(15, 23, 42, 0.55); }
+.wg-app .head { display: flex; align-items: center; gap: 12px; }
+.wg-app .wiglet-mini { width: 40px; height: 40px; flex: none; }
+.wg-app .wiglet-mini .wg-blob { display: block; width: 100%; height: 100%; overflow: visible; }
+.wg-app .wiglet-mini.is-bounce { animation: wgd-bounce 700ms var(--wgd-ease); }
+.wg-app .wiglet-mini.is-tilt { animation: wgd-tilt 600ms var(--wgd-ease); }
+.wg-blob__eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: wgd-blink 5.2s infinite; }
+@keyframes wgd-blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes wgd-bounce { 0% { transform: none; } 30% { transform: translateY(-8px) scale(1.06, 0.94); } 60% { transform: scale(0.95, 1.05); } 100% { transform: none; } }
+@keyframes wgd-tilt { 0% { transform: none; } 30% { transform: rotate(-14deg); } 60% { transform: rotate(9deg); } 100% { transform: none; } }
+.wg-app .titles { flex: 1; min-width: 0; }
+.wg-app__title { margin: 0; font-size: 22px; font-weight: 700; color: #FFFFFF; letter-spacing: -0.02em; }
+.wg-app .icon { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--wg-ink-dim); cursor: pointer; transition: background 140ms ease, color 140ms ease; }
+.wg-app .icon svg { width: 17px; height: 17px; }
+.wg-app .icon:hover { background: rgba(255, 255, 255, 0.07); color: var(--wg-accent); }
+.wg-app .icon.ghost { display: inline-flex; gap: 6px; width: auto; height: 32px; padding: 0 10px; font-size: 12px; }
+.wg-app .banner { margin: 12px 0 0; padding: 8px 11px; border-radius: 11px; font-size: 12px; line-height: 1.45; background: rgba(59, 130, 246, 0.14); color: #B9D3FF; }
+.wg-app .timeline { margin-top: 14px; }
+.wg-app .row { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px; margin: 0 -8px; border-radius: 10px; }
+.wg-app .row:hover { background: rgba(255, 255, 255, 0.035); }
+.wg-app .row.is-new { animation: wgd-glow 1.6s ease-out; }
+@keyframes wgd-glow { from { background: rgba(45, 212, 191, 0.16); } to { background: transparent; } }
+.wg-app .when { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--wg-ink-dim); white-space: nowrap; }
+/* (the homepage has its own .label style; reset what it sets) */
+.wg-app .label { display: flex; align-items: center; gap: 6px; min-width: 0; font-family: inherit; font-size: 13.5px; font-weight: 400; line-height: inherit; letter-spacing: normal; text-transform: none; color: var(--wg-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wg-app .row.open .label { color: var(--wg-ink-dim); }
+.wg-lockmark { flex: none; display: inline-grid; color: #9CC0FF; }
+.wg-lockmark svg { width: 13px; height: 13px; }
+.wg-app .kind { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--wg-ink-dim); white-space: nowrap; }
+.wg-app .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; }
+.wg-app .dot.fixed { background: var(--wg-fixed); }
+.wg-app .dot.flexible { background: var(--wg-flexible); }
+.wg-app .dot.open { background: transparent; box-shadow: inset 0 0 0 1.5px var(--wg-open-ring); }
+.wg-app .unplaced { margin-top: 10px; font-size: 12px; color: var(--wg-warn); }
+.wg-app .unplaced ul { margin: 5px 0 0; padding-left: 17px; list-style: disc; }
+.wg-app .foot { margin-top: 10px; padding-top: 16px; box-shadow: inset 0 1px 0 var(--wg-card-line); }
+.wg-app .footrow { display: flex; align-items: center; gap: 10px; }
+.wg-app .summary { flex: 1; min-width: 0; margin: 0; font-size: 12.5px; color: var(--wg-ink-dim); }
+.wg-app .actions { display: flex; gap: 2px; flex: none; }
+.wg-app .actions .icon { color: var(--wg-accent); }
+.wg-app .actions .icon.recording { color: #FF7A7A; background: rgba(255, 86, 86, 0.14); }
+.wg-app .heard { margin: 9px 0 0; font-size: 12px; font-style: italic; color: var(--wg-flexible); }
+.wg-understood { margin: 4px 0 0; font-size: 12px; line-height: 1.45; color: var(--wg-accent); }
+.wg-app .notice { margin: 9px 0 0; padding: 8px 11px; border-radius: 11px; font-size: 12px; line-height: 1.45; background: rgba(255, 178, 122, 0.1); color: var(--wg-warn); }
+.wg-app .composer { display: flex; gap: 7px; align-items: center; margin-top: 10px; }
+.wg-app .composer input { flex: 1; min-width: 0; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--wg-card-line); background: rgba(0, 0, 0, 0.26); color: var(--wg-ink); font-size: 13px; }
+.wg-app .composer input::placeholder { color: var(--wg-ink-dim); }
+.wg-app .composer input:focus { outline: none; border-color: rgba(45, 212, 191, 0.6); }
+.wg-app .send { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--wg-card-line); background: rgba(255, 255, 255, 0.05); color: var(--wg-accent); cursor: pointer; font-size: 15px; }
+.wg-app :focus-visible { outline: 2px solid var(--wg-flexible); outline-offset: 2px; }
+
+@media (max-width: 1023px) {
+  .wgd__try { grid-template-columns: minmax(0, 1fr); }
+  .wgd__code { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .wg-app .card { padding: 18px; border-radius: 20px; }
+  .wg-app .row { grid-template-columns: 78px minmax(0, 1fr); row-gap: 2px; }
+  .wg-app .kind { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wg-blob__eyes, .wg-app .wiglet-mini, .wg-app .row.is-new { animation: none !important; }
+  .wgd__chip, .wgd__steps li { transition: none; }
+}

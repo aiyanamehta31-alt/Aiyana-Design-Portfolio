@@ -4,6 +4,26 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-26 · Branding: five separate brand projects, each with its own page
+
+**What changed**
+- New world `brands` (`js/worlds/brands.js`, `css/worlds/brands.css`, drawn kits in `js/worlds/brand-kits.js`); `projects/branding.js` now uses it. The journey world is no longer used.
+- `#project/branding` is a shelf of five bands, one per brand, each in its own colours and type with three pictures fanned out. Clicking one wipes to that brand's colour and opens **only that brand**: the brand, the idea, the logo (with a construction grid and clear space drawn over it), colour (paint chips, tints, HEX/RGB/CMYK, a suggested balance), type (a live tester), brand elements (six symbols, a pattern with a colourway switch, two stickers, a watermark), packaging (a dieline opened flat beside the real photos), in the world, final designs (a running banner and a wall of every piece), looking back, and the next brand. A switcher at the top jumps between brands; the glider lists the brand's parts.
+- Drawn for the page (and labelled so): symbols, patterns, stickers, construction grids, dielines, the colour balance. Sticker words come from her own work (“Refined. Organic. Pure.”, “All signals lost”, “Slow steamed”, “Trail. Pace. Purpose.”, “Play more”). No new images were needed; all photos are the existing `assets/images/projects/branding/` set.
+- `DATA_VERSION` 28 (`case-study.js?v=28`).
+
+**Why**
+- Aiyana confirmed all five brands stay (Velvet Vine, STATIC., KOMA, Meridian, Pebble & Co.).
+- Aiyana didn't want the brands one after another: each should be its own distinct project, explained like her reference's freelance projects (sketches, packaging, palettes, symbols, brand elements), and look like a lot of work.
+
+**Checked**
+- Local server at 1440×900: the shelf, all five brand pages part by part, the wipe between brands, the switcher, the glider (re-measured after the sheet opens), the grid and colourway switches. At 375×812: shelf and a brand page with no sideways scroll.
+
+**Still needed from Aiyana**
+- Real sketches or process work for any brand (the page would gain a "Sketches" part), plus per brand: context (course or self-initiated, year, solo or team), tools and credits, what she learned and what she'd do next; the Pebble & Co. child photo caption. The key words, brand lines and packaging blurbs are drafts for her to edit.
+
+---
+
 ## 2026-11-25 · Wiglet rebuilt: clearly an agentic AI project
 
 **What changed**

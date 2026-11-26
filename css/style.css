@@ -625,6 +625,148 @@ html.js .site-header {
 .minibook__shade { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .minibook { transition: none; } }
 .project-card__media--yellow { background: #F2C21B; }
+/* Maggi: Aiyana's final pack as a real box, turning slowly on a dark stage
+   like a product turntable. Front: pack-front.webp. Back and sides: cut from
+   her dieline (dieline.webp, 1280×763; back x638–1048, right x522–636, left
+   x1050–1167, all y148–598) with background positions, so every face is her
+   own artwork. Sized in 1% of the card's height (cqh). */
+.project-card__media--pack {
+  container-type: size;
+  background:
+    radial-gradient(38% 44% at 50% 50%, rgba(248, 205, 4, 0.16), rgba(248, 205, 4, 0) 72%),
+    radial-gradient(70% 80% at 50% 64%, #24201A 0%, #141210 52%, #0A0A0A 100%);
+}
+.minipack {
+  --w: 52cqh; --h: 56.8cqh; --d: 14.4cqh;
+  position: absolute;
+  inset: 0;
+  perspective: 170cqh;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.project-card:hover .minipack, .project-card:focus-within .minipack { transform: translateY(-3cqh); }
+.minipack__box {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: var(--w);
+  height: var(--h);
+  margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg) rotateY(-32deg);
+  animation: minipack-turn 20s linear infinite;
+}
+@keyframes minipack-turn { from { transform: rotateX(-20deg) rotateY(-32deg); } to { transform: rotateX(-20deg) rotateY(328deg); } }
+.minipack__face { position: absolute; backface-visibility: hidden; -webkit-backface-visibility: hidden; background-repeat: no-repeat; }
+.minipack__face::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.minipack__face--front, .minipack__face--back { inset: 0; }
+.minipack__face--front { transform: translateZ(calc(var(--d) / 2)); background-image: url("../assets/images/projects/maggi/pack-front.webp"); background-size: cover; background-position: center; }
+.minipack__face--back { transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); background-image: url("../assets/images/projects/maggi/dieline.webp"); background-size: 312.2% 169.6%; background-position: 73.33% 47.28%; }
+.minipack__face--front::after, .minipack__face--back::after { background: linear-gradient(115deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.12) 100%); }
+.minipack__face--right, .minipack__face--left { top: 0; height: 100%; width: var(--d); left: calc((var(--w) - var(--d)) / 2); background-image: url("../assets/images/projects/maggi/dieline.webp"); }
+.minipack__face--right { transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); background-size: 1122.8% 169.6%; background-position: 44.77% 47.28%; }
+.minipack__face--left { transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); background-size: 1094% 169.6%; background-position: 90.28% 47.28%; }
+.minipack__face--right::after, .minipack__face--left::after { background: linear-gradient(90deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.12)); }
+.minipack__face--top, .minipack__face--bottom { left: 0; width: 100%; height: var(--d); top: calc((var(--h) - var(--d)) / 2); }
+.minipack__face--top { transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); background: #F2C21B; }
+.minipack__face--top::after { background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.08)); }
+.minipack__face--bottom { transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); background: #8F241B; }
+/* The shadow it casts on the stage */
+.minipack__shadow {
+  position: absolute;
+  left: 50%;
+  top: calc(45% + var(--h) / 2 + 3cqh);
+  width: 64cqh;
+  height: 9cqh;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  transform: translateX(-50%);
+  filter: blur(1.5cqh);
+}
+@media (prefers-reduced-motion: reduce) { .minipack { transition: none; } .minipack__box { animation: none; } }
+/* Wiglet: a dummy phone on a dark stage, tilted and cropped by the card's
+   bottom edge, with Wiglet open on its lock screen (rows from Aiyana's own
+   phone mockup). Everything inside is sized in 1% of the card's height
+   (1em = 1cqh), so the phone scales as one piece. It lifts and straightens
+   a little on hover; the blob floats. */
+.project-card__media--phone {
+  container-type: size;
+  background:
+    radial-gradient(42% 50% at 52% 62%, rgba(46, 104, 214, 0.28), rgba(46, 104, 214, 0) 70%),
+    radial-gradient(70% 80% at 50% 64%, #1A1F29 0%, #111317 52%, #0A0A0A 100%);
+}
+.miniphone {
+  position: absolute;
+  left: 50%;
+  top: 9cqh;
+  height: 132cqh;
+  aspect-ratio: 9 / 19.4;
+  padding: 1.3em;
+  font-size: 1cqh;
+  border-radius: 7.4em;
+  background: linear-gradient(140deg, #4A4C53 0%, #26272C 38%, #18191C 62%, #3A3C42 100%);
+  box-shadow: inset 0 0 0 0.25em rgba(255, 255, 255, 0.12), inset 0 0 0 0.9em #0B0B0D, 0 5em 7em -2em rgba(0, 0, 0, 0.85), 0 0 0 0.1em rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%) rotate(-8deg);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.project-card:hover .miniphone, .project-card:focus-within .miniphone { transform: translateX(-50%) translateY(-3cqh) rotate(-5deg); }
+.miniphone__key { position: absolute; width: 0.5em; border-radius: 0.3em; background: linear-gradient(90deg, #2A2B30, #4A4C53); }
+.miniphone__key--a { left: -0.4em; top: 20em; height: 5em; }
+.miniphone__key--b { left: -0.4em; top: 28em; height: 8.5em; }
+.miniphone__key--c { right: -0.4em; top: 25em; height: 12em; background: linear-gradient(270deg, #2A2B30, #4A4C53); }
+.miniphone__screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 3.2em 3em;
+  border-radius: 6.1em;
+  color: #E8F0FF;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(55% 32% at 18% 58%, rgba(37, 99, 235, 0.55), rgba(37, 99, 235, 0) 72%),
+    radial-gradient(45% 30% at 88% 36%, rgba(45, 212, 191, 0.32), rgba(45, 212, 191, 0) 72%),
+    linear-gradient(165deg, #1B2231 0%, #0D1118 58%, #0A0C11 100%);
+}
+.miniphone__island { position: absolute; top: 1.5em; left: 50%; width: 15em; height: 4.2em; border-radius: 3em; background: #000; transform: translateX(-50%); }
+.miniphone__status { display: flex; justify-content: space-between; align-items: center; padding: 0 1.6em; font-size: 2.1em; font-weight: 600; line-height: 1; }
+.miniphone__bars { display: flex; align-items: flex-end; gap: 0.12em; height: 0.8em; }
+.miniphone__bars i { width: 0.2em; border-radius: 0.1em; background: currentColor; }
+.miniphone__bars i:nth-child(1) { height: 35%; } .miniphone__bars i:nth-child(2) { height: 55%; } .miniphone__bars i:nth-child(3) { height: 78%; } .miniphone__bars i:nth-child(4) { height: 100%; }
+.miniphone__date { margin-top: 1.9em; font-size: 2.4em; font-weight: 500; text-align: center; color: rgba(232, 240, 255, 0.82); }
+.miniphone__clock { font-size: 10.5em; font-weight: 600; line-height: 1; letter-spacing: -0.02em; text-align: center; color: rgba(232, 240, 255, 0.94); }
+.miniphone__card {
+  margin-top: 3.4em;
+  padding: 2.3em 2.5em 1.8em;
+  border-radius: 3.6em;
+  background: rgba(22, 30, 46, 0.74);
+  box-shadow: inset 0 0 0 0.18em rgba(147, 197, 253, 0.18), 0 2.4em 4em -1.4em rgba(0, 0, 0, 0.6);
+}
+.miniphone__head { display: flex; align-items: center; gap: 0.5em; font-size: 3em; font-weight: 700; letter-spacing: -0.01em; line-height: 1; }
+.miniphone__mini, .miniphone__blob { background: radial-gradient(circle at 34% 28%, #B8E6FF 0%, #5AA8F5 30%, #2F6FE4 62%, #1C3FA8 100%); }
+.miniphone__mini { width: 1.25em; height: 1.15em; border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%; }
+.miniphone__card ul { display: grid; gap: 0.95em; margin-top: 1.7em; }
+.miniphone__card li { display: grid; grid-template-columns: 7.4em minmax(0, 1fr) auto; align-items: center; gap: 0.7em; font-size: 2.05em; line-height: 1.25; white-space: nowrap; }
+.miniphone__card li span:first-child { color: #8FA3C0; font-variant-numeric: tabular-nums; }
+.miniphone__card li span + span { overflow: hidden; text-overflow: ellipsis; }
+.miniphone__card li i { width: 0.6em; height: 0.6em; border-radius: 50%; }
+.miniphone__card li.is-fixed i { background: #3B82F6; }
+.miniphone__card li.is-flexible i { background: #2DD4BF; }
+.miniphone__card li.is-open i { box-shadow: inset 0 0 0 0.12em rgba(143, 163, 192, 0.7); }
+.miniphone__card li.is-open span + span { color: #8FA3C0; }
+.miniphone__foot { margin-top: 0.9em; padding-top: 0.8em; font-size: 1.8em; color: #8FA3C0; box-shadow: inset 0 0.06em 0 rgba(147, 197, 253, 0.15); }
+.miniphone__blob {
+  position: absolute;
+  right: 3.6em;
+  top: 77em;
+  width: 9.5em;
+  height: 8.8em;
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  box-shadow: 0 0 4.5em 1.2em rgba(59, 130, 246, 0.5), inset -0.8em -1em 2em rgba(16, 36, 110, 0.55);
+  animation: miniphone-float 4.2s ease-in-out infinite;
+}
+.miniphone__blob i { position: absolute; top: 38%; width: 1.25em; height: 1.6em; border-radius: 50%; background: #0B1530; box-shadow: inset 0.3em 0.25em 0 -0.05em #FFFFFF; }
+.miniphone__blob i:first-child { left: 31%; } .miniphone__blob i:last-child { right: 31%; }
+@keyframes miniphone-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.1em); } }
+@media (prefers-reduced-motion: reduce) { .miniphone { transition: none; } .miniphone__blob { animation: none; } }
 .project-card:hover,
 .project-card:focus-within { transform: translateY(-6px); }
 .project-card:hover .project-card__media,

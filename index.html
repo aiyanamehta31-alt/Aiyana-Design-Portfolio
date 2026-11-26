@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:ital,wght@0,400..700;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Caveat:wght@500;700&display=swap" rel="stylesheet" /><!-- taste-skill-ignore: Geist Mono requested for the hero labels -->
 
-  <link rel="stylesheet" href="css/style.css?v=16" />
+  <link rel="stylesheet" href="css/style.css?v=18" />
   <link rel="stylesheet" href="css/case-study.css?v=9" />
   <link rel="stylesheet" href="css/skills.css?v=2" />
 
@@ -186,9 +186,22 @@
         </article>
 
         <article class="project-card" data-card data-cloud="#F2C21B #E2412F">
-          <figure class="project-card__media project-card__media--yellow">
-            <img src="assets/images/projects/maggi/poster-moustache-sm.webp" width="720" height="960" loading="lazy" style="object-position: 50% 62%"
-                 alt="A fork of masala noodles with a curled moustache on bright yellow, from the Très Maggi poster." />
+          <!-- Aiyana's final pack as a real box turning on a dark stage. The front
+               is pack-front.webp; the back and sides are cut from her dieline
+               (dieline.webp) with background positions. Drawn in HTML/CSS. -->
+          <figure class="project-card__media project-card__media--pack" role="img"
+                  aria-label="The Maggi Nouilles Masala pack turning slowly on a dark stage: the yellow and red front with the noodle window and 1€, then the back with the cooking steps and nutrition table.">
+            <div class="minipack" aria-hidden="true">
+              <div class="minipack__box">
+                <span class="minipack__face minipack__face--front"></span>
+                <span class="minipack__face minipack__face--right"></span>
+                <span class="minipack__face minipack__face--back"></span>
+                <span class="minipack__face minipack__face--left"></span>
+                <span class="minipack__face minipack__face--top"></span>
+                <span class="minipack__face minipack__face--bottom"></span>
+              </div>
+              <span class="minipack__shadow"></span>
+            </div>
           </figure>
           <div class="project-card__body">
             <p class="project-card__meta"><span>Packaging</span><span>2026</span></p>
@@ -200,9 +213,25 @@
         </article>
 
         <article class="project-card" data-card data-cloud="#5EEAD4 #3B9BE6">
-          <figure class="project-card__media">
-            <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
-                 alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
+          <!-- A dummy phone on a dark stage, Wiglet open on its lock screen
+               (rows from Aiyana's own phone mockup). Drawn in HTML/CSS. -->
+          <figure class="project-card__media project-card__media--phone" role="img"
+                  aria-label="A phone on its lock screen with Wiglet open: today's classes in blue, flexible tasks in teal, free time open, and the blob mascot glowing beside it.">
+            <div class="miniphone" aria-hidden="true">
+              <span class="miniphone__key miniphone__key--a"></span><span class="miniphone__key miniphone__key--b"></span><span class="miniphone__key miniphone__key--c"></span>
+              <div class="miniphone__screen">
+                <span class="miniphone__island"></span>
+                <p class="miniphone__status"><span>9:41</span><span class="miniphone__bars"><i></i><i></i><i></i><i></i></span></p>
+                <p class="miniphone__date">Mon, Apr 28</p>
+                <p class="miniphone__clock">9:41</p>
+                <div class="miniphone__card">
+                  <p class="miniphone__head"><span class="miniphone__mini"></span>Today</p>
+                  <ul><li class="is-fixed"><span>9:00 – 10:30</span><span>DESG319 Lecture</span><i></i></li><li class="is-open"><span>10:30 – 12:00</span><span>Free</span><i></i></li><li class="is-fixed"><span>12:00 – 1:00</span><span>Lunch</span><i></i></li><li class="is-open"><span>1:00 – 3:00</span><span>Free</span><i></i></li><li class="is-fixed"><span>3:00 – 4:30</span><span>UGSEM5 Seminar</span><i></i></li><li class="is-flexible"><span>4:30 – 5:30</span><span>Essay homework</span><i></i></li><li class="is-flexible"><span>5:30 – 6:30</span><span>Gym</span><i></i></li><li class="is-open"><span>6:30 – 9:00</span><span>Free</span><i></i></li></ul>
+                  <p class="miniphone__foot">3 hrs open today</p>
+                </div>
+                <span class="miniphone__blob"><i></i><i></i></span>
+              </div>
+            </div>
           </figure>
           <div class="project-card__body">
             <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>
@@ -504,9 +533,22 @@
           </div>
         </article>
         <article class="project-card">
-          <figure class="project-card__media">
-            <img src="assets/images/projects/maggi/pack-front-sm.webp" width="720" height="788" loading="lazy"
-                 alt="The front of the yellow Maggi Nouilles Masala box with a 1€ badge." />
+          <!-- Aiyana's final pack as a real box turning on a dark stage. The front
+               is pack-front.webp; the back and sides are cut from her dieline
+               (dieline.webp) with background positions. Drawn in HTML/CSS. -->
+          <figure class="project-card__media project-card__media--pack" role="img"
+                  aria-label="The Maggi Nouilles Masala pack turning slowly on a dark stage: the yellow and red front with the noodle window and 1€, then the back with the cooking steps and nutrition table.">
+            <div class="minipack" aria-hidden="true">
+              <div class="minipack__box">
+                <span class="minipack__face minipack__face--front"></span>
+                <span class="minipack__face minipack__face--right"></span>
+                <span class="minipack__face minipack__face--back"></span>
+                <span class="minipack__face minipack__face--left"></span>
+                <span class="minipack__face minipack__face--top"></span>
+                <span class="minipack__face minipack__face--bottom"></span>
+              </div>
+              <span class="minipack__shadow"></span>
+            </div>
           </figure>
           <div class="project-card__body">
             <p class="project-card__meta"><span>Packaging</span><span>2026</span></p>
@@ -515,9 +557,25 @@
           </div>
         </article>
         <article class="project-card">
-          <figure class="project-card__media">
-            <img src="assets/images/projects/wiglet/card-cover.webp" width="1280" height="800" loading="lazy"
-                 alt="The Wiglet card planning a student's day: fixed classes in blue, flexible tasks in teal, with the blob mascot glowing beside it." />
+          <!-- A dummy phone on a dark stage, Wiglet open on its lock screen
+               (rows from Aiyana's own phone mockup). Drawn in HTML/CSS. -->
+          <figure class="project-card__media project-card__media--phone" role="img"
+                  aria-label="A phone on its lock screen with Wiglet open: today's classes in blue, flexible tasks in teal, free time open, and the blob mascot glowing beside it.">
+            <div class="miniphone" aria-hidden="true">
+              <span class="miniphone__key miniphone__key--a"></span><span class="miniphone__key miniphone__key--b"></span><span class="miniphone__key miniphone__key--c"></span>
+              <div class="miniphone__screen">
+                <span class="miniphone__island"></span>
+                <p class="miniphone__status"><span>9:41</span><span class="miniphone__bars"><i></i><i></i><i></i><i></i></span></p>
+                <p class="miniphone__date">Mon, Apr 28</p>
+                <p class="miniphone__clock">9:41</p>
+                <div class="miniphone__card">
+                  <p class="miniphone__head"><span class="miniphone__mini"></span>Today</p>
+                  <ul><li class="is-fixed"><span>9:00 – 10:30</span><span>DESG319 Lecture</span><i></i></li><li class="is-open"><span>10:30 – 12:00</span><span>Free</span><i></i></li><li class="is-fixed"><span>12:00 – 1:00</span><span>Lunch</span><i></i></li><li class="is-open"><span>1:00 – 3:00</span><span>Free</span><i></i></li><li class="is-fixed"><span>3:00 – 4:30</span><span>UGSEM5 Seminar</span><i></i></li><li class="is-flexible"><span>4:30 – 5:30</span><span>Essay homework</span><i></i></li><li class="is-flexible"><span>5:30 – 6:30</span><span>Gym</span><i></i></li><li class="is-open"><span>6:30 – 9:00</span><span>Free</span><i></i></li></ul>
+                  <p class="miniphone__foot">3 hrs open today</p>
+                </div>
+                <span class="miniphone__blob"><i></i><i></i></span>
+              </div>
+            </div>
           </figure>
           <div class="project-card__body">
             <p class="project-card__meta"><span>Agentic AI</span><span>2026</span></p>

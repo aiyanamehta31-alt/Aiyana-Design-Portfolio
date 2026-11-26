@@ -4,6 +4,22 @@ A dated entry for every change to the portfolio: what changed, why, which source
 
 ---
 
+## 2026-11-26 · Maggi card: the pack turning on a dark stage
+
+- The Maggi card on the homepage (Selected work and All projects) no longer shows the yellow poster crop. Like Nexo, Branding and Wiglet it sits on a dark stage: Aiyana's final Nouilles Masala pack as a 3D box built in HTML/CSS (`.project-card__media--pack`, `.minipack` in `css/style.css`), turning slowly to show the front, side, back (cooking steps, nutrition table) and other side. Every face is her own artwork: `pack-front.webp` and crops of `dieline.webp` by background position, so no new image files. `style.css?v=18`.
+- Asked by Aiyana: a black background like the others, "something to show", my choice.
+- Checked at 1440×900: all four homepage cards now share the dark stage; the box turns cleanly with its top face showing.
+
+---
+
+## 2026-11-26 · Wiglet card: a phone with Wiglet open
+
+- The Wiglet card on the homepage (Selected work and All projects) no longer uses the flat screenshot. Like Nexo and Branding it sits on a dark stage: a dummy phone, drawn in HTML/CSS in `index.html` + `css/style.css` (`.project-card__media--phone`, `.miniphone`), tilted and cropped by the card's edge, with Wiglet open on the lock screen and the blob floating beside it. The rows are the ones on Aiyana's own phone mockup (`assets/images/projects/wiglet/mockup-phone.webp`). `style.css?v=17`.
+- Asked by Aiyana: a black background like Nexo's and Branding's, with "a little dummy phone" and Wiglet opened up on it.
+- Checked at 1440×900 and 375×812: the phone scales with the card, times never touch their labels, no sideways scroll.
+
+---
+
 ## 2026-11-26 · Branding, second pass: an editorial shelf, five different pages
 
 **What changed**
